@@ -8,7 +8,7 @@ import styles from '../styles/pages/NewRpg.module.css';
 export function NewRpg(){
   return(
     <Layout>
-      <div className={styles.content}>
+      <div className={styles.newRpgContainer}>
         <h1>Dados do RPG</h1>
 
         <div className={styles.formContainer}>
@@ -22,12 +22,11 @@ export function NewRpg(){
             </div>
 
             <div>
-              <InputLabel name='name' label='Nome' width='45rem' />
+              <InputLabel name='name' label='Nome' />
               <InputLabel 
                 name='description' 
                 label='Descrição' 
                 height='15rem' 
-                width='45rem'
                 isTextarea={true}/>
 
               <Button text='Criar' />

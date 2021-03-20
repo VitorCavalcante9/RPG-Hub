@@ -9,7 +9,7 @@ import { Input } from '../components/Input';
 import styles from '../styles/pages/Login.module.css';
 
 export function Login(){
-  const [isRegistered, setIsRegistered] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(true);
   const {register, handleSubmit, errors} = useForm();
 
   const onSubmit = async(data:any) => {

@@ -1,11 +1,11 @@
-h1{
+.newRpgContainer h1{
   font: 600 3rem Rajdhani;
   color: var(--color-text-title);
   margin-top: 2rem;
   margin-bottom: 3rem;
 }
 
-.previewImage{
+.newRpgContainer .previewImage{
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -14,36 +14,36 @@ h1{
   cursor: pointer;
 }
 
-.image{
+.newRpgContainer .image{
   height: 10rem;
   width: 10rem;
   border-radius: 2rem;
   background: var(--color-secondary)
 }
 
-.previewImage p{
+.newRpgContainer .previewImage p{
   font: 500 1.8rem Rajdhani;
   margin-left: 1.5rem;
 }
 
-button{
+.newRpgContainer button{
   margin-top: 2.5rem;
 }
 
 @media (min-width:1100px){
-  .content{
+  .newRpgContainer{
     display: flex;
     flex-direction: column;
     align-items: flex-start;
   }
 
-  h1{
+  .newRpgContainer h1{
     margin-left: 2rem;
     margin-bottom: 7rem;
     margin-top: 4rem;
   }
 
-  .formContainer{
+  .newRpgContainer .formContainer{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -51,12 +51,12 @@ button{
     width: 100%;
   }
 
-  form{
+  .newRpgContainer .formContainer form{
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
 
-  .previewImage{
+  .newRpgContainer .previewImage{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -67,20 +67,20 @@ button{
     cursor: pointer;
   }
   
-  .image{
+  .newRpgContainer .image{
     height: 30rem;
     width: 30rem;
     border-radius: 2rem;
     background: var(--color-secondary)
   }
   
-  .previewImage p{
+  .newRpgContainer .previewImage p{
     font: 500 1.8rem Rajdhani;
     margin-left: 0rem;
     margin-top: 1rem;
   }
 
-  button{
+  .newRpgContainer button{
     margin-top: 8rem;
   }
 }

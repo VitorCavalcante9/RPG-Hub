@@ -7,10 +7,9 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement>{
   label: string;
   height?: string;
   isTextarea?: boolean;
-  width?: string;
 }
 
-export function InputLabel({name, label, height, width, isTextarea, ...rest}:InputProps){
+export function InputLabel({name, label, height, isTextarea, ...rest}:InputProps){
   return(
     <div className={styles.inputBlock}>
       <label htmlFor={name}>{label}</label>
@@ -20,10 +19,10 @@ export function InputLabel({name, label, height, width, isTextarea, ...rest}:Inp
           cols={30} 
           rows={10} 
           style={{
-            height, width, 
+            height, 
             resize: 'none'}}></textarea>
       ) : (
-        <input type='text' id={name} {...rest} style={{width}} />
+        <input type='text' id={name} {...rest}/>
       )}
     </div>
   );
