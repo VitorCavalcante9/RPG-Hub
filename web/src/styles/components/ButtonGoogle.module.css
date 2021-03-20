@@ -1,0 +1,23 @@
+.buttonBlock{
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.buttonBlock button{
+  width: 100%;
+  height: 5rem;
+  padding: 0 3rem;
+
+  border-radius: 10rem;
+  background: var(--color-button);
+  color: var(--color-text-button);
+  border: 0;
+  text-align: center;
+
+  font: 600 2rem Rajdhani;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

@@ -1,0 +1,99 @@
+.pageContainer{
+  width: 100vw;
+  height: 100vh;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.startContainer{
+  width: 70vw;
+  min-height: 30vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoContainer{
+  text-align: center;
+}
+
+.logoContainer img{
+  height: 6.2rem;
+  margin-bottom: 1rem ;
+}
+
+.logoContainer h2{
+  font-weight: 500;
+  font-size: 1.7rem;
+  line-height: 2.6rem;
+  margin-top: 0.8rem;
+}
+
+.formContainer{
+  background-color: var(--color-primary);
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.registerContainer{
+  text-align: center;
+  width: 38rem;
+}
+
+.registerContainer h1{
+  font-weight: 600;
+  font-size: 2.8rem;
+  color: var(--color-text-title);
+  margin-bottom: 5rem;
+}
+
+.registerContainer input, .registerContainer button{
+  width: 32rem;
+}
+
+
+.registerContainer hr{
+  width: 100%;
+  margin: 2.8rem 0;
+}
+
+.registerContainer p{
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
+@media(min-width: 1100px){
+  .pageContainer{
+    display: flex;
+    flex-direction: row;
+  }
+
+  .startContainer{
+    width: 62vw;
+    height: 100vh;
+  }
+
+  .formContainer{
+    width: 38vw;
+  }
+
+  .logoContainer img{
+    height: 10rem;
+    margin-bottom: 2rem ;
+  }
+  
+  .logoContainer h2{
+    font-weight: 500;
+    font-size: 2.4rem;
+    line-height: 2.6rem;
+    margin-top: 0.8rem;
+  }
+}

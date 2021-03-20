@@ -1,0 +1,184 @@
+.sidebarContainer{
+  width: 100vw;
+  height: 8.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  position: absolute;
+  top: 0;
+
+  z-index: 10;
+}
+
+.headBar{
+  width: 100vw;
+  height: 8.5rem;
+
+  top: 0;
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  padding: 4rem 2rem 1rem;
+
+  background: var(--color-primary);
+}
+
+.headBar .moreIcon img{
+  margin-top: 0.5rem;
+  width: 3.5rem;
+  cursor: pointer;
+}
+
+.headBar .iconAccount{
+  width: 100%;
+  padding-left: 2rem;
+  display: flex;
+}
+
+.headBar .iconAccount img{
+  background-color: var(--color-text-primary);
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+}
+
+.collapsedMenu{
+  width: 35rem;
+  height: 100vh;
+
+  transform: translateX(-35rem);
+
+  background: var(--color-primary);
+  padding: 4.6rem 1rem 10rem;
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  text-align: center;
+
+  transition: width 0.3s;
+  transition: transform 0.1s;
+}
+
+.collapsedMenu a:hover, .icon:hover p{
+  color: var(--color-text-secondary);
+}
+
+.collapsedMenu .moreIcon{
+  width: 5.5rem;
+  cursor: pointer;
+}
+
+.collapsedMenu .moreIcon img{
+  width: 3.5rem;
+}
+
+.collapsedMenu .iconAccount{
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+
+  margin-top: 4.5rem;
+}
+
+.collapsedMenu .iconAccount img{
+  background-color: var(--color-text-primary);
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+}
+
+.collapsedMenu .account, .icon p{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  margin: 0.5rem 2rem 0;
+  font: 600 2rem Rajdhani;
+  text-decoration: none;
+  color: var(--color-text-primary);
+
+  transition: color 0.2s;
+}
+
+.collapsedMenu .account a{
+  font-size: 1.5rem;
+  color: var(--color-button-session);
+  text-decoration: none;
+}
+
+.collapsedMenu .iconsMenu a img{
+  width: 3.5rem;
+  color: var(--color-text-primary);
+}
+
+.collapsedMenu .iconsMenu{
+  width: 5.5rem;
+  padding-left: 0.8rem;
+}
+
+.collapsedMenu .icon, .icon a{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+
+  text-decoration: none;
+}
+.collapsedMenu  .icon p{
+  margin-top: 0.6rem;
+}
+
+.collapsedMenu .collapsedMenu > .iconsMenu{
+  transform: translateY(-12rem);
+}
+.collapsedMenu .collapsedMenu > .iconsMenu ~ .iconsMenu{
+  transform: translateY(0);
+}
+
+.collapsedMenu .home{
+  margin-bottom: 4.5rem;
+}
+
+.overlay{
+  width: 100%;
+  height: 100vh;
+  right: 0;
+  top: 0;
+  position: relative;
+  background-color: rgba(0, 0, 0, .6);
+  display: none;
+}
+
+@media (min-width: 1100px){
+  .sidebarContainer{
+    height: 100vh;
+    width: 7.5rem;
+  }
+
+  .headBar{
+    display: none;
+  }
+
+  .collapsedMenu{
+    display: flex;
+    width: 22.5rem;
+    padding: 2.6rem 1rem;
+    transform: translateX(0);
+    transition: width 0.3s;
+  }
+
+  .collapsedMenu .moreIcon img{
+    width: 3.9rem;
+  }
+}

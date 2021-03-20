@@ -1,0 +1,21 @@
+.iconContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 2rem;
+}
+
+.image{
+  width: 15rem;
+  height: 15rem;
+  background: var(--color-secondary);
+  border-radius: 1.5rem;
+
+  margin-bottom: 0.7rem;
+}
+
+.iconContainer p{
+  width: 13rem;
+  font: 600 1.8rem Rajdhani;
+  line-height: 2rem;
+}

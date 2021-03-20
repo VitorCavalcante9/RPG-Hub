@@ -1,0 +1,40 @@
+.contentContainer{
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.text{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  margin-bottom: 2rem;
+}
+
+.text h1{
+  font: 600 2.3rem Rajdhani;
+  color: var(--color-text-title);
+}
+
+.text a{
+  font-size: 1.5rem;
+  text-decoration: none;
+  color: var(--color-text-primary);
+
+  margin-left: 1.5rem;
+}
+
+.contentContainer:last-of-type{
+  margin-top: 4rem;
+}
+
+.elementsList{
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+  height: 20rem;
+  overflow-x: auto;
+}
