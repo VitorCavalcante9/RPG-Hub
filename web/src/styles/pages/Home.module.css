@@ -5,7 +5,7 @@
   align-items: flex-start;
 }
 
-.text{
+.contentContainer .text{
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -13,16 +13,12 @@
   margin-bottom: 2rem;
 }
 
-.text h1{
+.contentContainer .text h1{
   font: 600 2.3rem Rajdhani;
   color: var(--color-text-title);
 }
 
-.text a{
-  font-size: 1.5rem;
-  text-decoration: none;
-  color: var(--color-text-primary);
-
+.contentContainer .text button{
   margin-left: 1.5rem;
 }
 
@@ -30,7 +26,7 @@
   margin-top: 4rem;
 }
 
-.elementsList{
+.contentContainer .elementsList{
   display: flex;
   flex-direction: row;
   align-items: flex-start;

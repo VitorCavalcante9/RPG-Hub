@@ -1,6 +1,6 @@
 .pageContainer{
   width: 90vw;
-  height: 100vh;
+  min-height: 100vh;
   
   display: flex;
   flex-direction: column;
@@ -18,9 +18,9 @@
   background: var(--color-primary);
   border-radius: 1rem;
 
-  overflow-y: auto;
+  overflow-y: visible;
 
-  margin: 1.5rem auto 0;
+  margin: 1.5rem auto 7.5rem;
   padding: 2rem;
 }
 

@@ -4,10 +4,10 @@ import styles from '../styles/components/IconElement.module.css';
 
 interface IconElementProps{
   image: string;
-  imgSize?: number;
+  imgSize?: string;
   alt: string;
   text: string;
-  textSize?: number;
+  textSize?: string;
   row: boolean;
 }
 

@@ -10,7 +10,7 @@ export function Home(){
       <div className={styles.contentContainer}>
         <div className={styles.text}>
           <h1>Seus RPGs</h1>
-          <a href="#">+ Criar novo RPG</a>
+          <button className='buttonWithoutBG'>+ Criar novo RPG</button>
         </div>
         <div className={styles.elementsList}>
           {}
@@ -20,7 +20,7 @@ export function Home(){
       <div className={styles.contentContainer}>
         <div className={styles.text}>
           <h1>RPGs que você entrou</h1>
-          <a href="#">+ Entrar em um RPG</a>
+          <button className='buttonWithoutBG'>+ Entrar em um RPG</button>
         </div>
         <div className={styles.elementsList}>
           {}

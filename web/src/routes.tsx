@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 import { NewRpg } from './pages/NewRpg';
+import { RpgHome } from './pages/RpgHome';
 
 export default function Routes(){
   return(
@@ -12,6 +13,7 @@ export default function Routes(){
         <Route path='/' exact component={Login} />
         <Route path='/home' exact component={Home} />
         <Route path='/newRpg' exact component={NewRpg} />
+        <Route path='/rpgHome' exact component={RpgHome} />
       </Switch>
     </BrowserRouter>
   );

@@ -6,6 +6,8 @@
   width: 100%;
   height: 5rem;
 
+  cursor: pointer;
+
   border-radius: 10rem;
   background: var(--color-button);
   color: var(--color-text-button);

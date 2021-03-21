@@ -8,10 +8,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>{
 
 export function Button({
   text,
+  className,
   ...rest}: ButtonProps){
 
   return(
-    <div className={styles.buttonBlock}>
+    <div  className={`${styles.buttonBlock} ${className}`}>
       <button {...rest}>{text}</button>
     </div>
   );
