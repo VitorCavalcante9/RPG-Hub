@@ -1,0 +1,150 @@
+.sheetContainer h1{
+  font: 600 3rem Rajdhani;
+  color: var(--color-text-title);
+  margin-top: 2rem;
+  margin-bottom: 3rem;
+}
+
+.sheetContainer #status > div:last-child{
+  height: 11rem;
+}
+
+.sheetContainer #status .statusElement{
+  width: 100%;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.statusElement + .statusElement,
+.skillsElement + .skillsElement{
+  margin-top: 0.75rem;
+}
+
+.sheetContainer #status .statusElement .name{
+  display: flex;
+}
+
+.sheetContainer #status .statusElement .name input,
+.sheetContainer #skills .skillsElement > input{
+  width: 12rem;
+  border: 0;
+  background: none;
+  padding-top: 0.5rem;
+
+  font: 600 1.8rem Rajdhani;
+  color: var(--color-text-secondary);
+}
+
+.sheetContainer #status .statusElement .buttonColor{
+  height: 2rem;
+  width: 2rem;
+  margin-top: 0.5rem;
+
+  margin-left: 2rem;
+  border-radius: 50%;
+  border: 1px solid #FFF;
+}
+
+.sheetContainer .pointsContainer{
+  width: 10rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  font: 600 1.8rem Rajdhani;
+}
+
+.sheetContainer .pointsContainer input,
+.sheetContainer .pointsContainer hr{
+  color: var(--color-text-secondary);
+  border-color: var(--color-text-secondary);
+}
+
+.sheetContainer #skills > div:last-child{
+  height: 20rem;
+}
+
+.sheetContainer #skills .skillsElement{
+  width: 100%;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.sheetContainer #skills .skillsElement > input{
+  width: 15rem;
+}
+
+.sheetContainer .points{
+  margin: 2rem 0 2.5rem;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sheetContainer .points p{
+  font: 600 2rem Rajdhani;
+}
+
+@media(min-width: 1100px){
+  .sheetContainer{
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .sheetContainer h1{
+    margin-left: 2rem;
+    margin-bottom: 3rem;
+    margin-top: 3rem;
+  }
+
+  .sheetContainer .content{
+    width: 100%;
+    padding: 0 1rem;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  
+  .sheetContainer #status, .sheetContainer .skillsContent{
+    margin-left: 1rem;
+    margin-right: 1rem;
+    width: 50%;
+  }
+
+  .sheetContainer #status > div:last-child{
+    height: 38rem;
+  }
+
+  .sheetContainer #skills > div:last-child{
+    height: 32rem;
+  }
+
+  .sheetContainer .buttonSave{
+    width: 100%;
+    margin-top: 4rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sheetContainer .buttonSave button{
+    width: 40%;
+  }
+
+}

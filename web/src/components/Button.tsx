@@ -12,7 +12,7 @@ export function Button({
   ...rest}: ButtonProps){
 
   return(
-    <div  className={`${styles.buttonBlock} ${className}`}>
+    <div className={`${styles.buttonBlock} ${className}`}>
       <button {...rest}>{text}</button>
     </div>
   );

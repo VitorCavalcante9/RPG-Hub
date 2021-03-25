@@ -1,11 +1,14 @@
 import React from 'react';
+import { StatusProvider } from './contexts/StatusContext';
 import Routes from './routes';
 
 import './styles/global.css';
 
 function App() {
   return (
-    <Routes />
+    <StatusProvider>
+      <Routes />
+    </StatusProvider>
   );
 }
 

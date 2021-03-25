@@ -5,6 +5,7 @@ import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 import { NewRpg } from './pages/NewRpg';
 import { RpgHome } from './pages/RpgHome';
+import { SheetPattern } from './pages/SheetPattern';
 
 export default function Routes(){
   return(
@@ -12,8 +13,9 @@ export default function Routes(){
       <Switch>
         <Route path='/' exact component={Login} />
         <Route path='/home' exact component={Home} />
-        <Route path='/newRpg' exact component={NewRpg} />
-        <Route path='/rpgHome' exact component={RpgHome} />
+        <Route path='/rpgs' exact component={RpgHome} />
+        <Route path='/rpgs/create' exact component={NewRpg} />
+        <Route path='/rpgs/sheet' exact component={SheetPattern} />
       </Switch>
     </BrowserRouter>
   );
