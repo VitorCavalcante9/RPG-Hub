@@ -1,0 +1,142 @@
+.newScenarioContainer h1{
+  font: 600 3rem Rajdhani;
+  color: var(--color-text-title);
+  margin-top: 2rem;
+  margin-bottom: 3rem;
+}
+
+.newScenarioContainer .previewImage{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.newScenarioContainer .image{
+  --width: 100vw;
+  width: 100%;
+  max-width: 550px;
+  height: calc((var(--width)*1080)/1920);
+  max-height: 310px;
+  border-radius: 2rem;
+  background: var(--color-secondary)
+}
+
+.newScenarioContainer .image img{
+  --width: 100vw;
+  width: 100%;
+  max-width: 550px;
+  height: calc((var(--width)*1080)/1920);
+  max-height: 310px;
+  border-radius: 2rem;
+  object-fit: cover;
+}
+
+.newScenarioContainer .previewImage label{
+  font: 500 1.8rem Rajdhani;
+  margin-left: 1.5rem;
+  cursor: pointer;
+}
+
+.newScenarioContainer .previewImage input[type=file]{
+  display: none;
+}
+
+.newScenarioContainer button{
+  margin-top: 4rem;
+}
+
+@media (min-width:1100px){
+  .newScenarioContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .newScenarioContainer h1{
+    margin-left: 2rem;
+    margin-bottom: 7rem;
+    margin-top: 4rem;
+  }
+
+  .newScenarioContainer .formContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+  }
+
+  .newScenarioContainer .formContainer form{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .newScenarioContainer .previewImage{
+    width: 40rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 3rem 2rem;
+  
+    cursor: pointer;
+  }
+  
+  .newScenarioContainer .image{
+    --width: 40rem;
+    width: 40rem;
+    max-width: none;
+    max-height: none;
+  }
+
+  .newScenarioContainer .image img{
+    --width: 40rem;
+    width: 40rem;
+    max-width: none;
+    max-height: none;
+  }
+  
+  .newScenarioContainer .previewImage p{
+    font: 500 1.8rem Rajdhani;
+    margin-left: 0rem;
+    margin-top: 1rem;
+  }
+
+  .newScenarioContainer .items{
+    width: 100%;
+    margin-right: 2rem;
+    margin-left: 2rem;
+  }
+
+  .newScenarioContainer button{
+    margin-top: 5rem;
+  }
+}
+
+@media (min-width:1500px){
+  .newScenarioContainer .formContainer form{
+    flex-direction: row;
+  }
+
+  .newScenarioContainer .previewImage{
+    width: 70rem;
+  }
+
+  .newScenarioContainer .image{
+    --width: 70rem;
+    width: 70rem;
+  }
+
+  .newScenarioContainer .image img{
+    --width: 70rem;
+    width: 70rem;
+  }
+
+  .newScenarioContainer .items{
+    margin-left: 0;
+  }
+}

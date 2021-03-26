@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 import { NewRpg } from './pages/NewRpg';
+import { NewScenario } from './pages/NewScenario';
 import { RpgHome } from './pages/RpgHome';
 import { SheetPattern } from './pages/SheetPattern';
 
@@ -16,6 +17,7 @@ export default function Routes(){
         <Route path='/rpgs' exact component={RpgHome} />
         <Route path='/rpgs/create' exact component={NewRpg} />
         <Route path='/rpgs/sheet' exact component={SheetPattern} />
+        <Route path='/rpgs/scenario' exact component={NewScenario} />
       </Switch>
     </BrowserRouter>
   );
