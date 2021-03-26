@@ -1,0 +1,25 @@
+.inventoryItem{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font: 600 1.8rem Rajdhani;
+}
+
+.inventoryItem .inputLine{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-left: 1rem;
+}
+
+.inventoryItem .inputLine input{
+  width: 11rem;
+  background: none;
+  border: 0;
+  text-align: left;
+
+  font: 600 1.8rem Rajdhani;
+  color: var(--color-text-secondary);
+}

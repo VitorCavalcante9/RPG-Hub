@@ -1,0 +1,159 @@
+.header{
+  margin-top: 1rem;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.header h1{
+  font: 600 3rem Rajdhani;
+  color: var(--color-text-title);
+  margin: 2rem 0 1rem;
+}
+
+.header .options button{
+  font-size: 1.8rem;
+}
+
+.body .name{
+  display: flex;
+  justify-content: space-between;
+  margin: 2rem 1rem;
+  margin-right: 0;
+}
+
+.name .previewImage{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.name .image{
+  height: 8.5rem;
+  width: 8.5rem;
+  border-radius: 2rem;
+  background: var(--color-secondary)
+}
+
+.name .image img{
+  height: 8.5rem;
+  width: 8.5rem;
+  border-radius: 2rem;
+  object-fit: cover;
+}
+
+.name .previewImage label{
+  font: 500 1.5rem Rajdhani;
+  cursor: pointer;
+}
+
+.name .previewImage input[type=file]{
+  display: none;
+}
+
+.name .input{
+  width: 100%;
+  margin-top: 1rem;
+  margin-left: 2rem;
+}
+
+#status > div:last-child, #inventory > div:last-child{
+  height: 11rem;
+}
+
+.column2{
+  margin-top: 2.5rem;
+}
+
+.points{
+  width: 15rem;
+  font: 500 1.5rem Rajdhani;
+}
+
+#skills > div:last-child{
+  height: 20rem;
+}
+
+.column2 .buttonCreate{
+  margin: 2rem 0;
+}
+
+.inventoryItem{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.inventoryItem button,
+.inventoryItem button img{
+  width: 1.4rem;
+  height: 1.4rem;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+  margin-left: 0.5rem;
+}
+
+@media (min-width:1100px){
+  .header{
+    flex-direction: row;
+    justify-content: space-between;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .header .options button{
+    font-size: 2rem;
+  }
+
+  .body form{
+    margin: 2rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .column1, .column2{
+    width: 50%;
+  }
+
+  .column1 + .column2{
+    margin-left: 2rem;
+  }
+
+  .name .image{
+    height: 10rem;
+    width: 10rem;
+  }
+  
+  .name .image img{
+    height: 10rem;
+    width: 10rem;
+  }
+
+  .name .input{
+    width: 100%;
+    margin-top: 1rem;
+    margin-left: 2rem;
+  }
+
+  #status > div:last-child, #inventory > div:last-child{
+    height: 13rem;
+  }
+
+  #skills > div:last-child{
+    height: 37.5rem;
+  }
+}
+
+@media (min-width:1750px){
+  .column1 + .column2{
+    margin-left: 10rem;
+  }
+}

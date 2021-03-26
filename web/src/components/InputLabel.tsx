@@ -9,9 +9,9 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement>{
   isTextarea?: boolean;
 }
 
-export function InputLabel({name, label, height, isTextarea, ...rest}:InputProps){
+export function InputLabel({name, className, label, height, isTextarea, ...rest}:InputProps){
   return(
-    <div className={styles.inputBlock}>
+    <div className={`${styles.inputBlock} ${className}`}>
       <label htmlFor={name}>{label}</label>
       {isTextarea ? (
         <textarea 

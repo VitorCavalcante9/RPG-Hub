@@ -8,11 +8,12 @@ import { RpgContext } from '../../contexts/RpgHomeContext';
 interface ModalProps extends HTMLAttributes<HTMLDivElement>{
   title: string;
   open: boolean;
+  account?: boolean;
 }
 
-export function Modal({title, open, children}:ModalProps){
+export function Modal({title, open, account, children}:ModalProps){
   const [isOpen, setIsOpen] = useState(open);
-  const {openModals, handleOpenModals} = useContext(RpgContext);
+  const {openModals, handleOpenModals, handleOpenAccountModal} = useContext(RpgContext);
   
   useEffect(() => {
     setIsOpen(open);
@@ -28,6 +29,10 @@ export function Modal({title, open, children}:ModalProps){
     })
   }
 
+  function handleAccountModal(){
+    if(account) handleOpenAccountModal();
+  }
+
   return(
     <>
       {isOpen ? (
@@ -35,7 +40,7 @@ export function Modal({title, open, children}:ModalProps){
           <div className={styles.container}>
             <header>{title}</header>
               {children}
-            <button onClick={handleOpenModal} type="button">
+            <button onClick={() => {handleOpenModal(); handleAccountModal();}} type="button">
               <img id={styles.close} src={close} alt="Fechar modal"/>
             </button>
           </div>

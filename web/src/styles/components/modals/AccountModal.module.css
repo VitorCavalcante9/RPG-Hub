@@ -1,0 +1,55 @@
+.content{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 3rem 0;
+}
+
+.blockList{
+  width: 100%;
+  height: 20rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+
+  background: var(--color-secondary);
+  border-radius: 1.5rem;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  overflow-y: auto;
+}
+
+.accountItem{
+  width: 100%;
+  cursor: pointer;
+  border-radius: 2rem;
+  text-align: left;
+  padding: 0.25rem;
+  padding-left: 1rem;
+}
+
+.accountItem:hover{
+  background-color: var(--color-button-session);
+}
+
+.accountItem p{
+  font: 500 1.8rem Rajdhani;
+  color: var(--color-button-secondary);
+}
+
+.name{
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  padding-left: 1rem;
+
+  margin-bottom: 2rem;
+}
+
+.name p{
+  font: 600 2rem Rajdhani;
+}

@@ -1,0 +1,36 @@
+.skillItem{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  font: 600 2rem Rajdhani;
+}
+
+.skillItem .numbers{
+  display: flex;
+  flex-direction: row;
+  margin-left: 1rem;
+}
+
+.skillItem .input hr{
+  width: 4rem;
+  position: relative;
+  top: -4px;
+}
+
+.skillItem .input input{
+  font: 600 2rem Rajdhani;
+  width: 3rem;
+}
+
+.skillItem .input input,
+.skillItem .input hr{
+  color: var(--color-text-secondary);
+  border-color: var(--color-text-secondary);
+}
+
+.skillItem + .skillItem{
+  margin-top: 1rem;
+}

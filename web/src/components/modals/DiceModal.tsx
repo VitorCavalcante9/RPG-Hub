@@ -17,7 +17,6 @@ export function DiceModal(){
   const [dice, setDice] = useState({quantity: '', value: ''});
 
   function setDiceItemValue(field: string, value: string){
-    console.log(dice)
     setDice({...dice, [field]: value});
   }
 
