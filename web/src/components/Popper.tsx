@@ -1,6 +1,6 @@
 import React, { useState, useRef, MutableRefObject, HTMLAttributes, useContext } from "react";
 import { usePopper } from "react-popper";
-import { StatusContext } from "../contexts/StatusContext";
+import { RpgContext } from "../contexts/RpgHomeContext";
 
 import styles from '../styles/components/Popper.module.css';
 
@@ -11,7 +11,7 @@ interface PopperProps extends HTMLAttributes<HTMLDivElement> {
 };
 
 export function Popper({ targetRef, isVisible, index, children }: PopperProps) {
-  const {setStatusItemValue} = useContext(StatusContext);
+  const {setStatusItemValue} = useContext(RpgContext);
   
   const popperRef = useRef(null);
   const [arrowRef, setArrowRef] = useState<HTMLDivElement | null>(null);

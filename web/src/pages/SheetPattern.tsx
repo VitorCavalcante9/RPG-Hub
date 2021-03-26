@@ -5,12 +5,12 @@ import { Button } from '../components/Button';
 import { InputLine } from '../components/InputLine';
 import { Layout } from '../components/Layout';
 import { Popper } from '../components/Popper';
-import { StatusContext } from '../contexts/StatusContext';
+import { RpgContext } from '../contexts/RpgHomeContext';
 
 import styles from '../styles/pages/SheetPattern.module.css';
 
 export function SheetPattern(){
-  const {statusItems, addNewStatus, setStatusItemValue} = useContext(StatusContext);
+  const {statusItems, addNewStatus, setStatusItemValue} = useContext(RpgContext);
   const [isVisible, setVisibility] = useState(['hidden']);
 
   const [skillsItems, setSkillsItems] = useState([

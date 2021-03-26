@@ -7,22 +7,39 @@ interface StatusItem{
   limit: number;
 }
 
-interface StatusContextData{
+interface RpgContextData{
   statusItems: Array<StatusItem>;
+  openModals: Array<boolean>;
   addNewStatus: () => void;
   setStatusItemValue: (position: number, field: string, value: string) => void;
+  handleOpenModals: (modal: number) => void;
 }
 
-interface StatusProviderProps{
+interface RpgProviderProps{
   children: ReactNode;
 }
 
-export const StatusContext = createContext({} as StatusContextData);
+export const RpgContext = createContext({} as RpgContextData);
 
-export function StatusProvider({children}: StatusProviderProps){
+export function RpgProvider({children}: RpgProviderProps){
   const [statusItems, setStatusItems] = useState<StatusItem[]>([
     {name: '', color: '#000', current: 0, limit: 0}
   ])
+
+  const [openModals, setOpenModals] = useState<boolean[]>([false, false, false]);
+
+  function handleOpenModals(modal: number){
+    const updatedOpenModals = openModals.map((openModal, index) => {
+      if(index === modal){
+        const open = openModals[modal] ? false : true;
+        return open
+      }
+
+      return openModal;
+    });
+
+    setOpenModals(updatedOpenModals);
+  }
 
   function addNewStatus(){
     setStatusItems([
@@ -44,15 +61,17 @@ export function StatusProvider({children}: StatusProviderProps){
   }
 
   return(
-    <StatusContext.Provider
+    <RpgContext.Provider
       value={{
         statusItems,
+        openModals,
         addNewStatus,
-        setStatusItemValue
+        setStatusItemValue,
+        handleOpenModals
       }}
     >
       {children}
-    </StatusContext.Provider>
+    </RpgContext.Provider>
   )
 
 }

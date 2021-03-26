@@ -1,14 +1,14 @@
 import React from 'react';
-import { StatusProvider } from './contexts/StatusContext';
+import { RpgProvider } from './contexts/RpgHomeContext';
 import Routes from './routes';
 
 import './styles/global.css';
 
 function App() {
   return (
-    <StatusProvider>
+    <RpgProvider>
       <Routes />
-    </StatusProvider>
+    </RpgProvider>
   );
 }
 

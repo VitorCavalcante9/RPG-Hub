@@ -20,7 +20,10 @@ export function IconElement(props: IconElementProps){
         width: props.imgSize,
         height: props.imgSize
       }}>
-        <img src={props.image} alt={props.alt}/>
+        <img src={props.image} alt={props.alt} style={{
+          width: props.imgSize,
+          height: props.imgSize
+        }}/>
       </div>
 
       <p style={{ fontSize: props.textSize }}>{props.text}</p>

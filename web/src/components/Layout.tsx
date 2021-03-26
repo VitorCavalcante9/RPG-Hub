@@ -1,7 +1,6 @@
 import React, { HTMLAttributes } from 'react';
 import { ButtonBack } from '../components/ButtonBack';
 import { Sidebar } from '../components/Sidebar';
-import { StatusProvider } from '../contexts/StatusContext';
 
 import styles from '../styles/components/Layout.module.css';
 
