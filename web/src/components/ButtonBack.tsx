@@ -4,8 +4,14 @@ import styles from '../styles/components/ButtonBack.module.css';
 
 import back from '../assets/icons/back.svg';
 import arrow from '../assets/icons/arrow.svg';
+import { Link } from 'react-router-dom';
 
-export function ButtonBack(){
+interface ButtonBackProps{
+  withoutBackButton?: boolean;
+  linkBack?: string;
+}
+
+export function ButtonBack({withoutBackButton, linkBack}: ButtonBackProps){
   const [icon, setIcon] = useState(window.innerWidth >= 1100 ? back : arrow);
 
   const [height, setHeight] = useState(0);
@@ -23,8 +29,10 @@ export function ButtonBack(){
   }, []);
 
   return(
-    <div className={styles.buttonContainer}>
-      <img src={icon} alt="back"/>
-    </div>
+    <Link to={linkBack ? linkBack : '/home'}>
+      <div className={styles.buttonContainer} style={{display: withoutBackButton ? 'none' : ''}}>
+        <img src={icon} alt="back"/>
+      </div>
+    </Link>
   );
 }

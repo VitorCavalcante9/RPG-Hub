@@ -22,7 +22,7 @@ export function NewScenario(){
   }
 
   return(
-    <Layout>
+    <Layout linkBack='/rpgs'>
       <div className={styles.newScenarioContainer}>
         <h1>Novo Cenário</h1>
 

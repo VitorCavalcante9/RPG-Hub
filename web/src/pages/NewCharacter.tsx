@@ -79,7 +79,7 @@ export function NewCharacter(){
     <>
     <AccountModal />
 
-    <Layout>
+    <Layout linkBack='/rpgs'>
       <div className={styles.header}>
         <h1>Ficha do Personagem</h1>
 

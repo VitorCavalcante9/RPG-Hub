@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { Block } from '../components/Block';
 import { Button } from '../components/Button';
@@ -22,7 +23,7 @@ export function RpgHome(){
       <ItemModal />
       <DiceModal />
 
-      <Layout>
+      <Layout linkBack='/home'>
         <div className={styles.rpgHomeContainer}>
           <div className={styles.header}>
             <IconElement 
@@ -43,11 +44,11 @@ export function RpgHome(){
 
           <div className={styles.body}>
             <Block id={styles.char} className={`${styles.grid1} ${styles.blocks}`} name='Personagens' options={
-              <button className='buttonWithoutBG'>+ Novo</button>
+              <Link to='/rpgs/character'><button className='buttonWithoutBG'>+ Novo</button></Link>
             }></Block>
 
             <Block id={styles.scenario} className={`${styles.grid2} ${styles.blocks}`} name='Cenários' options={
-              <button className='buttonWithoutBG'>+ Novo</button>
+              <Link to='/rpgs/scenario'><button className='buttonWithoutBG'>+ Novo</button></Link>
             } />
 
             <Block id={styles.object} className={`${styles.grid2} ${styles.blocks}`} name='Itens' options={
@@ -56,7 +57,7 @@ export function RpgHome(){
 
             <Block id={styles.account} className={`${styles.grid3} ${styles.blocks}`} name='Contas' center={true} />
 
-            <Button className={`${styles.grid1} ${styles.buttons}`} text='Padrão de ficha' />
+            <Link to='/rpgs/sheet'><Button className={`${styles.grid1} ${styles.buttons}`} text='Padrão de ficha' /></Link>
             <Button className={`${styles.grid2} ${styles.buttons}`} onClick={() => handleOpenModals(2)} text='Configurar Dados' />
 
             <ButtonSession id={styles.session} className={`${styles.grid3} ${styles.buttons}`} />

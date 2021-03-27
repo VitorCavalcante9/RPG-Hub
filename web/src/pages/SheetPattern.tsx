@@ -63,7 +63,7 @@ export function SheetPattern(){
   }
 
   return(
-    <Layout>
+    <Layout linkBack='/rpgs'>
       <div className={styles.sheetContainer}>
         <h1>Padrão de ficha</h1>
 

@@ -24,7 +24,7 @@ export function NewRpg(){
   }
 
   return(
-    <Layout>
+    <Layout linkBack='/home'>
       <div className={styles.newRpgContainer}>
         <h1>Dados do RPG</h1>
 

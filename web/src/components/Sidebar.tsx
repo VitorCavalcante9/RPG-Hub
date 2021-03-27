@@ -6,6 +6,7 @@ import more from '../assets/icons/more.svg';
 import home from '../assets/icons/home.svg';
 import user from '../assets/icons/user.svg';
 import moon from '../assets/icons/moon.svg';
+import { Link } from 'react-router-dom';
 
 export function Sidebar(){
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -54,10 +55,10 @@ export function Sidebar(){
 
         <div className={styles.iconsMenu}>
           <div className={styles.icon}>
-            <a href="#">
+            <Link to="/home">
               <img className={styles.home} src={home} alt="Home" />
               <p style={collapsedStyle}>Home</p>
-            </a>
+            </Link>
           </div>
           <div className={styles.icon}>
             <a href="#">
