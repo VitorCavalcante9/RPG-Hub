@@ -7,6 +7,7 @@ import { NewCharacter } from './pages/NewCharacter';
 import { NewRpg } from './pages/NewRpg';
 import { NewScenario } from './pages/NewScenario';
 import { RpgHome } from './pages/RpgHome';
+import { RpgHomeParticipant } from './pages/RpgHomeParticipant';
 import { SheetPattern } from './pages/SheetPattern';
 
 export default function Routes(){
@@ -16,6 +17,7 @@ export default function Routes(){
         <Route path='/' exact component={Login} />
         <Route path='/home' exact component={Home} />
         <Route path='/rpgs' exact component={RpgHome} />
+        <Route path='/rpgs/participant' exact component={RpgHomeParticipant} />
         <Route path='/rpgs/create' exact component={NewRpg} />
         <Route path='/rpgs/sheet' exact component={SheetPattern} />
         <Route path='/rpgs/scenario' exact component={NewScenario} />

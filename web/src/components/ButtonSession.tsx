@@ -4,12 +4,16 @@ import styles from '../styles/components/ButtonSession.module.css';
 
 import playIcon from '../assets/icons/play-button.svg';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>{}
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>{
+  text?: string;
+}
 
-export function ButtonSession({className, id, ...rest}: ButtonProps){
+export function ButtonSession({className, text, id, ...rest}: ButtonProps){
+  const textButton = text ? text : 'Iniciar Sessão';
+  
   return(
     <div id={id} className={`${styles.buttonBlock} ${className}`}>
-      <button {...rest}><span>Iniciar Sessão</span><img src={playIcon}/></button>
+      <button {...rest}><span>{textButton}</span><img src={playIcon}/></button>
     </div>
   );
 }

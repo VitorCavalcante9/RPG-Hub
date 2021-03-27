@@ -28,7 +28,7 @@ export function RpgProvider({children}: RpgProviderProps){
     {name: '', color: '#000', current: 0, limit: 0}
   ])
 
-  const [openModals, setOpenModals] = useState<boolean[]>([false, false, false]);
+  const [openModals, setOpenModals] = useState<boolean[]>([false, false, false, false]);
   const [openAccountModal, setOpenAccountModal] = useState(false);
 
   function handleOpenModals(modal: number){
