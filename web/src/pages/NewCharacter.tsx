@@ -55,7 +55,6 @@ export function NewCharacter(){
   }
 
   function removeInventoryItem(position: number){
-    console.log('yeh')
     const updatedInventoryItems = inventoryItems.filter((inventoryItems, index) => {
       return position !== index;
     })
@@ -114,14 +113,15 @@ export function NewCharacter(){
             }>
               {inventoryItems.map((inventoryItem, index) => {
                 return(
-                  <div className={styles.inventoryItem}><InventoryItem 
-                    key={index} 
-                    value={inventoryItem} 
-                    onChange={e => setInventoryItemValue(index, e.target.value)} 
-                    onClick={() => removeInventoryItem(index)}
-                  />
+                  <div className={styles.inventoryItem}>
+                    <InventoryItem 
+                      key={index} 
+                      value={inventoryItem} 
+                      onChange={e => setInventoryItemValue(index, e.target.value)} 
+                      onClick={() => removeInventoryItem(index)}
+                    />
 
-                  <button type='button' onClick={() => removeInventoryItem(index)}><img src={remove} alt="Remover"/></button>
+                    <button type='button' onClick={() => removeInventoryItem(index)}><img src={remove} alt="Remover"/></button>
 
                   </div>
                 )

@@ -1,0 +1,194 @@
+.overlay{
+  background-color: rgba(0, 0, 0, .6);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 20;
+}
+
+.container{
+  background: var(--color-modal);
+  width: 90%;
+  margin: 0 2rem;
+  min-height: 40rem;
+  padding: 3rem 3rem;
+  border-radius: 5px;
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  position: relative;
+}
+
+#status h3,
+#inventory h3,
+#skills h3{
+  font-size: 2rem;
+}
+
+.column1{
+  margin-top: 2.5rem;
+}
+
+#status > div:last-child{
+  height: 15.6rem;
+}
+
+.statusContainer{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.statusItem{
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.statusItem > p{
+  font: 600 2rem Rajdhani;
+  color: var(--color-text-secondary);
+}
+
+.statusItem .statusBar{
+  border: 1px solid var(--color-text-secondary);
+  background-color: #000;
+  margin-left: 1.5rem;
+  width: 100%;
+  height: 2.5rem;
+}
+
+.statusItem .statusBar .number{
+  font: 500 1.8rem Rajdhani;
+  color: var(--color-text-secondary);
+  width: 100%;
+
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: calc(-2.5rem + 2px);
+}
+
+.statusItem .statusBar .progressBar{
+  height: 100%;
+  position: relative;
+}
+
+.statusContainer + .statusContainer{
+  margin-top: 1rem;
+}
+
+.statusItem .input hr{
+  width: 4rem;
+  position: relative;
+  top: -4px;
+}
+
+.statusItem .input input{
+  font: 600 1.8rem Rajdhani;
+  width: 3rem;
+}
+
+.statusItem .input input,
+.statusItem .input hr{
+  color: var(--color-text-secondary);
+  border-color: var(--color-text-secondary);
+}
+
+.statusContainer button{
+  cursor: pointer;
+  height: 2.2rem;
+  border-radius: 10rem;
+  width: 8rem;
+  margin-top: 0.5rem;
+  
+  background: var(--color-button-secondary);
+  color: var(--color-text-button-secondary);
+  text-align: center;
+  border: 0;
+
+  font: 600 1.6rem Rajdhani;
+  transition: background 0.2s;
+}
+
+.statusContainer button:hover{
+  color: var(--color-text-button);
+  background: #913538;
+}
+
+#inventory > div:last-child{
+  height: 10rem;
+}
+
+.inventoryItem{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.inventoryItem button,
+.inventoryItem button img{
+  width: 1.4rem;
+  height: 1.4rem;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+  margin-left: 0.5rem;
+}
+
+.column2{
+  margin-top: 2.5rem;
+}
+
+#skills > div:last-child{
+  height: 20rem;
+}
+
+.skillItem, .skillItem div:last-child input{
+  font: 500 1.9rem Rajdhani;
+}
+
+.skillItem div:last-child div hr{
+  display: none;
+}
+
+.column2 button{
+  margin-top: 1.5rem;
+}
+
+@media (min-width:1100px){
+  .container{
+    width: 55%;
+  }
+
+  .content{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 5rem;
+  }
+
+  #status > div:last-child{
+    height: 20rem;
+  }
+
+  #skills > div:last-child{
+    height: 40rem;
+  }
+
+  #inventory > div:last-child{
+    height: 21.5rem;
+  }
+}

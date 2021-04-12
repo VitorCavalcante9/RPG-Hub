@@ -11,6 +11,7 @@ interface RpgContextData{
   statusItems: Array<StatusItem>;
   openModals: Array<boolean>;
   openAccountModal: boolean;
+  isAdm: boolean;
   addNewStatus: () => void;
   setStatusItemValue: (position: number, field: string, value: string) => void;
   handleOpenModals: (modal: number) => void;
@@ -30,6 +31,8 @@ export function RpgProvider({children}: RpgProviderProps){
 
   const [openModals, setOpenModals] = useState<boolean[]>([false, false, false, false]);
   const [openAccountModal, setOpenAccountModal] = useState(false);
+
+  const [isAdm, setIsAdm] = useState(false);
 
   function handleOpenModals(modal: number){
     const updatedOpenModals = openModals.map((openModal, index) => {
@@ -74,6 +77,7 @@ export function RpgProvider({children}: RpgProviderProps){
         statusItems,
         openModals,
         openAccountModal,
+        isAdm,
         addNewStatus,
         setStatusItemValue,
         handleOpenModals,

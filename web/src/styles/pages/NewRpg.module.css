@@ -40,6 +40,10 @@
   margin-top: 2.5rem;
 }
 
+.textarea textarea{
+  height: 15rem;
+}
+
 @media (min-width:800px){
   .newRpgContainer{
     display: flex;

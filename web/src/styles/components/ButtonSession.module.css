@@ -24,6 +24,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  transition: background 0.2s;
+}
+
+.buttonBlock button:hover{
+  background: #9e393c;
 }
 
 .buttonBlock img{

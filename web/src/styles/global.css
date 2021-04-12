@@ -41,6 +41,12 @@ body{
 
   font: 600 1.5rem Rajdhani;
   color: var(--color-text-primary);
+
+  transition: background 0.2s;
+}
+
+.buttonWithoutBG:hover{
+  color: var(--color-text-title);
 }
 
 @media (min-width: 700px){

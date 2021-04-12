@@ -16,4 +16,9 @@
   border: 0;
 
   font: 600 2rem Rajdhani;
+  transition: background 0.2s;
+}
+
+.buttonBlock button:hover{
+  background: #913538;
 }

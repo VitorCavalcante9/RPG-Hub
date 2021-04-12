@@ -15,7 +15,7 @@ export function Popper({ targetRef, isVisible, index, children }: PopperProps) {
   
   const popperRef = useRef(null);
   const [arrowRef, setArrowRef] = useState<HTMLDivElement | null>(null);
-  const colorsOptions = ['#CC0000', '#FCBA03', '#CC00CC', '#333180', '#660066', '#006622', '#996633', '#000', '#007399', "#FC7B03"]
+  const colorsOptions = ['#CC0000', '#FCBA03', '#CC00CC', '#192C8A', '#660066', '#006622', '#996633', '#000', '#007399', "#FC7B03"]
 
   const {styles: stylesPopper, attributes} = usePopper(
     targetRef.current,

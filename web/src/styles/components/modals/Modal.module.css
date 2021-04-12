@@ -14,7 +14,7 @@
 }
 
 .container{
-  background: var(--color-modal);
+  background: var(--color-background);
   width: 100%;
   margin: 0 2rem;
   max-width: 420px;

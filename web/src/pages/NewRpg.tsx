@@ -2,6 +2,7 @@ import React, { ChangeEvent, useState } from 'react';
 import { Button } from '../components/Button';
 import { InputLabel } from '../components/InputLabel';
 import { Layout } from '../components/Layout';
+import { TextAreaLabel } from '../components/TextAreaLabel';
 
 import styles from '../styles/pages/NewRpg.module.css';
 
@@ -41,11 +42,7 @@ export function NewRpg(){
 
             <div>
               <InputLabel name='name' label='Nome' />
-              <InputLabel 
-                name='description' 
-                label='Descrição' 
-                height='15rem' 
-                isTextarea={true}/>
+              <TextAreaLabel name='description' label='Descrição' className={styles.textarea}/>
 
               <Button text='Criar' />
             </div>

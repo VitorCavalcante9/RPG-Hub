@@ -14,7 +14,7 @@
   margin-left: 2rem;
 }
 
-.inputBlock input{
+.inputBlock textarea{
   width: 100%;
   height: 5rem;
   border-radius: 2rem;
@@ -22,7 +22,14 @@
   color: var(--color-text-secondary);
   border: 0px;
   outline: 0;
-  padding: 0 2.4rem;
+  padding: 1rem 2.4rem;
+  resize: none;
 
   font: 500 1.6rem Rajdhani;
+}
+
+@media (min-width:1100px){
+  .inputBlock textarea{
+    font-size: 1.8rem;
+  }
 }

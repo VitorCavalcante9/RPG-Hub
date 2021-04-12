@@ -10,7 +10,7 @@ interface StatusItemProps{
 }
 
 export function StatusItem({name, color, current, limit}: StatusItemProps){
-  const statusPercentCurrent = Math.round(current * 100) / limit
+  const statusPercentCurrent = Math.round(current * 100) / limit;
   
   return(
     <div className={styles.statusContainer}>
