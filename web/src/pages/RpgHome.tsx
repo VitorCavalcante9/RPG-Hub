@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import { Block } from '../components/Block';
 import { Button } from '../components/Button';
@@ -13,8 +13,12 @@ import { RpgContext } from '../contexts/RpgHomeContext';
 
 import styles from '../styles/pages/RpgHome.module.css';
 
+interface RpgParams{
+  id: string;
+}
 
 export function RpgHome(){
+  const params = useParams<RpgParams>();
   const {handleOpenModals} = useContext(RpgContext);
 
   return(
@@ -44,11 +48,11 @@ export function RpgHome(){
 
           <div className={styles.body}>
             <Block id={styles.char} className={`${styles.grid1} ${styles.blocks}`} name='Personagens' options={
-              <Link to='/rpgs/character'><button className='buttonWithoutBG'>+ Novo</button></Link>
+              <Link to={`/rpgs/${params.id}/character`}><button className='buttonWithoutBG'>+ Novo</button></Link>
             }></Block>
 
             <Block id={styles.scenario} className={`${styles.grid2} ${styles.blocks}`} name='Cenários' options={
-              <Link to='/rpgs/scenario'><button className='buttonWithoutBG'>+ Novo</button></Link>
+              <Link to={`/rpgs/${params.id}/scenario`}><button className='buttonWithoutBG'>+ Novo</button></Link>
             } />
 
             <Block id={styles.object} className={`${styles.grid2} ${styles.blocks}`} name='Itens' options={
@@ -57,7 +61,7 @@ export function RpgHome(){
 
             <Block id={styles.account} className={`${styles.grid3} ${styles.blocks}`} name='Contas' center={true} />
 
-            <Link to='/rpgs/sheet'><Button className={`${styles.grid1} ${styles.buttons}`} text='Padrão de ficha' /></Link>
+            <Link to={`/rpgs/${params.id}/sheet`}><Button className={`${styles.grid1} ${styles.buttons}`} text='Padrão de ficha' /></Link>
             <Button className={`${styles.grid2} ${styles.buttons}`} onClick={() => handleOpenModals(2)} text='Configurar Dados' />
 
             <ButtonSession id={styles.session} className={`${styles.grid3} ${styles.buttons}`} />

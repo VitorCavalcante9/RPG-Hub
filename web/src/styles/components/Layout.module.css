@@ -40,4 +40,8 @@
     margin: 0 0 2rem;
     padding: 2rem;
   }
+
+  .withoutBackButton{
+    margin-left: 18.4rem;
+  }
 }

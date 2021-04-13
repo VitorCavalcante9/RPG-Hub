@@ -3,27 +3,30 @@ import classnames from 'classnames';
 
 import { SessionContext } from '../contexts/SessionContext';
 
-import styles from '../styles/pages/Session.module.css';
+import styles from '../styles/pages/SessionParticipant.module.css';
 
 import { Button } from '../components/Button';
 import { CharacterItem } from '../components/sessionItems/CharacterItem';
 import { ScenarioItem } from '../components/sessionItems/ScenarioItem';
 import { ObjectItem } from '../components/sessionItems/ObjectItem';
 import { DiceModal } from '../components/sessionItems/DiceModal';
-import { CharOptionsModal } from '../components/sessionItems/CharOptionsModal';
 import { NotesModal } from '../components/sessionItems/NotesModal';
 import { ChatModal } from '../components/sessionItems/ChatModal';
+import { SkillsItems } from '../components/characterItems/SkillsItem';
+import { StatusItem } from '../components/characterItems/StatusItem';
+import { InventoryItem } from '../components/characterItems/InventoryItem';
 
-export function Session(){
-  const {characterList, fixedCharacterList, scenarioList, fixedScenario, objectList, fixedObject, handleOpenModals, handleSelectedCharacter} = useContext(SessionContext);
-  const [selectedItem, setSelectedItem] = useState('characters');
+export function SessionParticipant(){
+  const {characterList, fixedCharacterList, fixedScenario, fixedObject, selectedCharacter, handleOpenModals, handleSelectedCharacter} = useContext(SessionContext);
+  const [selectedItem, setSelectedItem] = useState('status');
 
   const [openObjectModal, setOpenObjectModal] = useState(false);
+
+  handleSelectedCharacter(characterList[0]);
 
   return(
     <>
       <DiceModal />
-      <CharOptionsModal />
       <NotesModal />
       <ChatModal />
 
@@ -60,54 +63,67 @@ export function Session(){
 
         <div className={styles.column2}>
           <div id={styles.itemsContainer} className={styles.blocks}>
+            <CharacterItem 
+              className={styles.charItem} 
+              character={selectedCharacter} 
+            />
             <div className={styles.itemsOptions}>
               <Button 
-                className={classnames(styles.buttons, {[styles.selectedItemButton]: selectedItem === 'characters'})} 
-                text="Personagens"
-                onClick={() => setSelectedItem('characters')}  
+                className={classnames(styles.buttons, {[styles.selectedItemButton]: selectedItem === 'status'})} 
+                text="Status"
+                onClick={() => setSelectedItem('status')}  
               />
               <Button 
-                className={classnames(styles.buttons, {[styles.selectedItemButton]: selectedItem === 'scenarios'})} 
-                text="Cenários"
-                onClick={() => setSelectedItem('scenarios')}  
+                className={classnames(styles.buttons, {[styles.selectedItemButton]: selectedItem === 'skills'})} 
+                text="Habilidades"
+                onClick={() => setSelectedItem('skills')}  
               />
               <Button 
-                className={classnames(styles.buttons, {[styles.selectedItemButton]: selectedItem === 'objects'})} 
+                className={classnames(styles.buttons, {[styles.selectedItemButton]: selectedItem === 'items'})} 
                 text="Itens"
-                onClick={() => setSelectedItem('objects')}  
+                onClick={() => setSelectedItem('items')}  
               />
             </div>
             <div className={styles.itemsArea}>
+              <div></div>
             {(() => {
-              if(selectedItem === 'characters'){
+              if(selectedItem === 'status'){
                 return(
-                  characterList.map((character) => {
+                  selectedCharacter.status.map(this_status => {
                     return(
-                      <CharacterItem 
-                        key={character.id} 
-                        className={styles.charItem} 
-                        character={character} 
-                        fixButton={true}
-                        onClick={() => {handleSelectedCharacter(character); handleOpenModals(1)}} />
-                    );
+                      <StatusItem 
+                        name={this_status.name} 
+                        color={this_status.color} 
+                        current={this_status.current} 
+                        limit={this_status.limit} 
+                      />
+                    )
                   })
                 )
               }
-              else if(selectedItem === 'scenarios'){
+              else if(selectedItem === 'skills'){
                 return(
-                  scenarioList.map((scenario) => {
+                  selectedCharacter.skills.map(this_skill => {
                     return(
-                      <ScenarioItem scenario={scenario}/>
-                    );
+                      <SkillsItems
+                        className={styles.skillItem}
+                        value={this_skill.current} 
+                        name={this_skill.name} 
+                        limit={this_skill.limit}
+                        isReadOnly={true}
+                      />
+                    )
                   })
                 )
               }   
-              else if(selectedItem === 'objects'){
+              else if(selectedItem === 'items'){
                 return(
-                  objectList.map((objectItem) => {
+                  selectedCharacter.items?.map(this_item => {
                     return(
-                      <ObjectItem object={objectItem} />
-                    );
+                      <div key={this_item.id}  className={styles.inventoryItem}>
+                        <InventoryItem isReadOnly={true} value={this_item.name} />
+                      </div>
+                    )
                   })
                 )
               }      

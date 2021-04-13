@@ -12,6 +12,7 @@ import remove from '../assets/icons/cancel.svg';
 import { SkillsItems } from '../components/characterItems/SkillsItem';
 import { AccountModal } from '../components/modals/AccountModal';
 import { RpgContext } from '../contexts/RpgHomeContext';
+import { useParams } from 'react-router';
 
 interface SkillItems{
   name: string;
@@ -19,7 +20,12 @@ interface SkillItems{
   limit: number;
 }
 
+interface RpgParams{
+  id: string;
+}
+
 export function NewCharacter(){
+  const params = useParams<RpgParams>();
   const {handleOpenAccountModal} = useContext(RpgContext);
   const [image, setImage] = useState<File>();
   const [previewImage, setPreviewImage] = useState<string>();
@@ -78,7 +84,7 @@ export function NewCharacter(){
     <>
     <AccountModal />
 
-    <Layout linkBack='/rpgs'>
+    <Layout linkBack={`/rpgs/${params.id}`}>
       <div className={styles.header}>
         <h1>Ficha do Personagem</h1>
 

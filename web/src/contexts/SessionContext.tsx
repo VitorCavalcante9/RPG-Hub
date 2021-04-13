@@ -23,6 +23,10 @@ interface Character{
     current: number;
     limit: number;
   }>;
+  items?: Array<{
+    id: string;
+    name: string;
+  }>;
 }
 
 interface Scenario{
@@ -68,7 +72,7 @@ export function SessionProvider({children}: SessionProviderProps){
     ], skills: [
       {name: 'Força', current: 30, limit: 100},
       {name: 'Luta', current: 50, limit: 100}
-    ]}, 
+    ], items: [{id: '1', name: 'Item 1'}, {id: '2', name: 'Item 2'}]}, 
     {id: '2', name: 'Personagem 2', status:[
       {name: 'vida', color: '#CC0000', current: 100, limit: 100},
       {name: 'sanidade', color: '#192C8A', current: 100, limit: 100}

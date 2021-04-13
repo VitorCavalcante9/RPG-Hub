@@ -97,11 +97,10 @@
   max-height: 100%;
   width: auto;
   height: auto;
-  cursor: pointer;
 }
 
 #itemsContainer{
-  height: 38rem;
+  height: 43rem;
 }
 
 .sessionContainer .logoutButton{
@@ -139,18 +138,41 @@
   height: 100%;
   padding: 2rem 3rem 0;
   overflow-y: auto;
+  margin-top: 1rem;
+  border-radius: 1rem;
 
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+
+  background: #997e7e;
 }
 
-.itemsArea .charItem:not(:first-child){
-  margin-top: 2rem;
+.inventoryItem div, .inventoryItem div:last-child div input{
+  color: #fff;
+  font-size: 2rem;
+  outline: 0;
 }
 
-.itemsArea .charItem{
-  cursor: pointer;
+.inventoryItem + .inventoryItem{
+  margin-top: 0.5rem;
+}
+
+.charItem{
+  margin: 2rem 0 3rem;
+  padding: 0 3rem;
+}
+
+.skillItem{
+  color: var(--color-text-secondary);
+}
+
+.skillItem, .skillItem div:last-child input{
+  outline: 0;
+}
+
+.skillItem div:last-child div hr{
+  display: none;
 }
 
 /* Obejct modal */

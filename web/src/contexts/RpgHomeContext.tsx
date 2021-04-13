@@ -32,7 +32,7 @@ export function RpgProvider({children}: RpgProviderProps){
   const [openModals, setOpenModals] = useState<boolean[]>([false, false, false, false]);
   const [openAccountModal, setOpenAccountModal] = useState(false);
 
-  const [isAdm, setIsAdm] = useState(false);
+  const [isAdm, setIsAdm] = useState(true);
 
   function handleOpenModals(modal: number){
     const updatedOpenModals = openModals.map((openModal, index) => {

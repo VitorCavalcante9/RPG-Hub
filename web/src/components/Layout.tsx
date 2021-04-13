@@ -1,4 +1,6 @@
 import React, { HTMLAttributes } from 'react';
+import classnames from 'classnames';
+
 import { ButtonBack } from '../components/ButtonBack';
 import { Sidebar } from '../components/Sidebar';
 
@@ -18,7 +20,7 @@ export function Layout({children, withoutBackButton, linkBack}:LayoutProps){
 
         <ButtonBack linkBack={linkBack} withoutBackButton={withoutBackButton} />
         
-        <div className={styles.mainBlockContainer} style={{marginLeft: withoutBackButton ? '18.4rem' : ''}}>
+        <div className={classnames(styles.mainBlockContainer, {[styles.withoutBackButton]: withoutBackButton})}>
           {children}
         </div>
       </div>

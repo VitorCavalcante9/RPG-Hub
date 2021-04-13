@@ -1,11 +1,17 @@
 import React, { ChangeEvent, useState } from 'react';
+import { useParams } from 'react-router';
 import { Button } from '../components/Button';
 import { InputLabel } from '../components/InputLabel';
 import { Layout } from '../components/Layout';
 
 import styles from '../styles/pages/NewScenario.module.css';
 
+interface RpgParams{
+  id: string;
+}
+
 export function NewScenario(){
+  const params = useParams<RpgParams>();
   const [image, setImage] = useState<File>();
   const [previewImage, setPreviewImage] = useState<string>();
 
@@ -22,7 +28,7 @@ export function NewScenario(){
   }
 
   return(
-    <Layout linkBack='/rpgs'>
+    <Layout linkBack={`/rpgs/${params.id}`}>
       <div className={styles.newScenarioContainer}>
         <h1>Novo Cenário</h1>
 

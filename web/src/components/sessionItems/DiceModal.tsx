@@ -7,6 +7,7 @@ import { Block } from '../Block';
 import { CharacterItem } from './CharacterItem';
 import { SkillsItems } from '../characterItems/SkillsItem';
 import { Button } from '../Button';
+import { RpgContext } from '../../contexts/RpgHomeContext';
 
 interface Skill{
   name: string;
@@ -15,6 +16,7 @@ interface Skill{
 }
 
 export function DiceModal(){
+  const {isAdm} = useContext(RpgContext);
   const {characterList, openModals, selectedCharacter, handleOpenModals, handleSelectedCharacter} = useContext(SessionContext);
   const [skill, setSkill] = useState<Skill | null>();
   const [isChoosingChar, setIsChoosingChar] = useState(false);
@@ -45,10 +47,9 @@ export function DiceModal(){
                 )
               })}
             </div>
-            <button onClick={() => {setIsChoosingChar(true)}} type='button'>Trocar</button>
-            {/* (() => {
-              if(fixButton) return <button onClick={() => {}} type='button'>Trocar</button>            
-            })() */}
+            {(() => {
+              if(isAdm) return <button onClick={() => {setIsChoosingChar(true)}} type='button'>Trocar</button>          
+            })()}
           </header>
 
           <div className={styles.content}>

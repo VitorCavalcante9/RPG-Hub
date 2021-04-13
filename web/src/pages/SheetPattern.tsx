@@ -1,4 +1,5 @@
 import React, { createRef, useContext, useRef, useState } from 'react';
+import { useParams } from 'react-router';
 
 import { Block } from '../components/Block';
 import { Button } from '../components/Button';
@@ -9,7 +10,12 @@ import { RpgContext } from '../contexts/RpgHomeContext';
 
 import styles from '../styles/pages/SheetPattern.module.css';
 
+interface RpgParams{
+  id: string;
+}
+
 export function SheetPattern(){
+  const params = useParams<RpgParams>();
   const {statusItems, addNewStatus, setStatusItemValue} = useContext(RpgContext);
   const [isVisible, setVisibility] = useState(['hidden']);
 
@@ -63,7 +69,7 @@ export function SheetPattern(){
   }
 
   return(
-    <Layout linkBack='/rpgs'>
+    <Layout linkBack={`/rpgs/${params.id}`}>
       <div className={styles.sheetContainer}>
         <h1>Padrão de ficha</h1>
 
