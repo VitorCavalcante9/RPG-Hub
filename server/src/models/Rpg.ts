@@ -20,8 +20,11 @@ class Rpg{
   @Column()
   icon: string;
 
-  @CreateDateColumn()
-  created_at: string;
+  @Column('json')
+  dices: string[];
+
+  @Column('json')
+  sheet: {status: [], skills: [], limitOfPoints: number};
 
   constructor(){
     if(!this.id) this.id = uuid();

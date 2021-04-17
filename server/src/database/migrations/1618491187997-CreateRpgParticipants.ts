@@ -7,6 +7,12 @@ export class CreateRpgParticipants1618491187997 implements MigrationInterface {
       name: "rpg_participants",
       columns: [
         {
+          name: "id",
+          type: "varchar",
+          generationStrategy: "uuid",
+          isPrimary: true
+        },
+        {
           name: "user_id",
           type: "varchar",
           generationStrategy: "uuid"

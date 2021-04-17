@@ -14,14 +14,14 @@ class Character{
   @Column()
   icon: string;
 
-  @Column()
-  inventory: JSON;
+  @Column('json')
+  inventory: string;
 
-  @Column()
-  status: JSON;
+  @Column('json')
+  status: string;
 
-  @Column()
-  skills: JSON;
+  @Column('json')
+  skills: string;
 
   constructor(){
     if(!this.id) this.id = uuid();

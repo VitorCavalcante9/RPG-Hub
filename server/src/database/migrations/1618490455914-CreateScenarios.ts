@@ -9,7 +9,9 @@ export class CreateScenarios1618490455914 implements MigrationInterface {
         {
           name: "id",
           type: "integer",
+          unsigned: true,
           isPrimary: true,
+          isGenerated: true,
           generationStrategy: "increment"
         },
         {

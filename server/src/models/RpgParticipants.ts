@@ -1,10 +1,14 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import {v4 as uuid} from 'uuid';
 import { Character } from './Character';
 import { Rpg } from './Rpg';
 import { User } from './User';
 
 @Entity('rpg_participants')
 class RpgParticipants{
+  @PrimaryColumn()
+  readonly id: string;
+
   @Column()
   user_id: string;
   
@@ -13,6 +17,10 @@ class RpgParticipants{
   
   @Column()
   character_id: string;
+
+  constructor(){
+    if(!this.id) this.id = uuid();
+  }
 
   @ManyToOne(() => User, user => user.rpgs_participant)
   @JoinColumn({name: 'user_id'})

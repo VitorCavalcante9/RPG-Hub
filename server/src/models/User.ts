@@ -11,7 +11,10 @@ class User{
   readonly id: string;
 
   @Column()
-  name: string;
+  username: string;
+
+  @Column()
+  icon: string;
 
   @Column()
   email: string;

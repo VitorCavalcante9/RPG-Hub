@@ -9,7 +9,9 @@ export class CreateObjects1618491044661 implements MigrationInterface {
         {
           name: "id",
           type: "integer",
+          unsigned: true,
           isPrimary: true,
+          isGenerated: true,
           generationStrategy: "increment"
         },
         {
