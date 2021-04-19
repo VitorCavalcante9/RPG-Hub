@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } from 'typeorm';
 import {v4 as uuid} from 'uuid';
 import { Character } from './Character';
 import { Rpg } from './Rpg';
@@ -30,7 +30,7 @@ class RpgParticipants{
   @JoinColumn({name: 'rpg_id'})
   rpg: Rpg;
 
-  @ManyToOne(() => Character, character => character.participant)
+  @OneToOne(() => Character, character => character.participant)
   @JoinColumn({name: 'character_id'})
   character: Character;
 }

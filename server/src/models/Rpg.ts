@@ -1,6 +1,7 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 import {v4 as uuid} from 'uuid';
 import { Character } from './Character';
+import { Notes } from './Notes';
 import { ObjectItem } from './Object';
 import { RpgParticipants } from './RpgParticipants';
 import { Scenario } from './Scenario';
@@ -34,29 +35,35 @@ class Rpg{
   @JoinColumn({name: 'user_id'})
   user: User;
 
-  @OneToMany(() => Character, character => character.rpg_id, {
+  @OneToMany(() => Character, character => character.rpg, {
     cascade: ['insert', 'update', 'remove']
   })
   @JoinColumn({name: 'rpg_id'})
   characters: Character[];
 
-  @OneToMany(() => Scenario, scenario => scenario.rpg_id, {
+  @OneToMany(() => Scenario, scenario => scenario.rpg, {
     cascade: ['insert', 'update', 'remove']
   })
   @JoinColumn({name: 'rpg_id'})
   scenarios: Scenario[];
 
-  @OneToMany(() => ObjectItem, objectItem => objectItem.rpg_id, {
+  @OneToMany(() => ObjectItem, objectItem => objectItem.rpg, {
     cascade: ['insert', 'update', 'remove']
   })
   @JoinColumn({name: 'rpg_id'})
   objects: ObjectItem[];
 
-  @OneToMany(() => RpgParticipants, rpgs_participant => rpgs_participant.rpg_id, {
+  @OneToMany(() => RpgParticipants, rpgs_participant => rpgs_participant.rpg, {
     cascade: ['insert', 'update', 'remove']
   })
   @JoinColumn({name: 'rpg_id'})
   participants: RpgParticipants[];
+
+  @OneToMany(() => Notes, notes => notes.rpg, {
+    cascade: ['insert', 'update', 'remove']
+  })
+  @JoinColumn({name: 'rpg_id'})
+  notes: Notes[];
 }
 
 export { Rpg }

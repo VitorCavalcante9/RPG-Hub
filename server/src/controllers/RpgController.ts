@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import { getCustomRepository } from 'typeorm';
+import * as yup from 'yup';
 import { AppError } from '../models/AppError';
 import { RpgsRepository } from '../repositories/RpgsRepository';
+import { NotesRepository } from '../repositories/NotesRepository';
 import { DeleteFile } from '../services/deleteFile';
 
 import RpgsView from '../views/rpgs_views';
@@ -17,6 +19,17 @@ class RpgController{
       icon = requestIcon.filename;
     }
 
+    const schema = yup.object().shape({
+      name: yup.string().min(3).max(75).required('Insira um nome válido')
+    })
+
+    try{
+      await schema.validate(req.body, {abortEarly: false});
+    }
+    catch(err){
+      throw new AppError(err.message);
+    }
+
     const rpg = rpgsRepository.create({
       name,
       icon,
@@ -26,6 +39,14 @@ class RpgController{
     });
 
     await rpgsRepository.save(rpg);
+
+    const notesRepository = getCustomRepository(NotesRepository);
+    const notes = await notesRepository.create({
+      rpg_id: rpg.id,
+      user_id: req.userId
+    });
+
+    await notesRepository.save(notes);
 
     return res.status(201).json({rpgId: rpg.id});
   }
@@ -55,6 +76,17 @@ class RpgController{
       icon = requestIcon.filename;
     }
 
+    const schema = yup.object().shape({
+      name: yup.string().min(3).max(75).required('Insira um nome válido')
+    })
+
+    try{
+      await schema.validate(req.body, {abortEarly: false});
+    }
+    catch(err){
+      throw new AppError(err.message);
+    }
+
     const currentRpgData = await rpgsRepository.findOne(id);
 
     DeleteFile(currentRpgData.icon);
@@ -77,11 +109,19 @@ class RpgController{
   async delete(req: Request, res: Response){
     const rpgsRepository = getCustomRepository(RpgsRepository);
     const { rpg_id: id } = req.params;
-    
-    await rpgsRepository.delete(id);
 
-    return res.sendStatus(200);
+    try{
+      const currentRpgData = await rpgsRepository.findOne(id);
+      DeleteFile(currentRpgData.icon);
+      
+      await rpgsRepository.delete(id);
+
+      return res.sendStatus(200);
+    } catch(err) {
+      throw new AppError(err.message);
+    }
   }
+  
 }
 
 export default new RpgController();

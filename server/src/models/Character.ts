@@ -1,12 +1,28 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import {v4 as uuid} from 'uuid';
 import { Rpg } from './Rpg';
 import { RpgParticipants } from './RpgParticipants';
+
+interface Status{
+  name: string;
+  color: string;
+  current: number;
+  limit: number;
+}
+
+interface Skills{
+  name: string;
+  current: number;
+  limit: number;
+}
 
 @Entity('characters')
 class Character{
   @PrimaryColumn()
   readonly id: string;
+
+  @Column()
+  name: string;
 
   @Column()
   rpg_id: string;
@@ -15,13 +31,13 @@ class Character{
   icon: string;
 
   @Column('json')
-  inventory: string;
+  inventory: string[];
 
   @Column('json')
-  status: string;
+  status: Status[];
 
   @Column('json')
-  skills: string;
+  skills: Skills[];
 
   constructor(){
     if(!this.id) this.id = uuid();
@@ -31,8 +47,7 @@ class Character{
   @JoinColumn({name: 'rpg_id'})
   rpg: Rpg;
 
-  @OneToMany(() => RpgParticipants, rpgs_participant => rpgs_participant.character_id)
-  @JoinColumn({name: 'character_id'})
+  @OneToOne(() => RpgParticipants, rpgs_participant => rpgs_participant.character)
   participant: RpgParticipants;
 }
 

@@ -1,20 +1,18 @@
 import {MigrationInterface, QueryRunner, Table} from "typeorm";
 
-export class CreateCharacters1618489985709 implements MigrationInterface {
+export class CreateNotes1618766591441 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(new Table({
-      name: "characters",
+      name: "notes",
       columns: [
         {
           name: "id",
-          type: "varchar",
+          type: "integer",
+          unsigned: true,
           isPrimary: true,
-          generationStrategy: "uuid"
-        },
-        {
-          name: "name",
-          type: "varchar"
+          isGenerated: true,
+          generationStrategy: "increment"
         },
         {
           name: "rpg_id",
@@ -22,30 +20,30 @@ export class CreateCharacters1618489985709 implements MigrationInterface {
           generationStrategy: "uuid"
         },
         {
-          name: "icon",
+          name: "user_id",
           type: "varchar",
-          isNullable: true
+          generationStrategy: "uuid"
         },
         {
-          name: "inventory",
+          name: "notes",
           type: "json",
           isNullable: true
-        },
-        {
-          name: "status",
-          type: "json"
-        },
-        {
-          name: "skills",
-          type: "json"
         }
       ],
-      foreignKeys:[
+      foreignKeys: [
         {
-          name: "rpg_character_fk",
+          name: "rpg_notes_fk",
           referencedTableName: "rpgs",
           referencedColumnNames: ["id"],
           columnNames: ["rpg_id"],
+          onDelete: "CASCADE",
+          onUpdate: "CASCADE"
+        },
+        {
+          name: "user_notes_fk",
+          referencedTableName: "users",
+          referencedColumnNames: ["id"],
+          columnNames: ["user_id"],
           onDelete: "CASCADE",
           onUpdate: "CASCADE"
         }
@@ -54,7 +52,7 @@ export class CreateCharacters1618489985709 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable("characters")
+    await queryRunner.dropTable("notes");
   }
 
 }
