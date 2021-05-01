@@ -1,15 +1,20 @@
 .sidebarContainer{
-  width: 100%;
-  height: 8.5rem;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 
-  position: absolute;
+  position: fixed;
   top: 0;
 
   z-index: 10;
+}
+
+.collapsedSidebarContainer{
+  width: 100%;
+  height: 8.5rem;
 }
 
 .headBar{
@@ -39,18 +44,20 @@
   display: flex;
 }
 
-.headBar .iconAccount img{
-  background-color: var(--color-text-primary);
+.headBar .iconContainer{
   width: 3.5rem;
   height: 3.5rem;
   border-radius: 50%;
+  background-color: var(--color-text-primary);
+  border: 1px solid #FFF;
+  overflow: hidden;
 }
 
-.collapsedMenu{
+.menu{
   width: 35rem;
   height: 100vh;
 
-  transform: translateX(-35rem);
+  transform: translateX(0);
 
   background: var(--color-primary);
   padding: 4.6rem 1rem 10rem;
@@ -66,20 +73,35 @@
   transition: transform 0.1s;
 }
 
-.collapsedMenu a:hover, .icon:hover p{
+.collapsedMenu{
+  width: 7.5rem;
+  transform: translateX(-35rem);
+  transition: width 0.3s;
+  transition: transform 0.1s;
+}
+
+.account a, .icon p{
+  transition: color 0.2s;
+}
+
+.account a:hover{
+  color: #ce454a;
+}
+
+.icon:hover p{
   color: var(--color-text-secondary);
 }
 
-.collapsedMenu .moreIcon{
+.moreIcon{
   width: 5.5rem;
   cursor: pointer;
 }
 
-.collapsedMenu .moreIcon img{
+.moreIcon img{
   width: 3.5rem;
 }
 
-.collapsedMenu .iconAccount{
+.menu .iconAccount{
   width: 100%;
 
   display: flex;
@@ -87,17 +109,28 @@
   align-items: flex-start;
   justify-content: flex-start;
 
+  
   margin-top: 4.5rem;
 }
 
-.collapsedMenu .iconAccount img{
-  background-color: var(--color-text-primary);
+.menu .iconContainer{
   width: 5rem;
   height: 5rem;
   border-radius: 50%;
+  background-color: var(--color-text-primary);
+  border: 1px solid #FFF;
+  overflow: hidden;
 }
 
-.collapsedMenu .account, .icon p{
+.iconContainer img{
+  width: 100%;
+  height: 100%;
+  
+  object-position: center;
+  object-fit: cover;
+}
+
+.account, .icon p{
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -110,23 +143,23 @@
   transition: color 0.2s;
 }
 
-.collapsedMenu .account a{
+.account a{
   font-size: 1.5rem;
   color: var(--color-button-session);
   text-decoration: none;
 }
 
-.collapsedMenu .iconsMenu a img{
+.iconsMenu a img{
   width: 3.5rem;
   color: var(--color-text-primary);
 }
 
-.collapsedMenu .iconsMenu{
+.iconsMenu{
   width: 5.5rem;
   padding-left: 0.8rem;
 }
 
-.collapsedMenu .icon, .icon a{
+.icon, .icon a{
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -135,18 +168,18 @@
 
   text-decoration: none;
 }
-.collapsedMenu  .icon p{
+ .icon p{
   margin-top: 0.6rem;
 }
 
-.collapsedMenu .collapsedMenu > .iconsMenu{
+.menu .menu > .iconsMenu{
   transform: translateY(-12rem);
 }
-.collapsedMenu .collapsedMenu > .iconsMenu ~ .iconsMenu{
+.menu .menu > .iconsMenu ~ .iconsMenu{
   transform: translateY(0);
 }
 
-.collapsedMenu .home{
+.home{
   margin-bottom: 4.5rem;
 }
 
@@ -157,11 +190,19 @@
   top: 0;
   position: relative;
   background-color: rgba(0, 0, 0, .6);
+  display: block;
+}
+
+.overlayCollapsed{
+  display: none;
+}
+
+.collapsedStyle, p.collapsedStyle{
   display: none;
 }
 
 @media (min-width: 1100px){
-  .sidebarContainer{
+  .collapsedSidebarContainer{
     height: 100vh;
     width: 7.5rem;
   }
@@ -170,15 +211,19 @@
     display: none;
   }
 
-  .collapsedMenu{
-    display: flex;
+  .menu{
     width: 22.5rem;
     padding: 2.6rem 1rem;
     transform: translateX(0);
     transition: width 0.3s;
   }
 
-  .collapsedMenu .moreIcon img{
+  .collapsedMenu{
+    width: 7.5rem;
+    transition: width 0.3s;
+  }
+
+  .moreIcon img{
     width: 3.9rem;
   }
 }

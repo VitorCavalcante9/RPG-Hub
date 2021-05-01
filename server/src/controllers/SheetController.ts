@@ -2,7 +2,21 @@ import { Request, Response } from 'express';
 import { getCustomRepository } from 'typeorm';
 import * as yup from 'yup';
 import { AppError } from '../models/AppError';
+import { CharactersRepository } from '../repositories/CharactersRepository';
 import { RpgsRepository } from '../repositories/RpgsRepository';
+
+interface Status{
+  name: string;
+  color: string;
+  current: number;
+  limit: number;
+}
+
+interface Skills{
+  name: string;
+  current: number;
+  limit: number;
+}
 
 class SheetController{
   async update(req: Request, res: Response){
@@ -45,6 +59,48 @@ class SheetController{
 
     try{
       await rpgsRepository.update(id, newRpgData);
+
+      const charactersRepository = getCustomRepository(CharactersRepository);
+      const characters = await charactersRepository.find({where: [{rpg_id: id}]});
+
+      if(characters.length > 0){
+        characters.forEach(async character => {
+          const skillsUnchanged = character.skills.filter((skill: Skills) => {
+            const index = (skills.map(this_skill => this_skill.name)).indexOf(skill.name)
+            return index !== -1
+          });
+
+          const newSkills = skills.filter((skill: Skills) => {
+            const index = (character.skills.map(this_skill => this_skill.name)).indexOf(skill.name)
+            return index === -1
+          });
+
+          const statusUnchanged = character.status.filter((one_status: Status) => {
+            const index = (status.map(this_status => this_status.name)).indexOf(one_status.name)
+            return index !== -1
+          });
+
+          const newStatus = status.filter((status: Status) => {
+            const index = (character.status.map(this_status => this_status.name)).indexOf(status.name)
+            return index === -1
+          });
+          
+          const newCharacterData = {
+            ...character,
+            status: [
+              ...statusUnchanged,
+              ...newStatus
+            ],
+            skills: [
+              ...skillsUnchanged,
+              ...newSkills
+            ]
+          }
+
+          console.log(newCharacterData);
+          await charactersRepository.update(character.id, newCharacterData);
+        })
+      }
     } catch {
       throw new AppError('RPG does not exists');
     }

@@ -3,6 +3,7 @@ import {v4 as uuid} from 'uuid';
 import { Character } from './Character';
 import { Notes } from './Notes';
 import { ObjectItem } from './Object';
+import { PermissionChange } from './PermissionChange';
 import { RpgParticipants } from './RpgParticipants';
 import { Scenario } from './Scenario';
 import { User } from './User';
@@ -25,7 +26,7 @@ class Rpg{
   dices: string[];
 
   @Column('json')
-  sheet: {status: [], skills: [], limitOfPoints: number};
+  sheet: {status: any[], skills: [], limitOfPoints: number};
 
   constructor(){
     if(!this.id) this.id = uuid();
@@ -64,6 +65,12 @@ class Rpg{
   })
   @JoinColumn({name: 'rpg_id'})
   notes: Notes[];
+
+  @OneToMany(() => PermissionChange, permission => permission.rpg, {
+    cascade: ['insert', 'update', 'remove']
+  })
+  @JoinColumn({name: 'rpg_id'})
+  permissions: PermissionChange[];
 }
 
 export { Rpg }

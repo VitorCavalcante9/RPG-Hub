@@ -28,23 +28,31 @@
   cursor: pointer;
   border-radius: 2rem;
   text-align: left;
-  padding: 0.25rem;
-  padding-left: 1rem;
+  overflow: hidden;
 }
 
-.accountItem:hover{
+.accountItem:hover p{
   background-color: var(--color-button-session);
 }
 
 .accountItem p{
   font: 500 1.8rem Rajdhani;
+  width: 100%;
   color: var(--color-button-secondary);
+  background-color: transparent;
+  
+  padding: 0.25rem;
+  padding-left: 1rem;
+}
+
+p.selectedAccount{
+  background-color: var(--color-background);
 }
 
 .name{
   width: 100%;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   padding-left: 1rem;
 
   margin-bottom: 2rem;
@@ -52,4 +60,19 @@
 
 .name p{
   font: 600 2rem Rajdhani;
+}
+
+.delete{
+  cursor: pointer;
+  width: 1.8rem;
+  height: 1.8rem;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  margin-left: 1.5rem;
+}
+
+.delete img{
+  width: 100%;
+  height: 100%;
 }

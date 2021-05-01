@@ -1,4 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { FormEvent, useContext, useEffect, useState } from 'react';
+import { useParams } from 'react-router';
+import { useAlert } from 'react-alert';
+import { AuthContext } from '../contexts/AuthContext';
+import { RpgContext } from '../contexts/RpgHomeContext';
+import api from '../services/api';
+
 import { Block } from '../components/Block';
 import { Button } from '../components/Button';
 import { ButtonSession } from '../components/ButtonSession';
@@ -8,9 +14,15 @@ import { StatusItem } from '../components/characterItems/StatusItem';
 import { IconElement } from '../components/IconElement';
 import { Layout } from '../components/Layout';
 import { AccountListModal } from '../components/modals/AccountListModal';
-import { RpgContext } from '../contexts/RpgHomeContext';
 
 import styles from '../styles/pages/RpgHomeParticipant.module.css';
+
+interface StatusItems{
+  name: string;
+  color: string;
+  current: number;
+  limit: number;
+}
 
 interface SkillItems{
   name: string;
@@ -18,16 +30,66 @@ interface SkillItems{
   limit: number;
 }
 
+interface Permission{
+  id: number;
+  user_id: string;
+  rpg_id: string;
+  character_id: string;
+  permission: boolean | null;
+}
+
+interface RpgParams{
+  id: string;
+}
+
 export function RpgHomeParticipant(){
+  const params = useParams<RpgParams>();
+  const { getToken } = useContext(AuthContext);
+  const token = getToken();
+  const alert = useAlert();
   const {handleOpenModals} = useContext(RpgContext);
 
+  const [rpg, setRpg] = useState({name: '', icon: '', admin: ''});
+  const [character, setCharacter] = useState({id: '', name: '', icon: ''});
   const [inventoryItems, setInventoryItems] = useState<string[]>([]);
-  const [skillsItems, setSkillsItems] = useState<SkillItems[]>([{name: 'Força', current: 0, limit: 100}, {name: 'Destreza', current: 0, limit: 100}]);
+  const [statusItems, setStatusItems] = useState<StatusItems[]>([]);
+  const [skillsItems, setSkillsItems] = useState<SkillItems[]>([]);
+  const [limitPoints, setLimitPoints] = useState<number>();
+  const [permission, setPermission] = useState<Permission | null>(null);
+  const [currentPoints, setCurrentPoints] = useState(0);
 
+  useEffect(() => {
+    api.get(`rpgs/${params.id}/participant`, {
+      headers: { 'Authorization': `Bearer ${token}`}
+    }).then(res => {
+      const { name, icon, admin, character } = res.data;
+
+      setRpg({ name, icon, admin });
+      setCharacter({id: character.id, name: character.name, icon: character.icon})
+      setInventoryItems(character.inventory);
+      setStatusItems(character.status);
+      setLimitPoints(character.limitOfPoints);
+      setSkillsItems(character.skills);
+      setPermission(character.permission);
+    })     
+  }, [params.id]);
+
+  useEffect(() => {
+    if(skillsItems && skillsItems.length > 0){
+      const updatedPoints = skillsItems.reduce((preVal, value) => {
+        if(preVal) return preVal - value.current;
+      }, limitPoints)
+
+      if(updatedPoints || updatedPoints === 0) setCurrentPoints(updatedPoints);
+    }
+  }, [skillsItems]);
   
   function setSkillsItemValue(position: number, field: string, value: string){
     const updatedSkillsItems = skillsItems.map((skillsItems, index) => {
+
       if(index === position){
+        if(field === 'current' || field === 'limit') return {...skillsItems, [field]: Number(value)};
+
         return {...skillsItems, [field]: value};
       }
 
@@ -35,6 +97,53 @@ export function RpgHomeParticipant(){
     })
 
     setSkillsItems(updatedSkillsItems);
+  }
+
+  async function handleSubmit(e: FormEvent){
+    e.preventDefault();
+
+    if(permission?.permission){
+      if(currentPoints === 0){
+        const characterData = {
+          skills: skillsItems
+        }
+
+        await api.patch(`rpgs/${params.id}/characters/${character.id}`, characterData, {
+          headers: { 'Authorization': `Bearer ${token}`}
+        }).then(res => {
+          alert.success(res.data.message);
+
+          api.get(`rpgs/${params.id}/participant`, {
+            headers: { 'Authorization': `Bearer ${token}`}
+          }).then(res => {
+            const { character } = res.data;
+            
+            setPermission(character.permission);
+          })  
+
+        }).catch(error => {
+          console.error(error)
+          if(!error.response) alert.error("Impossível conectar ao servidor!");
+          else if(error.response.data) alert.error(error.response.data);
+          else alert.error(error.response)
+        }) 
+
+      } else {
+        alert.error('Preencha as habilidades até chegar em 0 pontos disponíveis')
+      }
+    } else {
+      
+      await api.post(`rpgs/${params.id}/characters/${character.id}/permission`, null, {
+        headers: { 'Authorization': `Bearer ${token}`}
+      }).then(res => {
+        alert.success(res.data.message);
+
+      }).catch(error => {
+        console.error(error)
+        if(!error.response) alert.error("Impossível conectar ao servidor!");
+        else alert.error(error.response.data.message);
+      }) 
+    }
   }
 
   return(
@@ -45,10 +154,10 @@ export function RpgHomeParticipant(){
       <div className={styles.rpgHomeContainer}>
         <div className={styles.header}>
           <IconElement
-            image='' 
-            alt='' 
+            image={rpg.icon} 
+            alt={rpg.name} 
             row={true} 
-            text='RPG: tal tal' 
+            text={rpg.name}             
             imgSize='7rem'
             textSize='2.2rem'
           />
@@ -56,7 +165,7 @@ export function RpgHomeParticipant(){
           <div className={styles.options}>
             <button onClick={() => handleOpenModals(3)} className='buttonWithoutBG'>Ver jogadores</button>
 
-            <p>Mestre: Administrador</p>
+            <p>Mestre: {rpg.admin}</p>
           </div>
         </div>
 
@@ -64,22 +173,32 @@ export function RpgHomeParticipant(){
           <div className={styles.column1}>
             <div className={styles.name}>
               <div className={styles.image}>
-                <img src='' alt=""/>
+                <img src={character.icon} alt={character.name}/>
               </div>
 
-              <p>Seu Personagem:<br/>Personagem</p>
+              <p>Seu Personagem:<br/>{character.name}</p>
             </div>
 
             <Block name="Status" id={styles.status}>
-              <StatusItem name="Vida" color="#CC0000" current={100} limit={100}/>
-              <StatusItem name="Sanidade" color="#333180" current={100} limit={100}/>
+              {statusItems?.map((status, index) => {
+                return(
+                  <StatusItem
+                    key={index}
+                    name={status.name} 
+                    color={status.color}  
+                    current={status.current}  
+                    limit={status.limit} 
+                    index={index}
+                  />
+                )
+              })}
             </Block>
 
             <Block name="Inventário" id={styles.inventory}>
-              {inventoryItems.map((inventoryItem, index) => {
+              {inventoryItems?.map((inventoryItem, index) => {
                 return(
                   <div key={index}  className={styles.inventoryItem}>
-                    <InventoryItem value={inventoryItem} />
+                    <InventoryItem isReadOnly={true} value={inventoryItem} />
                   </div>
                 )
               })}
@@ -87,13 +206,15 @@ export function RpgHomeParticipant(){
           </div>
 
           <div className={styles.column2}>
-            <form>
+            <form onSubmit={handleSubmit}>
               <Block name="Habilidades" id={styles.skills} options={
-                <p className={styles.points}>Quantidade de pontos disponíveis: 2000</p>
+                <p className={styles.points}>Quantidade de pontos disponíveis: {currentPoints}</p>
               }>
-                {skillsItems.map((skillsItem, index) => {
+                {skillsItems?.map((skillsItem, index) => {
                   return(
-                    <SkillsItems
+                    <SkillsItems 
+                      key={index}
+                      isReadOnly={permission ? false : true}
                       value={skillsItem.current} 
                       name={skillsItem.name} 
                       limit={skillsItem.limit}
@@ -102,7 +223,12 @@ export function RpgHomeParticipant(){
                   );
                 })}
               </Block>
-              <Button type='submit' className={styles.buttons} text="Salvar informações" />
+              <Button 
+                type='submit' 
+                disabled={character.id ? false : true}
+                className={styles.buttons} 
+                text={permission?.permission ? 'Salvar informações' : 'Solicitar permissão para alterar'} 
+              />
 
             </form>
             <ButtonSession text='Entrar na sessão' id={styles.buttonSession}/>

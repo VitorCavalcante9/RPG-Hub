@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 import { Rpg } from './Rpg';
 import { RpgParticipants } from './RpgParticipants';
 import { Notes } from './Notes';
+import { PermissionChange } from './PermissionChange';
 
 @Entity('users')
 class User{

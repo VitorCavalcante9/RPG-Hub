@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import classnames from 'classnames';
+import { Link } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
+import api from '../services/api';
 
 import styles from '../styles/components/Sidebar.module.css';
 
@@ -6,49 +10,53 @@ import more from '../assets/icons/more.svg';
 import home from '../assets/icons/home.svg';
 import user from '../assets/icons/user.svg';
 import moon from '../assets/icons/moon.svg';
-import { Link } from 'react-router-dom';
 
 export function Sidebar(){
+  const {handleLogout, getToken} = useContext(AuthContext);
   const [isCollapsed, setIsCollapsed] = useState(true);
+  const [userData, setUserData] = useState({username: '', icon: ''})
+
+  useEffect(() => {
+    const token = getToken();
+    api.get('users', {
+      headers: { 'Authorization': `Bearer ${token}`}
+    }).then(res => {
+      const { username, icon } = res.data;
+      setUserData({username, icon});
+    })
+  }, [window.location])
 
   const toggleCollapsed = () =>{
     const new_value = isCollapsed ? false : true;
     setIsCollapsed(new_value);
   }
 
-  const collapsedStyle = {
-    display: isCollapsed ? 'none' : ''
-  }
-
   return(
-    <div className={styles.sidebarContainer} style={{
-      width: isCollapsed ? '' : '100vw',
-      height: isCollapsed ? '' : '100vh',
-    }}>
+    <div className={classnames(styles.sidebarContainer, {[styles.collapsedSidebarContainer]: isCollapsed})}>
       <div className={styles.headBar}>
         <div className={styles.moreIcon} onClick={toggleCollapsed}>
           <img src={more} alt="Mostrar"/>
         </div>
         <div className={styles.iconAccount}>
-          <img src="" alt="Ícone da conta" />
+          <div className={styles.iconContainer}>
+            <img className={classnames({[styles.collapsedStyle]: (userData.icon).includes('/null')})} src={userData.icon} alt={userData.username} />
+          </div>
         </div>   
       </div>
 
-      <div className={styles.collapsedMenu} style={{
-        width: isCollapsed ? '7.5rem' : '',
-        display: isCollapsed ? '' : 'flex',
-        transform: isCollapsed ? '' : 'translateX(0)'
-      }}>
+      <div className={classnames(styles.menu, {[styles.collapsedMenu]: isCollapsed})}>
         <div>
           <div className={styles.moreIcon} onClick={toggleCollapsed}>
             <img src={more} alt="Mostrar"/>
           </div>
           <div className={styles.iconAccount}>
-            <img src="" alt="Ícone da conta" />
+            <div className={styles.iconContainer}>
+              <img className={classnames({[styles.collapsedStyle]: (userData.icon).includes('/null')})} src={userData.icon} alt={userData.username} />
+            </div>
 
-            <div className={styles.account} style={collapsedStyle}>
-              <p>Nome</p>
-              <a href="#">Sair</a>
+            <div className={classnames(styles.account, {[styles.collapsedStyle]: isCollapsed})}>
+              <p>{userData.username}</p>
+              <a onClick={handleLogout} href="#">Sair</a>
             </div>
           </div>          
         </div>
@@ -57,28 +65,29 @@ export function Sidebar(){
           <div className={styles.icon}>
             <Link to="/home">
               <img className={styles.home} src={home} alt="Home" />
-              <p style={collapsedStyle}>Home</p>
+              <p className={classnames({[styles.collapsedStyle]: isCollapsed})}>Home</p>
             </Link>
           </div>
           <div className={styles.icon}>
-            <a href="#">
+            <Link to='/account'>
               <img src={user} alt="Conta" />
-              <p style={collapsedStyle}>Conta</p>
-            </a>
+              <p className={classnames({[styles.collapsedStyle]: isCollapsed})}>Conta</p>
+            </Link>
           </div>          
         </div>
 
         <div className={styles.iconsMenu}>
           <a href="#" className={styles.icon}>
             <img src={moon} alt="Tema" />
-            <p style={collapsedStyle}>Tema</p>
+            <p className={classnames({[styles.collapsedStyle]: isCollapsed})}>Tema</p>
           </a>
         </div>
       </div>
 
-      <div className={styles.overlay} style={{
-        display: isCollapsed ? 'none' : 'block'
-      }} onClick={toggleCollapsed}></div>
+      <div 
+        className={classnames(styles.overlay, {[styles.collapsedStyle]: isCollapsed})} 
+        onClick={toggleCollapsed}
+      ></div>
       
     </div>
   );

@@ -1,0 +1,80 @@
+.content{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 3rem 0;
+}
+
+.blockList{
+  width: 100%;
+  height: 20rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+
+  background: var(--color-secondary);
+  border-radius: 1.5rem;
+
+  display: grid;
+
+  overflow-y: auto;
+}
+
+.blockList::-webkit-scrollbar{
+  width: 10px;
+}
+
+.blockList::-webkit-scrollbar-thumb{
+  background: #888; 
+}
+
+.blockList::-webkit-scrollbar-thumb:hover{
+  background: #999; 
+}
+
+.permissionItem{
+  width: 100%;
+  border-radius:1rem;
+  text-align: left;
+  overflow: hidden;
+  padding: 1rem;
+  background-color: #865d5d;
+  overflow-y: auto;
+  min-height: 17rem;
+}
+
+.permissionItem p{
+  font: 500 1.8rem Rajdhani;
+  width: 100%;
+  color: var(--color-button-secondary);
+  background-color: transparent;
+  line-height: 2.4rem;
+  
+  padding: 0.25rem;
+  padding-left: 1rem;
+}
+
+.permissionItem + .permissionItem{
+  margin-top: 2rem;
+}
+
+.buttonsContainer{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.buttons{
+  padding: 0 0.75rem;
+}
+
+#acceptButton{
+  background: #317e1e;
+}
+
+#acceptButton:hover{
+  background: #358620;
+}

@@ -32,9 +32,28 @@
   top: calc(-2.5rem + 2px);
 }
 
+
 .statusContainer .statusBar .progressBar{
   height: 100%;
   position: relative;
+}
+
+.inputs{
+  display: flex;
+  flex-direction: row;
+}
+
+.inputs .input input{
+  font: 600 1.8rem Rajdhani;
+}
+
+.inputs .input input{
+  color: var(--color-text-secondary);
+  border-color: var(--color-text-secondary);
+}
+
+.inputs .input hr{
+  display: none;
 }
 
 .statusContainer + .statusContainer{

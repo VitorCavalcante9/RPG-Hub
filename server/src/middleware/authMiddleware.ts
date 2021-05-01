@@ -11,15 +11,16 @@ export default function authMiddleware(
   request: Request, response: Response, next: NextFunction
 ){
   const { authorization } = request.headers;
-
+  
   if(!authorization){
-    return response.sendStatus(401);
+    return response.status(401).json({message: 'Você não está autorizado, faça login novamente'});
   }
 
   const token = authorization.replace('Bearer', '').trim();
 
   try{
     const data = jwt.verify(token, process.env.APP_KEY);
+    
     const { id } = data as TokenPayLoad;
 
     request.userId = id;
@@ -27,6 +28,6 @@ export default function authMiddleware(
     return next();
 
   } catch {
-    return response.sendStatus(401);
+    return response.status(401).json({message: 'Você não está autorizado, faça login novamente'});
   }
 }

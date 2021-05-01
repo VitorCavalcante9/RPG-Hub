@@ -15,22 +15,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background: url('../../assets/images/logo.svg') no-repeat 50% 38%;
+  background-size: auto 6.2rem;
 }
 
 .logoContainer{
   text-align: center;
 }
 
-.logoContainer img{
-  height: 6.2rem;
-  margin-bottom: 1rem ;
-}
-
 .logoContainer h2{
   font-weight: 500;
   font-size: 1.7rem;
   line-height: 2.6rem;
-  margin-top: 0.8rem;
+  margin-top: 8rem;
 }
 
 .formContainer{
@@ -79,21 +76,18 @@
   .startContainer{
     width: 62vw;
     height: 100vh;
+    background-position: 50% 46.5%;
+    background-size: auto 10rem;
   }
 
   .formContainer{
     width: 38vw;
-  }
-
-  .logoContainer img{
-    height: 10rem;
-    margin-bottom: 2rem ;
   }
   
   .logoContainer h2{
     font-weight: 500;
     font-size: 2.4rem;
     line-height: 2.6rem;
-    margin-top: 0.8rem;
+    margin-top: 12.8rem;
   }
 }

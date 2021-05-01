@@ -13,29 +13,33 @@ class ScenarioController{
     let image: any = null;
     const scenariosRepository = getCustomRepository(ScenariosRepository);
 
-    if(req.file){
-      const requestIcon = req.file as Express.Multer.File;
-      image = requestIcon.filename;
-    }
-
-    const schema = yup.object().shape({
-      name: yup.string().min(3).max(75).required('Insira um nome válido')
-    })
-
     try{
-      await schema.validate(req.body, {abortEarly: false});
+      if(req.file){
+        const requestIcon = req.file as Express.Multer.File;
+        image = requestIcon.filename;
+      }
+  
+      const schema = yup.object().shape({
+        name: yup.string().min(3).max(75).required('Insira um nome válido')
+      })
+  
+      try{
+        await schema.validate(req.body, {abortEarly: false});
+      }
+      catch(err){
+        throw new AppError(err.errors);
+      }
+  
+      const scenario = scenariosRepository.create({
+        name, rpg_id, image
+      });
+  
+      await scenariosRepository.save(scenario);
+  
+      return res.status(201).json({ message: 'Scenario created successfully!'});
+    } catch(err){
+      console.error(err)
     }
-    catch(err){
-      throw new AppError(err.errors);
-    }
-
-    const scenario = scenariosRepository.create({
-      name, rpg_id, image
-    });
-
-    await scenariosRepository.save(scenario);
-
-    return res.status(201).json({ message: 'Scenario created successfully!'});
   }
 
   async show(req: Request, res: Response){
@@ -65,7 +69,7 @@ class ScenarioController{
   }
 
   async update(req: Request, res: Response){
-    const { name } = req.body;
+    const { name, previousImage } = req.body;
     const { id } = req.params;
     let image: any = null;
     const scenariosRepository = getCustomRepository(ScenariosRepository);
@@ -88,7 +92,11 @@ class ScenarioController{
 
     const currentScenarioData = await scenariosRepository.findOne(id);
 
-    DeleteFile(currentScenarioData.image);
+    if(image) DeleteFile(currentScenarioData.image);
+    else if(previousImage){
+      const fileName = previousImage.split('uploads/');
+      image = fileName[1];
+    }
 
     const newScenarioData = {
       ...currentScenarioData,

@@ -77,9 +77,17 @@ export function CharOptionsModal(){
                         <div className={styles.progressBar} style={{backgroundColor: status.color, width: `${statusPercentCurrent}%`}} />
 
                           <div className={styles.number}>
-                            <InputLine className={styles.input} value={statusItems[index].current} onChange={e => {setStatusItemValueInput(index, 'current', Number(e.target.value))}} />
+                            <InputLine 
+                              className={styles.input} 
+                              value={statusItems[index].current} 
+                              onChange={e => {setStatusItemValueInput(index, 'current', Number(e.target.value))}} 
+                            />
                             <span> / </span>
-                            <InputLine className={styles.input} value={statusItems[index].limit} onChange={e => {setStatusItemValueInput(index, 'limit', Number(e.target.value))}} />
+                            <InputLine
+                              className={styles.input} 
+                              value={statusItems[index].limit} 
+                              onChange={e => {setStatusItemValueInput(index, 'limit', Number(e.target.value))}} 
+                            />
                           </div>
 
                         </div>

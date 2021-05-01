@@ -14,7 +14,7 @@ class RpgHomeController{
 
     try{
       const rpg = await rpgsRepository.findOneOrFail(id, {
-        relations: ['characters', 'objects', 'scenarios']
+        relations: ['characters', 'objects', 'scenarios', 'participants', 'participants.user']
       });
       return res.json(RpgHomeView.admin(rpg));
 
@@ -31,7 +31,7 @@ class RpgHomeController{
     const rpgParticipant = await rpgsParticipantRepository.findOneOrFail({where:[
       { user_id, rpg_id }
     ],
-      relations: ['rpg', 'character', 'rpg.user']
+      relations: ['rpg', 'character', 'character.permission', 'rpg.user']
     });
 
     return res.json(RpgHomeView.participant(rpgParticipant));

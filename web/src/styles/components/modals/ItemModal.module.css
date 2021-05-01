@@ -24,6 +24,7 @@
 }
 
 .previewImage label{
+  cursor: pointer;
   font: 600 1.8rem Rajdhani;
 }
 
@@ -35,13 +36,14 @@
   height: 10rem;
   width: 10rem;
   border-radius: 2rem;
-  background: var(--color-secondary)
+  background: var(--color-secondary);
+  overflow: hidden;
 }
 
 .previewImage .image img{
-  height: 10rem;
-  width: 10rem;
-  border-radius: 2rem;
+  height: 100%;
+  width: 100%;
+  object-position: center;
   object-fit: cover;
 }
 

@@ -30,6 +30,7 @@ export function ChatModal(){
 
           <div className={styles.newMessageContainer}>
             <InputLabel
+              setInputRef={() => {}}
               className={styles.inputNote} 
               name="note" 
               label="Escreva uma nova messagem" 

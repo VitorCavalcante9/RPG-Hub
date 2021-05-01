@@ -13,7 +13,7 @@ class AuthController{
     const user = await usersRepository.findOne({ where: { email } });
 
     if(!user){
-      return response.sendStatus(401);
+      return response.status(401).json({message: 'Usuário e/ou senha inválidos'});
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);

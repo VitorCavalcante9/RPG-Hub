@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
-import {v4 as uuid} from 'uuid';
 import { Rpg } from './Rpg';
+import { RpgParticipants } from './RpgParticipants';
 import { User } from './User';
 
 @Entity('notes')
@@ -14,6 +14,9 @@ class Notes{
   @Column()
   rpg_id: string;
   
+  @Column()
+  rpg_participant_id: string;
+  
   @Column('json')
   notes: string[];
 
@@ -24,6 +27,10 @@ class Notes{
   @ManyToOne(() => Rpg, rpg => rpg.notes)
   @JoinColumn({name: 'rpg_id'})
   rpg: Rpg;
+
+  @ManyToOne(() => RpgParticipants, rpg => rpg.notes)
+  @JoinColumn({name: 'rpg_participant_id'})
+  rpgParticipant: RpgParticipants;
 }
 
 export { Notes }

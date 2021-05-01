@@ -1,5 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import {v4 as uuid} from 'uuid';
+import { PermissionChange } from './PermissionChange';
 import { Rpg } from './Rpg';
 import { RpgParticipants } from './RpgParticipants';
 
@@ -49,6 +50,11 @@ class Character{
 
   @OneToOne(() => RpgParticipants, rpgs_participant => rpgs_participant.character)
   participant: RpgParticipants;
+
+  @OneToOne(() => PermissionChange, permission => permission.character, {
+    cascade: ['insert', 'update', 'remove']
+  })
+  permission: PermissionChange;
 }
 
 export { Character }

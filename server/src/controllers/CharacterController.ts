@@ -3,6 +3,7 @@ import { getCustomRepository } from 'typeorm';
 import * as yup from 'yup';
 import { AppError } from '../models/AppError';
 import { CharactersRepository } from '../repositories/CharactersRepository';
+import { PermissionChangeRepository } from '../repositories/PermissionChangesRepository';
 import { RpgParticipantsRepository } from '../repositories/RpgParticipantsRepository';
 import { DeleteFile } from '../services/deleteFile';
 import CharacterView from '../views/characters_views';
@@ -46,17 +47,26 @@ class CharacterController{
       name, 
       rpg_id, 
       icon, 
-      inventory: typeof inventory == 'string' ? JSON.parse(inventory) : inventory, 
-      status: typeof status == 'string' ? JSON.parse(status) : status, 
-      skills: typeof skills == 'string' ? JSON.parse(skills) : skills
+      inventory: JSON.parse(inventory), 
+      status: JSON.parse(status), 
+      skills: JSON.parse(skills)
     });
 
     try{
-      await charactersRepository.save(character);
+      const newCharacter = await charactersRepository.save(character);
+
+      const permissionRepository = getCustomRepository(PermissionChangeRepository);
+
+      const permission = permissionRepository.create({
+        rpg_id, 
+        character_id: newCharacter.id,
+        permission: true
+      });
+      await permissionRepository.save(permission);
+
       return res.status(201).json({ id: character.id, message: 'Character created successfully!'});
 
     } catch(err){
-      console.log(err)
       throw new AppError(err.message);
     }
 
@@ -93,7 +103,7 @@ class CharacterController{
   }
 
   async update(req: Request, res: Response){
-    const { name, inventory, status, skills } = req.body;
+    const { name, previousIcon, inventory, status, skills } = req.body;
     const { id } = req.params;
     let icon: any = null;
     const charactersRepository = getCustomRepository(CharactersRepository);
@@ -105,6 +115,7 @@ class CharacterController{
 
     const schema = yup.object().shape({
       name: yup.string().min(3).max(75).required('Insira um nome válido'),
+      previousIcon: yup.string(),
       inventory: yup.array(yup.string()),
       status: yup.array(yup.object({
         name: yup.string().required('Insira um nome válido'),
@@ -128,15 +139,19 @@ class CharacterController{
 
     const currentCharacterData = await charactersRepository.findOne(id);
 
-    DeleteFile(currentCharacterData.icon);
+    if(icon) DeleteFile(currentCharacterData.icon);
+    else if(previousIcon){
+      const fileName = previousIcon.split('uploads/');
+      icon = fileName[1];
+    }
 
     const newCharacterData = {
       ...currentCharacterData,
       name, 
       icon, 
-      inventory: typeof inventory == 'string' ? JSON.parse(inventory) : inventory, 
-      status: typeof status == 'string' ? JSON.parse(status) : status, 
-      skills: typeof skills == 'string' ? JSON.parse(skills) : skills
+      inventory: JSON.parse(inventory), 
+      status: JSON.parse(status), 
+      skills: JSON.parse(skills)
     }
 
     try{
@@ -151,18 +166,11 @@ class CharacterController{
   }
 
   async updateUser(req: Request, res: Response){
-    const { inventory: new_inventory, status: new_status, skills: new_skills } = req.body;
+    const { skills: new_skills } = req.body;
     const { id } = req.params;
     const charactersRepository = getCustomRepository(CharactersRepository);
     
     const schema = yup.object().shape({
-      inventory: yup.array(yup.string()).nullable(),
-      status: yup.array(yup.object({
-        name: yup.string().required('Insira um nome válido'),
-        color: yup.string().min(3).max(7).required('Insira uma cor válida'),
-        current: yup.number().min(0).integer().required('Insira um valor válido'),
-        limit: yup.number().min(0).integer().required('Insira um valor válido')
-      })),
       skills: yup.array(yup.object({
         name: yup.string().required('Insira um nome válido'),
         current: yup.number().min(0).integer().required('Insira um valor válido'),
@@ -174,24 +182,32 @@ class CharacterController{
       await schema.validate(req.body, {abortEarly: false});
     }
     catch(err){
+      console.error(err)
       throw new AppError(err.errors);
     }
 
-    const currentCharacterData = await charactersRepository.findOne(id);
+    const currentCharacterData = await charactersRepository.findOne(id, {
+      relations: ['permission']
+    });
+    const permission = currentCharacterData.permission;
+    delete currentCharacterData.permission;
 
-    const inventory = new_inventory ? new_inventory : currentCharacterData.inventory;
-    const status = new_status ? new_status : currentCharacterData.status;
     const skills = new_skills ? new_skills : currentCharacterData.skills;
 
     const newCharacterData = {
       ...currentCharacterData,
-      inventory, status, skills
+      skills
     }
 
     try{
       await charactersRepository.update(id, newCharacterData);
 
-    } catch {
+      const permissionRepository = getCustomRepository(PermissionChangeRepository);
+
+      await permissionRepository.delete(permission.id);
+
+    } catch(err) {
+      console.error(err)
       throw new AppError('Character does not exists');
     }
 
@@ -199,11 +215,23 @@ class CharacterController{
   }
 
   async delete(req: Request, res: Response){
-    const { id } = req.params;
+    const { rpg_id, id } = req.params;
     const charactersRepository = getCustomRepository(CharactersRepository);
 
     try{
       const currentCharacter = await charactersRepository.findOne(id);
+
+      const rpgsParticipantRepository = getCustomRepository(RpgParticipantsRepository);
+      const currentRpgPartData = await rpgsParticipantRepository.findOne(
+        { where:[{ user_id: req.userId, rpg_id }] }
+      );
+
+      const newRpgPartData = {
+        ...currentRpgPartData,
+        character_id: null
+      }
+      await rpgsParticipantRepository.update(currentRpgPartData.id, newRpgPartData);
+      
       DeleteFile(currentCharacter.icon);
 
       await charactersRepository.delete(id);
@@ -238,6 +266,10 @@ class CharacterController{
 
     const currentRpgPartData = await rpgsParticipantRepository.findOne({where:[{user_id, rpg_id}]});
 
+    if(currentRpgPartData.character_id){
+      throw new AppError('This user is already linked!');
+    }
+
     const newRpgPartData = {
       ...currentRpgPartData,
       character_id
@@ -245,7 +277,8 @@ class CharacterController{
 
     try{
       await rpgsParticipantRepository.update(currentRpgPartData.id, newRpgPartData);
-    } catch {
+    } catch(err) {
+      console.log(err)
       throw new AppError('Error while inserting');
     }
 
@@ -284,6 +317,7 @@ class CharacterController{
 
     return res.status(200).json({ message: 'Successfully updated!'});
   }
+  
 }
 
 export default new CharacterController();

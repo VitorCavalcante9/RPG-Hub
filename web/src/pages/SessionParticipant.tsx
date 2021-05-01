@@ -89,9 +89,10 @@ export function SessionParticipant(){
             {(() => {
               if(selectedItem === 'status'){
                 return(
-                  selectedCharacter.status.map(this_status => {
+                  selectedCharacter.status.map((this_status, index) => {
                     return(
                       <StatusItem 
+                        index={index}
                         name={this_status.name} 
                         color={this_status.color} 
                         current={this_status.current} 

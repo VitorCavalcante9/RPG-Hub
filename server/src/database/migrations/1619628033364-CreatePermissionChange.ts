@@ -1,10 +1,10 @@
 import {MigrationInterface, QueryRunner, Table} from "typeorm";
 
-export class CreateNotes1618766591441 implements MigrationInterface {
+export class CreatePermissionChange1619628033364 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(new Table({
-      name: "notes",
+      name: "permission_change",
       columns: [
         {
           name: "id",
@@ -20,19 +20,19 @@ export class CreateNotes1618766591441 implements MigrationInterface {
           generationStrategy: "uuid"
         },
         {
-          name: "user_id",
+          name: "character_id",
           type: "varchar",
           generationStrategy: "uuid"
         },
         {
-          name: "notes",
-          type: "json",
+          name: "permission",
+          type: "boolean",
           isNullable: true
         }
       ],
       foreignKeys: [
         {
-          name: "rpg_notes_fk",
+          name: "rpg_permission_fk",
           referencedTableName: "rpgs",
           referencedColumnNames: ["id"],
           columnNames: ["rpg_id"],
@@ -40,19 +40,19 @@ export class CreateNotes1618766591441 implements MigrationInterface {
           onUpdate: "CASCADE"
         },
         {
-          name: "user_notes_fk",
-          referencedTableName: "users",
+          name: "character_permission_fk",
+          referencedTableName: "characters",
           referencedColumnNames: ["id"],
-          columnNames: ["user_id"],
+          columnNames: ["character_id"],
           onDelete: "CASCADE",
           onUpdate: "CASCADE"
         }
       ]
-    }))
+    }))  
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable("notes");
+    await queryRunner.dropTable("permission_change");
   }
 
 }

@@ -80,7 +80,7 @@ class GameController{
     const user_id = req.userId;
 
     try{
-      const notes = await notesRepository.findOneOrFail({ user_id, rpg_id});
+      const notes = await notesRepository.findOneOrFail({ user_id, rpg_id });
       return res.json(NotesView.render(notes));
 
     } catch(err) {

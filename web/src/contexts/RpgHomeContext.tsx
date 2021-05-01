@@ -1,4 +1,6 @@
-import React, { createContext, ReactNode, useState } from 'react';
+import React, { createContext, ReactNode, useContext, useState } from 'react';
+import api from '../services/api';
+import { AuthContext } from './AuthContext';
 
 interface StatusItem{
   name: string;
@@ -12,8 +14,12 @@ interface RpgContextData{
   openModals: Array<boolean>;
   openAccountModal: boolean;
   isAdm: boolean;
-  addNewStatus: () => void;
+  loading: boolean;
+  verifyIfIsAdm: (rpg_id: string) => boolean;
+  defaultStatus: (allStatus: StatusItem[]) => void;
+  addNewStatus: (oneStatus?: StatusItem) => void;
   setStatusItemValue: (position: number, field: string, value: string) => void;
+  removeStatusItems: (position: number) => void;
   handleOpenModals: (modal: number) => void;
   handleOpenAccountModal: () => void;
 }
@@ -22,17 +28,40 @@ interface RpgProviderProps{
   children: ReactNode;
 }
 
+interface RPG{
+  id: string;
+  name: string;
+  icon: string;
+}
+
+
 export const RpgContext = createContext({} as RpgContextData);
 
 export function RpgProvider({children}: RpgProviderProps){
-  const [statusItems, setStatusItems] = useState<StatusItem[]>([
-    {name: '', color: '#000', current: 0, limit: 0}
-  ])
+  const [statusItems, setStatusItems] = useState<StatusItem[]>([])
 
-  const [openModals, setOpenModals] = useState<boolean[]>([false, false, false, false]);
+  const [openModals, setOpenModals] = useState<boolean[]>([false, false, false, false, false]);
   const [openAccountModal, setOpenAccountModal] = useState(false);
 
-  const [isAdm, setIsAdm] = useState(true);
+  const [isAdm, setIsAdm] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const verifyIfIsAdm = (rpg_id: string) => {
+    const rpgs = localStorage.getItem('rpgs');
+
+    if(rpgs){
+      const indexRpg = rpgs.indexOf(rpg_id);
+      if(indexRpg !== -1){
+        setIsAdm(true);
+        setLoading(false);
+        return true;
+      }      
+    }
+      
+    setIsAdm(false);
+    setLoading(false);
+    return false; 
+  }
 
   function handleOpenModals(modal: number){
     const updatedOpenModals = openModals.map((openModal, index) => {
@@ -43,7 +72,7 @@ export function RpgProvider({children}: RpgProviderProps){
 
       return openModal;
     });
-
+    
     setOpenModals(updatedOpenModals);
   }
 
@@ -52,23 +81,49 @@ export function RpgProvider({children}: RpgProviderProps){
     setOpenAccountModal(value);
   }
 
-  function addNewStatus(){
-    setStatusItems([
-      ...statusItems,
-      {name: '', color: '#000', current: 0, limit: 0}
-    ])
+  function defaultStatus(allStatus: StatusItem[]){
+    setStatusItems(allStatus);
+  }
+
+  function addNewStatus(oneStatus?: StatusItem){
+    if(oneStatus){
+      setStatusItems([
+        ...statusItems,
+        {
+          name: oneStatus.name, 
+          color: oneStatus.color, 
+          current: oneStatus.current, 
+          limit: oneStatus.limit
+        }
+      ])
+    }
+    else {
+      setStatusItems([
+        ...statusItems,
+        {name: '', color: '#000', current: 0, limit: 0}
+      ])
+    }
   }
 
   function setStatusItemValue(position: number, field: string, value: string){
     const updatedStatusItems = statusItems.map((statusItems, index) => {
       if(index === position){
+        if(field === 'current' || field === 'limit') return {...statusItems, [field]: Number(value)};
+
         return {...statusItems, [field]: value};
       }
-
       return statusItems;
     })
 
     setStatusItems(updatedStatusItems);
+  }
+
+  function removeStatusItems(position: number){
+    const updatedDiceItems = statusItems.filter((statusItem, index) => {
+      return position !== index;
+    })
+
+    setStatusItems(updatedDiceItems);
   }
 
   return(
@@ -78,8 +133,12 @@ export function RpgProvider({children}: RpgProviderProps){
         openModals,
         openAccountModal,
         isAdm,
+        loading,
+        verifyIfIsAdm,
+        defaultStatus,
         addNewStatus,
         setStatusItemValue,
+        removeStatusItems,
         handleOpenModals,
         handleOpenAccountModal
       }}

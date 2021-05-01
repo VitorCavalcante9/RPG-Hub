@@ -36,13 +36,14 @@
   height: 8.5rem;
   width: 8.5rem;
   border-radius: 2rem;
-  background: var(--color-secondary)
+  background: var(--color-secondary);
+  overflow: hidden;
 }
 
 .name .image img{
-  height: 8.5rem;
-  width: 8.5rem;
-  border-radius: 2rem;
+  height: 100%;
+  width: 100%;
+  object-position: center;
   object-fit: cover;
 }
 
@@ -149,6 +150,10 @@
 
   #skills > div:last-child{
     height: 37.5rem;
+  }
+
+  .edit > div:last-child{
+    height: 30rem !important;
   }
 }
 

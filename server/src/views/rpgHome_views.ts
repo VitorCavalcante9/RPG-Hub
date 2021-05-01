@@ -8,7 +8,7 @@ export default{
       return {
         id: character.id,
         name: character.name,
-        icon: character.icon
+        icon: `http://${process.env.HOST}:${process.env.PORT}/uploads/${character.icon}`
       }
     })
 
@@ -16,7 +16,7 @@ export default{
       return {
         id: scenario.id,
         name: scenario.name,
-        image: scenario.image
+        image: `http://${process.env.HOST}:${process.env.PORT}/uploads/${scenario.image}`
       }
     })
 
@@ -24,43 +24,62 @@ export default{
       return {
         id: object.id,
         name: object.name,
-        image: object.image
+        image: `http://${process.env.HOST}:${process.env.PORT}/uploads/${object.image}`
+      }
+    })
+
+    const participants = rpg.participants.map(participant => {
+      return{
+        id: participant.user.id,
+        username: participant.user.username
       }
     })
 
     return{
       name: rpg.name,
-      icon: rpg.icon,
+      icon: `http://${process.env.HOST}:${process.env.PORT}/uploads/${rpg.icon}`,
       characters,
       scenarios,
-      objects
+      objects,
+      participants
     }
   },
   participant(rpg: RpgParticipants){
     const rpg_content = rpg.rpg;
+
     let character_content = {
+      id: null as any,
       name: null as any,
+      icon: null as any,
       status: null as any,
       inventory: null as any,
       skills: null as any,
+      permission: null as any,
     };
 
     if(rpg.character){
+      character_content.id = rpg.character.id;
       character_content.name = rpg.character.name;
+      character_content.icon = rpg.character.icon;
       character_content.status = rpg.character.status;
       character_content.inventory = rpg.character.inventory;
       character_content.skills = rpg.character.skills;
+      character_content.permission = rpg.character.permission;
     }
 
     return{
       name: rpg_content.name,
-      icon: rpg_content.icon,
+      icon: `http://${process.env.HOST}:${process.env.PORT}/uploads/${rpg_content.icon}`,
       admin: rpg_content.user.username,
       character: {
+        id: character_content.id,
         name: character_content.name,
+        icon: `http://${process.env.HOST}:${process.env.PORT}/uploads/${character_content.icon}`,
         status: character_content.status,
         inventory: character_content.inventory,
-        skills: character_content.skills
+        skills: character_content.skills,
+        limitOfPoints: rpg_content.sheet.limitOfPoints,
+        permission: character_content.permission
       }
     }
   }

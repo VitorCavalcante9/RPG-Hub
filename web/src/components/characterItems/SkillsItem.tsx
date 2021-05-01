@@ -10,11 +10,12 @@ interface SkillsItemsProps extends InputHTMLAttributes<HTMLInputElement>{
 }
 
 export function SkillsItems({name, limit, isReadOnly, onChange, value, className}: SkillsItemsProps){
+
   return(
     <div className={`${styles.skillItem} ${className}`}>
       <p className={styles.name}> - {name}: </p>
       <div className={styles.numbers}>
-        <InputLine readOnly={isReadOnly} className={styles.input} value={value} onChange={onChange}/>
+        <InputLine readOnly={isReadOnly} maxValue={limit} className={styles.input} value={value} onChange={onChange}/>
         <p> / {limit}</p>
       </div>
     </div>

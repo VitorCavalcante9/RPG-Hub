@@ -34,7 +34,18 @@ class RpgController{
       name,
       icon,
       user_id: req.userId,
-      sheet: {},
+      sheet: {
+        status: [
+          {
+            name: 'Vida',
+            color: '#CC0000',
+            current: 100,
+            limit: 100
+          }
+        ],
+        skills: [],
+        limitOfPoints: 0
+      },
       dices: []
     });
 
@@ -66,7 +77,7 @@ class RpgController{
   }
 
   async update(req: Request, res: Response){
-    const { name } = req.body;
+    const { name, previousIcon } = req.body;
     const { rpg_id: id } = req.params;
     let icon: any = null;
     const rpgsRepository = getCustomRepository(RpgsRepository);
@@ -87,18 +98,24 @@ class RpgController{
       throw new AppError(err.message);
     }
 
-    const currentRpgData = await rpgsRepository.findOne(id);
-
-    DeleteFile(currentRpgData.icon);
-
-    const newRpgData = {
-      ...currentRpgData,
-      name,
-      icon
-    }
-    
     try{
+
+      const currentRpgData = await rpgsRepository.findOne(id);
+
+      if(icon) DeleteFile(currentRpgData.icon);
+      else if(previousIcon){
+        const fileName = previousIcon.split('uploads/');
+        icon = fileName[1];
+      }
+
+      const newRpgData = {
+        ...currentRpgData,
+        name,
+        icon
+      }
+    
       await rpgsRepository.update(id, newRpgData);
+
     } catch {
       throw new AppError('RPG does not exists');
     }
@@ -113,10 +130,14 @@ class RpgController{
     try{
       const currentRpgData = await rpgsRepository.findOne(id);
       DeleteFile(currentRpgData.icon);
+
+      if(currentRpgData.scenarios) currentRpgData.scenarios.map(scenario => DeleteFile(scenario.image));
+      if(currentRpgData.characters) currentRpgData.characters.map(character => DeleteFile(character.icon));
+      if(currentRpgData.objects) currentRpgData.objects.map(object => DeleteFile(object.image));
       
       await rpgsRepository.delete(id);
 
-      return res.sendStatus(200);
+      return res.json({message: 'RPG successFully deleted'});
     } catch(err) {
       throw new AppError(err.message);
     }

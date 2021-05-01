@@ -18,7 +18,7 @@ export default{
       status: character.status,
       skills: character.skills,
       user: {
-        user_id,
+        id: user_id,
         username
       }
     }

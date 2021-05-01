@@ -6,7 +6,7 @@
 }
 
 .inputContainer input{
-  width: 3.5rem;
+  width: 4rem;
   background: none;
   border: 0;
   text-align: center;
@@ -16,8 +16,12 @@
 }
 
 .inputContainer hr{
-  width: 5rem;
+  width: 5.5rem;
   border: 1px solid var(--color-text-primary);
+}
+
+input:read-only{
+  outline: 0;
 }
 
 /* Chrome, Safari, Edge, Opera */

@@ -10,6 +10,7 @@ import GameController from './controllers/GameController';
 import HomeController from './controllers/HomeController';
 import InviteController from './controllers/InviteController';
 import ObjectController from './controllers/ObjectController';
+import PermissionChangeController from './controllers/PermissionChangeController';
 import RpgController from './controllers/RpgController';
 import RpgHomeController from './controllers/RpgHomeController';
 import ScenarioController from './controllers/ScenarioController';
@@ -26,6 +27,7 @@ router.post('/users', UserController.store);
 router.post('/auth', AuthController.authenticate);
 router.get('/users', authMiddleware, UserController.show);
 router.patch('/users', authMiddleware, upload.single('icon'), UserController.update);
+router.patch('/users/password', authMiddleware, UserController.updatePassword);
 router.delete('/users', authMiddleware, UserController.delete);
 
 //rpgs
@@ -58,6 +60,13 @@ router.delete('/rpgs/:rpg_id/characters/:id', [authMiddleware, adminMiddleware],
 router.patch('/rpgs/:rpg_id/characters/:id/link_account', [authMiddleware, adminMiddleware], CharacterController.linkAccount);
 router.patch('/rpgs/:rpg_id/characters/:id/unlink_account', [authMiddleware, adminMiddleware], CharacterController.unlinkAccount);
 
+//characterUser - Permissions
+router.post('/rpgs/:rpg_id/characters/:char_id/permission', authMiddleware, PermissionChangeController.requestPermission);
+router.get('/rpgs/:rpg_id/permissions/:id', [authMiddleware, adminMiddleware], PermissionChangeController.show);
+router.get('/rpgs/:rpg_id/permissions', [authMiddleware, adminMiddleware], PermissionChangeController.index);
+router.put('/rpgs/:rpg_id/permissions/:id', [authMiddleware, adminMiddleware], PermissionChangeController.acceptPermission);
+router.delete('/rpgs/:rpg_id/permissions/:id', [authMiddleware, adminMiddleware], PermissionChangeController.denyPermission);
+
 //objects
 router.post('/rpgs/:rpg_id/objects', [authMiddleware, adminMiddleware], upload.single('image'), ObjectController.store);
 router.get('/rpgs/:rpg_id/objects/:id', [authMiddleware, adminMiddleware], ObjectController.show);
@@ -72,6 +81,7 @@ router.get('/rpgs/:rpg_id/participant', authMiddleware, RpgHomeController.partic
 
 //invite
 router.post('/invite', authMiddleware, InviteController.acceptInvite);
+router.delete('/rpgs/:rpg_id/user', [authMiddleware, adminMiddleware], InviteController.removeUser);
 
 //game
 router.put('/rpgs/:rpg_id/session', [authMiddleware, adminMiddleware], GameController.saveSession);

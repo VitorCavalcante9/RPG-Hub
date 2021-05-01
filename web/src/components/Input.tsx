@@ -7,7 +7,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement>{
   inputRef?: any;
 }
 
-export function Input({name, placeholder, inputRef, ...rest}: InputProps){
+export function Input({placeholder, inputRef, ...rest}: InputProps){
   return(
     <div className={styles.inputBlock}>
       <input placeholder={placeholder} {...rest} ref={inputRef} />

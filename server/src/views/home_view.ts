@@ -6,14 +6,16 @@ export default{
       return {
         id: rpg.id,
         name: rpg.name,
-        icon: rpg.icon
+        icon: `http://${process.env.HOST}:${process.env.PORT}/uploads/${rpg.icon}`
       }
     })
 
     const rpgs_participant_content = user.rpgs_participant.map(rpg_participant => {
       const { id, name, icon } = rpg_participant.rpg;
       return {
-        id, name, icon
+        id, 
+        name, 
+        icon: `http://${process.env.HOST}:${process.env.PORT}/uploads/${icon}`
       }
     })
 

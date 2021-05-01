@@ -23,3 +23,7 @@
   font: 600 1.8rem Rajdhani;
   color: var(--color-text-secondary);
 }
+
+.readOnly{
+  outline: 0;
+}

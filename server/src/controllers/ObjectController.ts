@@ -65,7 +65,7 @@ class ObjectController{
   }
   
   async update(req: Request, res: Response){
-    const { name } = req.body;
+    const { name, previousImage } = req.body;
     const { id } = req.params;
     let image: any = null;
     const objectsRepository = getCustomRepository(ObjectsRepository);
@@ -88,7 +88,11 @@ class ObjectController{
 
     const currentObjectData = await objectsRepository.findOne(id);
 
-    DeleteFile(currentObjectData.image);
+    if(image) DeleteFile(currentObjectData.image);
+    else if(previousImage){
+      const fileName = previousImage.split('uploads/');
+      image = fileName[1];
+    }
 
     const newObjectData = {
       ...currentObjectData,

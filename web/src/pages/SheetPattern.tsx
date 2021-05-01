@@ -1,11 +1,14 @@
-import React, { createRef, useContext, useRef, useState } from 'react';
+import React, { createRef, KeyboardEvent, useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
+import api from '../services/api';
+import { useAlert } from 'react-alert';
 
 import { Block } from '../components/Block';
 import { Button } from '../components/Button';
 import { InputLine } from '../components/InputLine';
 import { Layout } from '../components/Layout';
 import { Popper } from '../components/Popper';
+import { AuthContext } from '../contexts/AuthContext';
 import { RpgContext } from '../contexts/RpgHomeContext';
 
 import styles from '../styles/pages/SheetPattern.module.css';
@@ -16,12 +19,32 @@ interface RpgParams{
 
 export function SheetPattern(){
   const params = useParams<RpgParams>();
-  const {statusItems, addNewStatus, setStatusItemValue} = useContext(RpgContext);
-  const [isVisible, setVisibility] = useState(['hidden']);
+  const alert = useAlert();
+  const { getToken } = useContext(AuthContext);
+  const token = getToken();
+
+  const {statusItems, addNewStatus, defaultStatus, setStatusItemValue, removeStatusItems} = useContext(RpgContext);
+  const [isVisible, setVisibility] = useState<string[]>([]);
 
   const [skillsItems, setSkillsItems] = useState([
-    {name: '', current: 0, limit: 0}
+    {name: '', current: 0, limit: 100}
   ]);
+  const [limitPoints, setLimitPoints] = useState<number>();
+
+  useEffect(() => {
+    api.get(`rpgs/${params.id}/sheet`, {
+      headers: { 'Authorization': `Bearer ${token}`}
+    }).then(res => {
+      const { status, skills, limitOfPoints } = res.data;
+
+      const defaultVisibility = status.map(() => { return 'hidden' });
+      setVisibility(defaultVisibility);
+
+      defaultStatus(status);
+      if(skills.length > 0) setSkillsItems(skills);
+      setLimitPoints(limitOfPoints)
+    })    
+  }, [params.id])
 
   const buttonRef = useRef([]);
 
@@ -52,13 +75,20 @@ export function SheetPattern(){
   function addNewSkillsItem(){
     setSkillsItems([
       ...skillsItems,
-      {name: '', current: 0, limit: 0}
+      {name: '', current: 0, limit: 100}
     ])
   }
 
   function setSkillsItemValue(position: number, field: string, value: string){
     const updatedSkillsItems = skillsItems.map((skillsItems, index) => {
       if(index === position){
+        if(field === 'current' || field === 'limit'){ 
+          console.log(index, field, 'entrou')
+          return {...skillsItems, [field]: Number(value)};
+        }
+
+        console.log(index, field)
+
         return {...skillsItems, [field]: value};
       }
 
@@ -66,6 +96,56 @@ export function SheetPattern(){
     })
 
     setSkillsItems(updatedSkillsItems);
+  }
+
+  async function saveSheet(){
+    const filteredStatus = statusItems.filter(this_status => this_status.name !== '');
+    const filteredSkills = skillsItems.filter(this_skills => this_skills.name !== '');
+
+    if(limitPoints && limitPoints >= 0){
+      const data = {
+        status: filteredStatus,
+        skills: filteredSkills,
+        limitOfPoints: limitPoints
+      }
+
+      console.log(filteredSkills)
+      
+      await api.patch(`rpgs/${params.id}/sheet`, data, {
+        headers: { 'Authorization': `Bearer ${token}`}
+      }).then(res => {
+          alert.success('Ficha atualizada com sucesso')
+        }).catch(err => alert.error(err.response.data.message));
+    }
+    else{
+      alert.error('Insira um limite de pontos')
+    }
+    
+  }
+
+  function pressEnter(e: KeyboardEvent<HTMLInputElement>, index: number){
+    const key = e.key;
+    if(key === 'Enter' && index === (skillsItems.length - 1)){
+      addNewSkillsItem();
+    }
+  }
+
+  function removeRepeatedStatusOrSkills(type: string, position: number, name: string){
+    if(type === 'status'){
+      const verifyIfExists = (statusItems.map(statusItem => statusItem.name)).indexOf(name);
+      if(verifyIfExists !== position) removeStatusItems(position);
+    }
+    else if(type === 'skills'){
+      const verifyIfExists = (skillsItems.map(statusItem => statusItem.name)).indexOf(name);
+      
+      if(verifyIfExists !== position){
+        const updatedSkillsItems = skillsItems.filter((skillItem, index) => {
+          return position !== index;
+        })
+    
+        setSkillsItems(updatedSkillsItems);
+      }     
+    }
   }
 
   return(
@@ -87,6 +167,9 @@ export function SheetPattern(){
                     <input 
                       type="text" 
                       placeholder="Status"
+                      value={statusItem.name}
+                      readOnly={statusItem.name === 'Vida' ? true : false}
+                      onBlur={() => removeRepeatedStatusOrSkills('status', index, statusItem.name)}
                       onChange={e => setStatusItemValue(index, 'name', e.target.value)}
                     />
                     <button 
@@ -94,16 +177,18 @@ export function SheetPattern(){
                       ref={buttonRef.current[index]}
                       style={{backgroundColor: statusItem.color}}
                       onClick={() => {toggleVisibility(index)}}
-                      
                     />
                     <Popper index={index} targetRef={buttonRef.current[index]} isVisible={isVisible[index]} />
                   </div>
                   <div className={styles.pointsContainer}>
                     <InputLine
+                      value={statusItem.current}
+                      maxValue={statusItem.limit}
                       onChange={e => setStatusItemValue(index, 'current', e.target.value)}
                     />
                     <span> / </span>
                     <InputLine
+                      value={statusItem.limit}
                       onChange={e => setStatusItemValue(index, 'limit', e.target.value)}
                     />
                   </div>
@@ -125,14 +210,22 @@ export function SheetPattern(){
                     <input 
                       type="text" 
                       placeholder="Habilidade"
+                      value={skillsItem.name}
+                      onKeyUp={e => pressEnter(e, index)}
+                      onBlur={() => removeRepeatedStatusOrSkills('skills', index, skillsItem.name)}
                       onChange={e => setSkillsItemValue(index, 'name', e.target.value)}
                     />
                     <div className={styles.pointsContainer}>
                     <InputLine
+                      value={skillsItem.current}
+                      maxValue={skillsItem.limit}
+                      onKeyUp={e => pressEnter(e, index)}
                       onChange={e => setSkillsItemValue(index, 'current', e.target.value)}
                     />
                     <span> / </span>
                     <InputLine
+                      value={skillsItem.limit}
+                      onKeyUp={e => pressEnter(e, index)}
                       onChange={e => setSkillsItemValue(index, 'limit', e.target.value)}
                     />
                     </div>
@@ -143,12 +236,20 @@ export function SheetPattern(){
 
             <div className={styles.points}>
               <p>Limite de pontos:</p>
-              <InputLine />
+              <InputLine
+                value={limitPoints}
+                onChange={e => setLimitPoints(Number(e.target.value))}
+              />
             </div>
           </div>
         </div>
         
-        <Button text="Salvar" className={styles.buttonSave} />
+        <Button 
+          type='submit' 
+          text="Salvar" 
+          className={styles.buttonSave} 
+          onClick={saveSheet}
+        />
       </div>
     </Layout>
   );

@@ -22,3 +22,11 @@
 .buttonBlock button:hover{
   background: #913538;
 }
+
+.buttonBlock button:disabled{
+  cursor: not-allowed;
+}
+
+.buttonBlock button:disabled:hover{
+  background: var(--color-button);
+}

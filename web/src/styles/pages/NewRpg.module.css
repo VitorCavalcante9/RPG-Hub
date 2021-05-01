@@ -40,6 +40,14 @@
   margin-top: 2.5rem;
 }
 
+.newRpgContainer .edit button{
+  margin-top: 1rem;
+}
+
+.textarea{
+  margin-top: 2.5rem;
+}
+
 .textarea textarea{
   height: 15rem;
 }
@@ -77,15 +85,13 @@
     margin-bottom: 3rem;
     margin-right: 10rem;
     margin-top: 3rem;
-  
-    cursor: pointer;
   }
-  
+
   .newRpgContainer .image{
     height: 30rem;
     width: 30rem;
     border-radius: 2rem;
-    background: var(--color-secondary)
+    background: var(--color-secondary);
   }
 
   .newRpgContainer .image img{
@@ -100,7 +106,11 @@
     margin-top: 1rem;
   }
 
+  .textarea textarea{
+    height: 17.5rem;
+  }
+
   .newRpgContainer button{
-    margin-top: 8rem;
+    margin-top: 5rem;
   }
 }

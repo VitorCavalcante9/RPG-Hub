@@ -1,6 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import {v4 as uuid} from 'uuid';
 import { Character } from './Character';
+import { Notes } from './Notes';
 import { Rpg } from './Rpg';
 import { User } from './User';
 
@@ -30,9 +31,15 @@ class RpgParticipants{
   @JoinColumn({name: 'rpg_id'})
   rpg: Rpg;
 
-  @OneToOne(() => Character, character => character.participant)
+  @OneToOne(() => Character, character => character.permission)
   @JoinColumn({name: 'character_id'})
   character: Character;
+
+  @OneToMany(() => Notes, notes => notes.rpgParticipant, {
+    cascade: ['insert', 'update', 'remove']
+  })
+  @JoinColumn({name: 'rpg_id'})
+  notes: Notes[];
 }
 
 export { RpgParticipants }

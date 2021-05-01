@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { getCustomRepository } from 'typeorm';
 import * as yup from 'yup';
+import bcrypt from 'bcryptjs';
 
 import { AppError } from '../models/AppError';
 import { UsersRepository } from '../repositories/UsersRepository';
@@ -51,7 +52,7 @@ class UserController{
   }
 
   async update(req: Request, res: Response){
-    const { username } = req.body;
+    const { username, previousIcon } = req.body;
     let icon: any = null;
 
     if(req.file){
@@ -73,24 +74,72 @@ class UserController{
     const usersRepository = getCustomRepository(UsersRepository);
 
     const id = req.userId;
-    
-    const currentUserData = await usersRepository.findOne(id);
-
-    DeleteFile(currentUserData.icon);
-
-    const newUserData = {
-      ...currentUserData,
-      username,
-      icon
-    }
 
     try{
+
+      const currentUserData = await usersRepository.findOne(id);
+
+      if(icon) DeleteFile(currentUserData.icon);
+      else if(previousIcon){
+        const fileName = previousIcon.split('uploads/');
+        icon = fileName[1];
+      }
+
+      const newUserData = {
+        ...currentUserData,
+        username,
+        icon
+      }
+
       await usersRepository.update(id, newUserData);
+      
     } catch {
       throw new AppError('Error updating');
     }
 
     return res.status(200).json({ message: 'Successfully updated!'});
+  }
+
+  async updatePassword(req: Request, res: Response){
+    const { password, newPassword } = req.body;
+
+    const schema = yup.object().shape({
+      password: yup.string().min(4).required('Senha inválida'),
+      newPassword: yup.string().min(4).required('Senha inválida')
+    })
+
+    try{
+      await schema.validate(req.body, {abortEarly: false});
+    }
+    catch(err){
+      throw new AppError(err.message);
+    }
+
+    const usersRepository = getCustomRepository(UsersRepository);
+    const id = req.userId;
+
+    try{
+      const currentUserData = await usersRepository.findOne(id);
+
+      const isValidPassword = await bcrypt.compare(password, currentUserData.password);
+      if(!isValidPassword){
+        throw new AppError('Senha atual incorreta');
+      }
+
+      const hashPassword = bcrypt.hashSync(newPassword, 8);
+      
+      const newUserData = {
+        ...currentUserData,
+        password: hashPassword
+      }
+
+      await usersRepository.update(id, newUserData);
+
+      return res.json({message: 'Successfully updated!'});
+      
+    } catch(err) {
+      throw new AppError(err.message);
+    }
   }
 
   async delete(req: Request, res: Response){
@@ -101,6 +150,14 @@ class UserController{
     try{
       const currentUser = await usersRepository.findOne(id);
       DeleteFile(currentUser.icon);
+
+      currentUser.rpgs.map(rpg => {
+        rpg.scenarios.map(scenario => DeleteFile(scenario.image));
+        rpg.characters.map(character => DeleteFile(character.icon));
+        rpg.objects.map(object => DeleteFile(object.image));
+
+        DeleteFile(rpg.icon);
+      })
 
       await usersRepository.delete(id);
 

@@ -1,4 +1,5 @@
 import React, {} from 'react';
+import classnames from 'classnames';
 
 import styles from '../styles/components/IconElement.module.css';
 
@@ -20,10 +21,11 @@ export function IconElement(props: IconElementProps){
         width: props.imgSize,
         height: props.imgSize
       }}>
-        <img src={props.image} alt={props.alt} style={{
-          width: props.imgSize,
-          height: props.imgSize
-        }}/>
+        <img 
+          className={classnames({[styles.collapsedStyle]:(props.image).includes('/null')})} 
+          src={props.image} 
+          alt={props.alt} 
+        />
       </div>
 
       <p style={{ fontSize: props.textSize }}>{props.text}</p>

@@ -42,3 +42,16 @@
 
   width: 100%;
 }
+
+.blockContainer .body::-webkit-scrollbar{
+  width: 10px;
+  height: 10px;
+}
+
+.blockContainer .body::-webkit-scrollbar-thumb{
+  background: #888; 
+}
+
+.blockContainer .body::-webkit-scrollbar-thumb:hover{
+  background: #999; 
+}

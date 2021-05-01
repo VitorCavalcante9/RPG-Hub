@@ -1,17 +1,20 @@
 import React, { HTMLAttributes, useContext, useEffect, useRef, useState } from 'react';
+import { useHistory } from 'react-router';
+import { RpgContext } from '../../contexts/RpgHomeContext';
 
 import styles from '../../styles/components/modals/Modal.module.css';
 
 import close from '../../assets/icons/cancel.svg';
-import { RpgContext } from '../../contexts/RpgHomeContext';
 
 interface ModalProps extends HTMLAttributes<HTMLDivElement>{
   title: string;
   open: boolean;
   account?: boolean;
+  link?: string;
 }
 
-export function Modal({title, open, account, children}:ModalProps){
+export function Modal({title, open, account, link, children}:ModalProps){
+  const history = useHistory();
   const [isOpen, setIsOpen] = useState(open);
   const {openModals, handleOpenModals, handleOpenAccountModal} = useContext(RpgContext);
   
@@ -21,6 +24,7 @@ export function Modal({title, open, account, children}:ModalProps){
 
   function handleOpenModal(){
     setIsOpen(false);
+    if(link) history.push(link);
 
     openModals.map((openModal, index) => {
       if(openModal){
