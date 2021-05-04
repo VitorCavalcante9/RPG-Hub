@@ -19,6 +19,7 @@ import { AccountModal } from '../components/modals/AccountModal';
 import styles from '../styles/pages/NewCharacter.module.css';
 
 import remove from '../assets/icons/cancel.svg';
+import { InputLine } from '../components/InputLine';
 
 interface StatusItems{
   name: string;
@@ -65,25 +66,17 @@ export function NewCharacter(){
 
   useEffect(() => {
     if(charId){
-      api.get(`rpgs/${params.id}/sheet`, {
-        headers: { 'Authorization': `Bearer ${token}`}
-      }).then(res => {
-        if(res.data.limitOfPoints){
-          const { limitOfPoints } = res.data;
-          setLimitPoints(limitOfPoints);
-        }
-      }) 
-
       api.get(`rpgs/${params.id}/characters/${charId}`, {
         headers: { 'Authorization': `Bearer ${token}`}
       }).then(res => {
-        const { name: charName, icon, status, skills, inventory } = res.data;
+        const { name: charName, icon, status, skills, inventory, limitOfPoints } = res.data;
 
         setName(charName)
         setPreviewImage(icon);
         setInventoryItems(inventory);
         setStatusItems(status);
         setSkillsItems(skills);
+        setLimitPoints(limitOfPoints);
       }) 
 
     } else {
@@ -109,7 +102,7 @@ export function NewCharacter(){
 
       if(updatedPoints || updatedPoints === 0) setCurrentPoints(updatedPoints);
     }
-  }, [skillsItems])
+  }, [skillsItems, limitPoints])
 
   useEffect(()=> {
     if(errors.name) alert.error("Insira um nome")
@@ -126,6 +119,7 @@ export function NewCharacter(){
       characterData.append('inventory', JSON.stringify(filteredInventory));
       characterData.append('status', JSON.stringify(statusItems));
       characterData.append('skills', JSON.stringify(skillsItems));
+      characterData.append('limitOfPoints', String(limitPoints))
 
       if(images[0]) characterData.append('icon', images[0]);
       else characterData.append('previousIcon', previewImage);
@@ -137,7 +131,6 @@ export function NewCharacter(){
           alert.success(res.data.message);
 
         }).catch(error => {
-          console.error(error)
           if(!error.response) alert.error("Impossível conectar ao servidor!");
           else alert.error(error.response.data);
         }) 
@@ -351,7 +344,17 @@ export function NewCharacter(){
 
           <div className={styles.column2}>
             <Block name="Habilidades" id={styles.skills} className={classnames({[styles.edit]: charId})} options={
-              <p className={styles.points}>Quantidade de pontos disponíveis: {currentPoints}</p>
+              <div className={styles.pointsOptions}>
+                <div className={styles.points}>
+                  <p>Limite de pontos:</p>
+                  <InputLine
+                    value={limitPoints}
+                    className={styles.inputPoints}
+                    onChange={e => setLimitPoints(Number(e.target.value))}
+                  />
+                </div>
+                <p className={styles.points}>Quantidade de pontos disponíveis: {currentPoints}</p>
+              </div>
             }>
               {skillsItems.map((skillsItem, index) => {
                 return(

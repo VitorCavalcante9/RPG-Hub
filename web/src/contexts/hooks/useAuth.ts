@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import api from '../../services/api';
+import manager from '../../services/websocket';
 
 interface RPG{
   id: string;
@@ -18,6 +19,10 @@ export default function useAuth(){
     if(token){
       api.defaults.headers.Authorizarion = `Bearer ${JSON.parse(token)}`;
       setAuthenticated(true);
+      
+      const socket = manager.socket('/rpgHome');
+      socket.open();
+      socket.emit('login');
     }
 
     setLoading(false);

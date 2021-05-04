@@ -31,7 +31,7 @@ export function NewScenario(){
   const [name, setName] = useState<string>();
   const [images, setImages] = useState<File[]>([]);
   const [previewImage, setPreviewImage] = useState('');
-  const {register, handleSubmit, errors} = useForm();
+  const {register, handleSubmit, reset, errors} = useForm();
   const [inputRef, setInputRef] = useState<any>();
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -91,7 +91,7 @@ export function NewScenario(){
         alert.success(res.data.message);
   
         setPreviewImage('');
-        inputRef.value = '';
+        reset({something: ''});
       }).catch(error => {
         console.error(error)
         if(!error.response) alert.error("Impossível conectar ao servidor!");

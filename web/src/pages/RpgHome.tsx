@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useAlert } from 'react-alert';
 import api from '../services/api';
+import manager from '../services/websocket';
 import classnames from 'classnames';
 
 import { RpgContext } from '../contexts/RpgHomeContext';
@@ -21,6 +22,7 @@ import styles from '../styles/pages/RpgHome.module.css';
 
 import edit from '../assets/icons/edit.svg';
 import trash from '../assets/icons/trash.svg';
+import { AccountItem } from '../components/AccountItem';
 
 interface RpgParams{
   id: string;
@@ -46,6 +48,12 @@ interface RPG{
   }>;
 }
 
+interface User{
+  id: string;
+  username: string;
+  online?: boolean;
+}
+
 export function RpgHome(){
   const params = useParams<RpgParams>();
   const { getToken } = useContext(AuthContext);
@@ -55,16 +63,35 @@ export function RpgHome(){
   const {handleOpenModals} = useContext(RpgContext);
   const [rpg, setRpg] = useState<RPG>({name: '', icon: '', characters: [], scenarios: [], objects: []});
   const [newPermissions, setNewPermissions] = useState(false);
+  const [participants, setParticipants] = useState<User[]>([]);
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+
+  const socket = manager.socket('/rpgHome');
+  socket.open();
 
   useEffect(() => {
     api.get(`rpgs/${params.id}`, {
       headers: { 'Authorization': `Bearer ${token}`}
     }).then(res => {
       setRpg(res.data);
+      if(res.data.participants) setParticipants(res.data.participants);
+      socket.emit('update_users');
+    });
+  }, [params.id, handleOpenModals, window.location.search]);
+
+  socket.on('users', (users: any) => {
+    const updatedParticipants = participants.map(participant => {
+      const index = users.indexOf(participant.id);
+      if(index !== -1){
+        return {...participant, ['online']: true};
+      }
+
+      return {...participant, ['online']: false}
     })
-  }, [params.id, handleOpenModals, window.location.search])
+
+    setParticipants(updatedParticipants);
+  })
 
   async function deleteObject(){
     const search = window.location.search;
@@ -203,7 +230,23 @@ export function RpgHome(){
               })}
             </Block>
 
-            <Block id={styles.account} className={`${styles.grid3} ${styles.blocks}`} name='Contas' center={true} />
+            <Block id={styles.account} className={`${styles.grid3} ${styles.blocks}`} name='Contas' center={true}>
+              {participants.map(participant => {
+                if(participant.online){
+                  return(
+                    <AccountItem key={participant.id} name={participant.username} status={participant.online} />
+                  )
+                }
+              })
+              }
+              {participants.map(participant => {
+                if(!participant.online){
+                  return(
+                    <AccountItem key={participant.id} name={participant.username} status={participant.online} />
+                  )
+                }
+              })}
+            </Block>
 
             <Link to={`/rpgs/${params.id}/sheet`}><Button className={`${styles.grid1} ${styles.buttons}`} text='Padrão de ficha' /></Link>
             <Button className={`${styles.grid2} ${styles.buttons}`} onClick={() => handleOpenModals(2)} text='Configurar Dados' />

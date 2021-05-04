@@ -10,7 +10,7 @@ import CharacterView from '../views/characters_views';
 
 class CharacterController{
   async store(req: Request, res: Response){
-    const { name, inventory, status, skills } = req.body;
+    const { name, inventory, status, skills, limitOfPoints } = req.body;
     const { rpg_id } = req.params;
     let icon: any = null;
     const charactersRepository = getCustomRepository(CharactersRepository);
@@ -33,7 +33,8 @@ class CharacterController{
         name: yup.string().required('Insira um nome válido'),
         current: yup.number().min(0).integer().required('Insira um valor válido'),
         limit: yup.number().min(0).integer().required('Insira um valor válido')
-      }))
+      })),
+      limitOfPoints: yup.number().min(0).integer().required('Insira um valor válido')
     })
 
     try{
@@ -49,7 +50,8 @@ class CharacterController{
       icon, 
       inventory: JSON.parse(inventory), 
       status: JSON.parse(status), 
-      skills: JSON.parse(skills)
+      skills: JSON.parse(skills),
+      limitOfPoints
     });
 
     try{
@@ -103,7 +105,7 @@ class CharacterController{
   }
 
   async update(req: Request, res: Response){
-    const { name, previousIcon, inventory, status, skills } = req.body;
+    const { name, previousIcon, inventory, status, skills, limitOfPoints } = req.body;
     const { id } = req.params;
     let icon: any = null;
     const charactersRepository = getCustomRepository(CharactersRepository);
@@ -127,7 +129,8 @@ class CharacterController{
         name: yup.string().required('Insira um nome válido'),
         current: yup.number().min(0).integer().required('Insira um valor válido'),
         limit: yup.number().min(0).integer().required('Insira um valor válido')
-      }))
+      })),
+      limitOfPoints: yup.number().min(0).integer().required('Insira um valor válido')
     })
 
     try{
@@ -151,7 +154,8 @@ class CharacterController{
       icon, 
       inventory: JSON.parse(inventory), 
       status: JSON.parse(status), 
-      skills: JSON.parse(skills)
+      skills: JSON.parse(skills),
+      limitOfPoints
     }
 
     try{

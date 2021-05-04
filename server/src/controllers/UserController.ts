@@ -148,16 +148,20 @@ class UserController{
     const id = req.userId;
 
     try{
-      const currentUser = await usersRepository.findOne(id);
+      const currentUser = await usersRepository.findOne(id, {
+        relations: ['rpgs', 'rpgs.characters', 'rpgs.scenarios', 'rpgs.objects']
+      });
       DeleteFile(currentUser.icon);
 
-      currentUser.rpgs.map(rpg => {
-        rpg.scenarios.map(scenario => DeleteFile(scenario.image));
-        rpg.characters.map(character => DeleteFile(character.icon));
-        rpg.objects.map(object => DeleteFile(object.image));
-
-        DeleteFile(rpg.icon);
-      })
+      if(currentUser.rpgs){
+        currentUser.rpgs.map(rpg => {
+          rpg.scenarios.map(scenario => DeleteFile(scenario.image));
+          rpg.characters.map(character => DeleteFile(character.icon));
+          rpg.objects.map(object => DeleteFile(object.image));
+  
+          DeleteFile(rpg.icon);
+        })
+      }
 
       await usersRepository.delete(id);
 

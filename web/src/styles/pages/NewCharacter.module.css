@@ -70,9 +70,22 @@
   margin-top: 2.5rem;
 }
 
+.pointsOptions{
+  display: flex;
+  flex-direction: row;
+}
+
 .points{
   width: 15rem;
   font: 500 1.5rem Rajdhani;
+}
+
+.inputPoints input{
+  font: 600 1.6rem Rajdhani;
+}
+
+.inputPoints hr{
+  width: 5rem;
 }
 
 #skills > div:last-child{

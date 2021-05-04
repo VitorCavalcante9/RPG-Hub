@@ -1,0 +1,54 @@
+.accountItem{
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  padding: 0 0.5rem;
+}
+
+.accountItem + .accountItem{
+  margin-top: 1rem;
+}
+
+.accountItem p{
+  font-size: 1.9rem;
+  color: var(--color-text-secondary);
+}
+
+.accountItem > p{
+  margin-top: 1px;
+}
+
+.accountItem .status{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  margin-left: 5rem;
+}
+
+.accountItem .status .circle{
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  border: 1px solid #FFF;
+  background: rgb(173, 173, 173);
+}
+
+.accountItem .status p{
+  font-size: 1.6rem;
+  margin-left: 0.5rem;
+  margin-top: 2px;
+}
+
+.accountItem .status .online{
+  background: #42aa28;
+}
+
+@media(min-width: 1100px){
+  .accountItem{
+    justify-content: space-between;
+  }
+}

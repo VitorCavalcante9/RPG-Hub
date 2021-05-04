@@ -94,6 +94,20 @@ export function SessionProvider({children}: SessionProviderProps){
       {name: 'Força', current: 30, limit: 100},
       {name: 'Luta', current: 50, limit: 100}
     ]}, 
+    {id: '5', name: 'Personagem 5', status:[
+      {name: 'vida', color: '#CC0000', current: 100, limit: 100},
+      {name: 'sanidade', color: '#192C8A', current: 100, limit: 100}
+    ], skills: [
+      {name: 'Força', current: 30, limit: 100},
+      {name: 'Luta', current: 50, limit: 100}
+    ]}, 
+    {id: '6', name: 'Personagem 6', status:[
+      {name: 'vida', color: '#CC0000', current: 100, limit: 100},
+      {name: 'sanidade', color: '#192C8A', current: 100, limit: 100}
+    ], skills: [
+      {name: 'Força', current: 30, limit: 100},
+      {name: 'Luta', current: 50, limit: 100}
+    ]}, 
   ]);
 
   const [fixedCharacterList, setFixedCharacterList] = useState<Character[]>([]);

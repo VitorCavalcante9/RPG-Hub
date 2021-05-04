@@ -128,7 +128,9 @@ class RpgController{
     const { rpg_id: id } = req.params;
 
     try{
-      const currentRpgData = await rpgsRepository.findOne(id);
+      const currentRpgData = await rpgsRepository.findOne(id, {
+        relations: ['characters', 'scenarios', 'objects']
+      });
       DeleteFile(currentRpgData.icon);
 
       if(currentRpgData.scenarios) currentRpgData.scenarios.map(scenario => DeleteFile(scenario.image));

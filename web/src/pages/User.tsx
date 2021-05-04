@@ -5,9 +5,11 @@ import { AuthContext } from '../contexts/AuthContext';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
 import { useAlert } from 'react-alert';
+import { useHistory } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 
 import styles from '../styles/pages/User.module.css';
+
 import { Button } from '../components/Button';
 import { InputLabel } from '../components/InputLabel';
 
@@ -17,9 +19,10 @@ interface RpgParams{
 
 export function User(){
   const params = useParams<RpgParams>();
-  const { getToken } = useContext(AuthContext);
+  const { getToken, handleLogout } = useContext(AuthContext);
   const token = getToken();
   const alert = useAlert();
+  const history = useHistory();
 
   const [name, setName] = useState<string>();
   const [images, setImages] = useState<File[]>([]);
@@ -113,6 +116,18 @@ export function User(){
     }
   }
 
+  async function deleteAccount(){
+    api.delete(`users`, {
+      headers: { 'Authorization': `Bearer ${token}`}
+    }).then(res => {
+      handleLogout();
+      history.push(`/`);
+    }).catch(error => {
+      if(!error.response) alert.error("Impossível conectar ao servidor!");
+      else alert.error(error.response.data.message);
+    })
+  }
+
   return(
     <>
     {/* The Delete Modal */}
@@ -124,7 +139,7 @@ export function User(){
 
         <div className="buttons">
           <button type='button' onClick={() => setOpenDeleteModal(false)}>Cancelar</button>
-          <button type='button' onClick={() => {}}>Deletar</button>
+          <button type='button' onClick={deleteAccount}>Deletar</button>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState, useRef, MutableRefObject, HTMLAttributes, useContext } from "react";
+import React, { useState, useRef, MutableRefObject, HTMLAttributes, useContext, useEffect } from "react";
 import { usePopper } from "react-popper";
 import { RpgContext } from "../contexts/RpgHomeContext";
 
@@ -10,12 +10,12 @@ interface PopperProps extends HTMLAttributes<HTMLDivElement> {
   index: number;
 };
 
-export function Popper({ targetRef, isVisible, index, children }: PopperProps) {
+export function Popper({ targetRef, isVisible, index }: PopperProps) {
   const {setStatusItemValue} = useContext(RpgContext);
   
   const popperRef = useRef(null);
   const [arrowRef, setArrowRef] = useState<HTMLDivElement | null>(null);
-  const colorsOptions = ['#CC0000', '#FCBA03', '#CC00CC', '#192C8A', '#660066', '#006622', '#996633', '#000', '#007399', "#FC7B03"]
+  const colorsOptions = ['#CC0000', "#FC7B03", '#996633', '#FCBA03', '#006622', '#007399', '#192C8A', '#660066', '#CC00CC', '#888']
 
   const {styles: stylesPopper, attributes} = usePopper(
     targetRef.current,

@@ -83,11 +83,8 @@ export function SheetPattern(){
     const updatedSkillsItems = skillsItems.map((skillsItems, index) => {
       if(index === position){
         if(field === 'current' || field === 'limit'){ 
-          console.log(index, field, 'entrou')
           return {...skillsItems, [field]: Number(value)};
         }
-
-        console.log(index, field)
 
         return {...skillsItems, [field]: value};
       }
@@ -178,7 +175,11 @@ export function SheetPattern(){
                       style={{backgroundColor: statusItem.color}}
                       onClick={() => {toggleVisibility(index)}}
                     />
-                    <Popper index={index} targetRef={buttonRef.current[index]} isVisible={isVisible[index]} />
+                    <Popper 
+                      index={index} 
+                      targetRef={buttonRef.current[index]} 
+                      isVisible={isVisible[index]} 
+                    />
                   </div>
                   <div className={styles.pointsContainer}>
                     <InputLine

@@ -17,6 +17,7 @@ export default{
       inventory: character.inventory,
       status: character.status,
       skills: character.skills,
+      limitOfPoints: character.limitOfPoints,
       user: {
         id: user_id,
         username

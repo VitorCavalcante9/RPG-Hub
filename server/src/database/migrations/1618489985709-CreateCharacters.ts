@@ -38,6 +38,10 @@ export class CreateCharacters1618489985709 implements MigrationInterface {
         {
           name: "skills",
           type: "json"
+        },
+        {
+          name: 'limitOfPoints',
+          type: 'integer'
         }
       ],
       foreignKeys:[

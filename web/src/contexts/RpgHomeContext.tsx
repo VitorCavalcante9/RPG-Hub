@@ -28,12 +28,6 @@ interface RpgProviderProps{
   children: ReactNode;
 }
 
-interface RPG{
-  id: string;
-  name: string;
-  icon: string;
-}
-
 
 export const RpgContext = createContext({} as RpgContextData);
 
@@ -100,7 +94,7 @@ export function RpgProvider({children}: RpgProviderProps){
     else {
       setStatusItems([
         ...statusItems,
-        {name: '', color: '#000', current: 0, limit: 0}
+        {name: '', color: '#888', current: 0, limit: 100}
       ])
     }
   }

@@ -50,8 +50,9 @@
 
 .blockContainer .body::-webkit-scrollbar-thumb{
   background: #888; 
+  border-radius: 5px;
 }
 
 .blockContainer .body::-webkit-scrollbar-thumb:hover{
-  background: #999; 
+  background: rgb(131, 131, 131); 
 }

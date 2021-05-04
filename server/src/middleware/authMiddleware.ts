@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { io } from '../server';
 
 interface TokenPayLoad{
   id: string;
@@ -24,6 +25,7 @@ export default function authMiddleware(
     const { id } = data as TokenPayLoad;
 
     request.userId = id;
+    io.user = id;
 
     return next();
 

@@ -40,6 +40,9 @@ class Character{
   @Column('json')
   skills: Skills[];
 
+  @Column()
+  limitOfPoints: number;
+
   constructor(){
     if(!this.id) this.id = uuid();
   }

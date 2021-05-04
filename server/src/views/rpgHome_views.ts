@@ -67,6 +67,18 @@ export default{
       character_content.permission = rpg.character.permission;
     }
 
+    let participants = rpg_content.participants.map(participant => {
+      return{
+        id: participant.user.id,
+        username: participant.user.username
+      }
+    }) 
+
+    participants.push({
+      id: rpg_content.user_id,
+      username: rpg_content.user.username
+    })
+
     return{
       name: rpg_content.name,
       icon: `http://${process.env.HOST}:${process.env.PORT}/uploads/${rpg_content.icon}`,
@@ -80,7 +92,8 @@ export default{
         skills: character_content.skills,
         limitOfPoints: rpg_content.sheet.limitOfPoints,
         permission: character_content.permission
-      }
+      },
+      participants
     }
   }
 }
