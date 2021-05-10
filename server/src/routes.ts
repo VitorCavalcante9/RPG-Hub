@@ -41,19 +41,20 @@ router.get('/rpgs/:rpg_id/sheet', [authMiddleware, adminMiddleware],SheetControl
 
 //dices
 router.patch('/rpgs/:rpg_id/dices', [authMiddleware, adminMiddleware], DicesController.update);
-router.get('/rpgs/:rpg_id/dices', [authMiddleware, adminMiddleware], DicesController.show);
+router.get('/rpgs/:rpg_id/dices', [authMiddleware], DicesController.show);
+router.post('/rpgs/:rpg_id/roll_dices', [authMiddleware], DicesController.rollDice);
 
 //scenarios
 router.post('/rpgs/:rpg_id/scenarios', [authMiddleware, adminMiddleware], upload.single('image'), ScenarioController.store);
 router.get('/rpgs/:rpg_id/scenarios/:id', [authMiddleware, adminMiddleware], ScenarioController.show);
-router.get('/rpgs/:rpg_id/scenarios', [authMiddleware, adminMiddleware], ScenarioController.index);
+router.get('/rpgs/:rpg_id/scenarios', [authMiddleware], ScenarioController.index);
 router.put('/rpgs/:rpg_id/scenarios/:id', [authMiddleware, adminMiddleware], upload.single('image'), ScenarioController.update);
 router.delete('/rpgs/:rpg_id/scenarios/:id', [authMiddleware, adminMiddleware], ScenarioController.delete);
 
 //characters
 router.post('/rpgs/:rpg_id/characters', [authMiddleware, adminMiddleware], upload.single('icon'), CharacterController.store);
 router.get('/rpgs/:rpg_id/characters/:id', [authMiddleware, adminMiddleware], CharacterController.show);
-router.get('/rpgs/:rpg_id/characters', [authMiddleware, adminMiddleware], CharacterController.index);
+router.get('/rpgs/:rpg_id/characters', [authMiddleware], CharacterController.index);
 router.put('/rpgs/:rpg_id/characters/:id', [authMiddleware, adminMiddleware], upload.single('icon'), CharacterController.update);
 router.patch('/rpgs/:rpg_id/characters/:id', [authMiddleware], CharacterController.updateUser);
 router.delete('/rpgs/:rpg_id/characters/:id', [authMiddleware, adminMiddleware], CharacterController.delete);
@@ -70,7 +71,7 @@ router.delete('/rpgs/:rpg_id/permissions/:id', [authMiddleware, adminMiddleware]
 //objects
 router.post('/rpgs/:rpg_id/objects', [authMiddleware, adminMiddleware], upload.single('image'), ObjectController.store);
 router.get('/rpgs/:rpg_id/objects/:id', [authMiddleware, adminMiddleware], ObjectController.show);
-router.get('/rpgs/:rpg_id/objects', [authMiddleware, adminMiddleware], ObjectController.index);
+router.get('/rpgs/:rpg_id/objects', [authMiddleware], ObjectController.index);
 router.put('/rpgs/:rpg_id/objects/:id', [authMiddleware, adminMiddleware], upload.single('image'), ObjectController.update);
 router.delete('/rpgs/:rpg_id/objects/:id', [authMiddleware, adminMiddleware], ObjectController.delete);
 

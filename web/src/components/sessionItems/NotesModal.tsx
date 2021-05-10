@@ -1,4 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { useParams } from 'react-router';
+import { useAlert } from 'react-alert';
+import api from '../../services/api';
 import { SessionContext } from '../../contexts/SessionContext';
 
 import styles from '../../styles/components/sessionItems/NotesModal.module.css';
@@ -9,17 +12,62 @@ import { TextAreaLabel } from '../TextAreaLabel';
 import send from '../../assets/icons/send.svg';
 import trash from '../../assets/icons/trash.svg';
 
+interface RpgParams{
+  id: string;
+}
+
+interface Notes{
+  id: number;
+  notes: Array<string>;
+}
+
 export function NotesModal(){
+  const params = useParams<RpgParams>();
   const {openModals, handleOpenModals} = useContext(SessionContext);
-  const [notes, setNotes] = useState<string[]>([]);
+  const alert = useAlert();
+  const [notes, setNotes] = useState<Notes>({ id: 0, notes: []});
   const [oneNote, setOneNote] = useState('');
 
+  useEffect(() => {
+    api.get(`rpgs/${params.id}/notes`)
+    .then(res => {
+      if(res.data.notes){
+        setNotes(res.data);
+      } else {
+        setNotes({ id: res.data.id, notes: [] });
+      }
+
+    }).catch(err => {
+      if(!err.response) alert.error("Impossível conectar ao servidor!");
+      else if(err.response.status !== 404) alert.error(err.response.data.message);
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.id])
+
+  useEffect(() => {
+    const data = {
+      notes: notes.notes
+    }
+
+    api.put(`/rpgs/${params.id}/notes`, data)
+      .then()
+      .catch(err => {
+        if(!err.response) alert.error("Impossível conectar ao servidor!");
+        else if(err.response.status !== 404) alert.error(err.response.data.message);
+      });
+  }, [notes.notes])
+
   function removeNoteItem(position: number){
-    const updatedNotes = notes.filter((note, index) => {
+    const updatedArrayNotes = notes.notes.filter((note, index) => {
       return position !== index;
     })
 
-    setNotes(updatedNotes);
+    setNotes({...notes, 'notes': updatedArrayNotes});
+  }
+
+  function addNoteItem(){
+    setNotes({...notes, 'notes': [...notes.notes, oneNote]});
+    setOneNote('');
   }
 
   return(
@@ -28,7 +76,7 @@ export function NotesModal(){
       <div className={styles.overlay}>
         <div className={styles.container}>
           <Block name="Notas" id={styles.notes} center={true}>
-            {notes.map((note, index) => {
+            {notes.notes.map((note, index) => {
               return(
                 <div key={index} className={styles.noteItem}>
                   <p>{note}</p> 
@@ -48,7 +96,7 @@ export function NotesModal(){
             />
             <button 
               type='button' 
-              onClick={() => { setNotes([...notes, oneNote])}}
+              onClick={addNoteItem}
             >
               <img src={send} alt="Enviar"/>
             </button>

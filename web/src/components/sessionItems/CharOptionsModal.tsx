@@ -13,9 +13,13 @@ import { InputLine } from '../InputLine';
 import { CharacterItem } from './CharacterItem';
 
 export function CharOptionsModal(){
-  const {selectedCharacter, openModals, handleOpenModals, setStatusItemValue} = useContext(SessionContext);
-  const [inventoryItems, setInventoryItems] = useState<string[]>([]);
+  const {selectedCharacter, openModals, handleOpenModals, setStatusItemValue, setInventoryItemsValue} = useContext(SessionContext);
+  const [inventoryItems, setInventoryItems] = useState<string[]>(selectedCharacter.inventory);
   const [statusItems, setStatusItems] = useState(selectedCharacter.status);
+
+  useEffect(() => {
+    setInventoryItems(selectedCharacter.inventory);
+  }, [openModals[1]])
 
   function setInventoryItemValue(position: number,  value: string){
     const updatedInventoryItems = inventoryItems.map((inventoryItem, index) => {
@@ -53,6 +57,11 @@ export function CharOptionsModal(){
     setStatusItems(updatedStatusItems);
   }
 
+  function setInventory(){
+    const filteredInventory = inventoryItems.filter(this_item => this_item !== '');
+    setInventoryItemsValue(selectedCharacter, filteredInventory);
+  }
+
   return(
     <>
     {openModals[1] ? (
@@ -69,7 +78,7 @@ export function CharOptionsModal(){
                   const statusPercentCurrent = Math.round(statusItems[index].current * 100) / statusItems[index].limit;
 
                   return(
-                    <div className={styles.statusContainer}>
+                    <div key={status.name} className={styles.statusContainer}>
                       <div className={styles.statusItem}>
                         <p>{status.name}</p>
 
@@ -100,13 +109,18 @@ export function CharOptionsModal(){
               </Block>
 
               <Block name="Inventário" id={styles.inventory} options={
-                <button type='button' onClick={addInventoryItem} className='buttonWithoutBG'>+ Novo Item</button>
+                <div>
+                  <button type='button' onClick={addInventoryItem} className='buttonWithoutBG'>+ Novo Item</button>
+                  <button className={styles.saveInventory} onClick={setInventory} type='button'>Salvar</button>
+                </div>
               }>
                 {inventoryItems.map((inventoryItem, index) => {
                   return(
-                    <div className={styles.inventoryItem}>
+                    <div
+                      key={index}  
+                      className={styles.inventoryItem}
+                    >
                       <InventoryItem 
-                        key={index} 
                         value={inventoryItem} 
                         onChange={e => setInventoryItemValue(index, e.target.value)} 
                         onClick={() => removeInventoryItem(index)}
@@ -125,6 +139,7 @@ export function CharOptionsModal(){
                 {selectedCharacter.skills.map(this_skill => {
                     return(
                       <SkillsItems
+                        key={this_skill.name}
                         className={styles.skillItem}
                         value={this_skill.current} 
                         name={this_skill.name} 

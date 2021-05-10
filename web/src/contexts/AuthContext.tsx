@@ -6,7 +6,6 @@ interface AuthContextData {
   loading: boolean;
   handleLogin: (token: JSON) => void;
   handleLogout: () => void;
-  getToken: () => JSON | null;
 }
 
 interface AuthProviderProps {
@@ -17,7 +16,7 @@ export const AuthContext = createContext({} as AuthContextData);
 
 export function AuthProvider({children}: AuthProviderProps){
   const {
-    authenticated, loading, handleLogin, handleLogout, getToken
+    authenticated, loading, handleLogin, handleLogout
   } = useAuth();
 
   return(
@@ -25,8 +24,7 @@ export function AuthProvider({children}: AuthProviderProps){
       authenticated, 
       loading, 
       handleLogin, 
-      handleLogout,
-      getToken
+      handleLogout
     }}>
       {children}
     </AuthContext.Provider>

@@ -6,20 +6,13 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement>{
   name: string;
   label: string;
   inputRef?: any;
-  setInputRef: (ref: HTMLDivElement | null) => void;
 }
 
-export function InputLabel({name, className, label, inputRef, setInputRef, ...rest}:InputProps){
-  const [thisRef, setThisRef] = useState<HTMLDivElement | null>(null);
-
-  function setInput(){
-    setInputRef(thisRef)
-  }
-  
+export function InputLabel({name, className, label, inputRef, ...rest}:InputProps){
   return(
     <div className={`${styles.inputBlock} ${className}`}>
       <label htmlFor={name}>{label}</label>
-      <input onFocus={setInput} id={name} name={name} {...rest} ref={(input) => {inputRef(input); setThisRef(input)}}/>
+      <input id={name} name={name} {...rest} ref={inputRef}/>
     </div>
   );
 }

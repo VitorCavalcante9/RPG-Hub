@@ -42,17 +42,3 @@
 
   width: 100%;
 }
-
-.blockContainer .body::-webkit-scrollbar{
-  width: 10px;
-  height: 10px;
-}
-
-.blockContainer .body::-webkit-scrollbar-thumb{
-  background: #888; 
-  border-radius: 5px;
-}
-
-.blockContainer .body::-webkit-scrollbar-thumb:hover{
-  background: rgb(131, 131, 131); 
-}

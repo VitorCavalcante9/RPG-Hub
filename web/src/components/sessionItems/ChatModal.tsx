@@ -1,18 +1,88 @@
-import React, { useContext, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router';
 import { SessionContext } from '../../contexts/SessionContext';
+import manager from '../../services/websocket';
 
 import styles from '../../styles/components/sessionItems/ChatModal.module.css';
+
 import { Block } from '../Block';
 import { Button } from '../Button';
-import { InputLabel } from '../InputLabel';
 
 import send from '../../assets/icons/send.svg';
+import { TextAreaLabel } from '../TextAreaLabel';
+import { Message } from './Message';
 
-export function ChatModal(){
+interface Messages{
+  name: string;
+  message: string;
+}
+
+interface ChatModalProps{
+  selectedCharacter?: any;
+}
+
+interface RpgParams{
+  id: string;
+}
+
+export function ChatModal({ selectedCharacter }: ChatModalProps){
+  const params = useParams<RpgParams>();
   const {openModals, handleOpenModals} = useContext(SessionContext);
-  const [messages, setMessages] = useState<string[]>([]);
-  const [oneMessage, setOneMessage] = useState('');
 
+  const [messages, setMessages] = useState<Messages[]>([]);
+  const [lastMessage, setLastMessage] = useState<any>(null);
+  const [newMessage, setNewMessage] = useState('');
+
+  const msgRef = useRef<HTMLDivElement>(null);
+
+  const socket = manager.socket('/session');
+
+  useEffect(() => {
+    socket.on('message', ({ name, message }: Messages)=> {
+      const new_message = {
+        name: name,
+        message: message
+      }
+  
+      setLastMessage(new_message); 
+    })
+  }, []);
+
+  useEffect(() => {
+    if(lastMessage){
+      
+      console.log(lastMessage)
+      setMessages([...messages, lastMessage]);
+      setLastMessage(null);
+    }
+  }, [lastMessage]);
+
+  useEffect(() => {
+    if(msgRef.current) {
+      msgRef.current.scrollIntoView({ behavior: 'smooth'});
+    };
+  }, [messages]);
+
+  function sendMessage(){
+    const new_message = {
+      name: 'Você',
+      message: newMessage
+    }
+
+    setMessages([...messages, new_message]); 
+
+    const character = selectedCharacter ? selectedCharacter : null;
+
+    socket.emit('message', {
+      message: newMessage, 
+      room: params.id,
+      character
+    });
+      
+    setNewMessage('');
+  }
+  
   return(
     <>
     {openModals[3] ? (
@@ -21,25 +91,22 @@ export function ChatModal(){
           <Block name="Chat" id={styles.chat} center={true}>
             {messages.map((message, index) => {
               return(
-                <div key={index} className={styles.messageItem}>
-                  <p>{message}</p> 
-                </div>
+                <Message key={index} message={`${message.name}: ${message.message}`} msgRef={msgRef} />
               )
             })}
           </Block>
 
           <div className={styles.newMessageContainer}>
-            <InputLabel
-              setInputRef={() => {}}
+            <TextAreaLabel
               className={styles.inputNote} 
               name="note" 
               label="Escreva uma nova messagem" 
-              value={oneMessage}
-              onChange={e => {setOneMessage(e.target.value)}}
+              value={newMessage}
+              onChange={e => {setNewMessage(e.target.value)}}
             />
             <button 
               type='button' 
-              onClick={() => { setMessages([...messages, oneMessage])}}
+              onClick={sendMessage}
             >
               <img src={send} alt="Enviar"/>
             </button>

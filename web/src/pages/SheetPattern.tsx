@@ -20,8 +20,6 @@ interface RpgParams{
 export function SheetPattern(){
   const params = useParams<RpgParams>();
   const alert = useAlert();
-  const { getToken } = useContext(AuthContext);
-  const token = getToken();
 
   const {statusItems, addNewStatus, defaultStatus, setStatusItemValue, removeStatusItems} = useContext(RpgContext);
   const [isVisible, setVisibility] = useState<string[]>([]);
@@ -32,9 +30,8 @@ export function SheetPattern(){
   const [limitPoints, setLimitPoints] = useState<number>();
 
   useEffect(() => {
-    api.get(`rpgs/${params.id}/sheet`, {
-      headers: { 'Authorization': `Bearer ${token}`}
-    }).then(res => {
+    api.get(`rpgs/${params.id}/sheet`)
+    .then(res => {
       const { status, skills, limitOfPoints } = res.data;
 
       const defaultVisibility = status.map(() => { return 'hidden' });
@@ -108,9 +105,8 @@ export function SheetPattern(){
 
       console.log(filteredSkills)
       
-      await api.patch(`rpgs/${params.id}/sheet`, data, {
-        headers: { 'Authorization': `Bearer ${token}`}
-      }).then(res => {
+      await api.patch(`rpgs/${params.id}/sheet`, data)
+      .then(res => {
           alert.success('Ficha atualizada com sucesso')
         }).catch(err => alert.error(err.response.data.message));
     }

@@ -1,12 +1,5 @@
+/* eslint-disable array-callback-return */
 import React, { createContext, ReactNode, useEffect, useState } from 'react';
-
-import ed from '../assets/images/ed.jpeg';
-import kaneki from '../assets/images/kaneki.jpeg';
-import ribai from '../assets/images/ribai.jpeg';
-import may from '../assets/images/may.jpeg';
-import wlppr from '../assets/images/wlppr.png';
-import uau from '../assets/images/140036.jpg';
-import teste from '../assets/images/teste.jpeg';
 
 interface Character{
   id: string;
@@ -23,10 +16,7 @@ interface Character{
     current: number;
     limit: number;
   }>;
-  items?: Array<{
-    id: string;
-    name: string;
-  }>;
+  inventory: Array<string>;
 }
 
 interface Scenario{
@@ -50,12 +40,32 @@ interface SessionContextData{
   fixedObject: ObjectItem | null;
   openModals: Array<boolean>;
   selectedCharacter: Character;
+  loading: boolean;
+  initializeSession: (
+    characters: Character[], 
+    scenarios: Scenario[], 
+    objects: ObjectItem[]
+  ) => void;
+  updateSession: (
+    characters: Character[], 
+    fixedCharacters: Character[], 
+    scenario: Scenario, 
+    object: ObjectItem
+  ) => void;
+  cleanSession: () => void;
+  updateCharacters: (characters: Character[]) => void;
+  updateFixedCharacters: (characters: Character[]) => void;
   toggleFixCharacter: (character: Character) => void;
   toggleFixScenario: (scenario: Scenario | null) => void;
   toggleFixObject: (objectItem: ObjectItem | null) => void;
   handleOpenModals: (modal: number) => void;
   handleSelectedCharacter: (character: Character) => void;
-  setStatusItemValue: (character: Character, position: number, current: number, limit: number) => void;
+  setStatusItemValue: (
+    character: Character, position: number, current: number, limit: number
+  ) => void;
+  setInventoryItemsValue: (
+    character: Character, inventory: Array<string>
+  ) => void;
 }
 
 interface SessionProviderProps{
@@ -65,71 +75,29 @@ interface SessionProviderProps{
 export const SessionContext = createContext({} as SessionContextData);
 
 export function SessionProvider({children}: SessionProviderProps){
-  const [characterList, setCharacterList] = useState<Character[]>([
-    {id: '1', name: 'Personagem 1', status:[
-      {name: 'vida', color: '#CC0000', current: 100, limit: 100},
-      {name: 'sanidade', color: '#192C8A', current: 100, limit: 100}
-    ], skills: [
-      {name: 'Força', current: 30, limit: 100},
-      {name: 'Luta', current: 50, limit: 100}
-    ], items: [{id: '1', name: 'Item 1'}, {id: '2', name: 'Item 2'}]}, 
-    {id: '2', name: 'Personagem 2', status:[
-      {name: 'vida', color: '#CC0000', current: 100, limit: 100},
-      {name: 'sanidade', color: '#192C8A', current: 100, limit: 100}
-    ], skills: [
-      {name: 'Força', current: 30, limit: 100},
-      {name: 'Luta', current: 50, limit: 100}
-    ]}, 
-    {id: '3', name: 'Personagem 3', status:[
-      {name: 'vida', color: '#CC0000', current: 100, limit: 100},
-      {name: 'sanidade', color: '#192C8A', current: 100, limit: 100}
-    ], skills: [
-      {name: 'Força', current: 30, limit: 100},
-      {name: 'Luta', current: 50, limit: 100}
-    ]}, 
-    {id: '4', name: 'Personagem 4', status:[
-      {name: 'vida', color: '#CC0000', current: 100, limit: 100},
-      {name: 'sanidade', color: '#192C8A', current: 100, limit: 100}
-    ], skills: [
-      {name: 'Força', current: 30, limit: 100},
-      {name: 'Luta', current: 50, limit: 100}
-    ]}, 
-    {id: '5', name: 'Personagem 5', status:[
-      {name: 'vida', color: '#CC0000', current: 100, limit: 100},
-      {name: 'sanidade', color: '#192C8A', current: 100, limit: 100}
-    ], skills: [
-      {name: 'Força', current: 30, limit: 100},
-      {name: 'Luta', current: 50, limit: 100}
-    ]}, 
-    {id: '6', name: 'Personagem 6', status:[
-      {name: 'vida', color: '#CC0000', current: 100, limit: 100},
-      {name: 'sanidade', color: '#192C8A', current: 100, limit: 100}
-    ], skills: [
-      {name: 'Força', current: 30, limit: 100},
-      {name: 'Luta', current: 50, limit: 100}
-    ]}, 
-  ]);
-
+  const [characterList, setCharacterList] = useState<Character[]>([]);
   const [fixedCharacterList, setFixedCharacterList] = useState<Character[]>([]);
 
-  const [scenarioList, setScenarioList] = useState<Scenario[]>([{id: '1', image: wlppr, name: 'Cenário 1'}, {id: '2', image:uau, name: 'Cenário 2'}, {id: '3', image:kaneki, name: 'Cenário 3'}, {id: '4', image:teste, name: 'Cenário 3'}]);
-
+  const [scenarioList, setScenarioList] = useState<Scenario[]>([]);
   const [fixedScenario, setFixedScenario] = useState<Scenario | null>(null);
 
-  const [objectList, setObjectList] = useState<ObjectItem[]>([{id: '1', name: 'Item 1', image: ed}, {id: '2', name: 'Item 2', image: ribai}, {id: '3', name: 'Mai', image: may}]);
-
+  const [objectList, setObjectList] = useState<ObjectItem[]>([]);
   const [fixedObject, setFixedObject] = useState<ObjectItem | null>(null);
 
   const [openModals, setOpenModals] = useState<boolean[]>([false, false, false, false]);
   
   const [selectedCharacter, setSelectedCharacter] = useState<Character>(characterList[0]);
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    characterList.map(this_character => {
-      if(this_character.id === selectedCharacter.id){
-        setSelectedCharacter(this_character);
-      }
-    });
+    if(characterList){
+      characterList.map(this_character => {
+        if(this_character.id === selectedCharacter.id){
+          setSelectedCharacter(this_character);
+        }
+      });
+    }
 
     const updatedFixedCharacterList = fixedCharacterList.map(fixedCharacter => {
       const indexCharacter = characterList.map((character)=>{return character.id}).indexOf(fixedCharacter.id);
@@ -142,6 +110,7 @@ export function SessionProvider({children}: SessionProviderProps){
     })
 
     setFixedCharacterList(updatedFixedCharacterList);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [characterList]);
   
   function handleOpenModals(modal: number){
@@ -160,7 +129,7 @@ export function SessionProvider({children}: SessionProviderProps){
   function toggleFixCharacter(character: Character){
     const verifyIfExists = fixedCharacterList.indexOf(character);
 
-    if(verifyIfExists == -1) setFixedCharacterList([...fixedCharacterList, character]);
+    if(verifyIfExists === -1) setFixedCharacterList([...fixedCharacterList, character]);
     else{
       const updatedFixedCharacterList = fixedCharacterList.filter(fixedCharacter => {
         return fixedCharacter !== character;
@@ -187,19 +156,74 @@ export function SessionProvider({children}: SessionProviderProps){
       if(this_character.id === character.id){
         const newStatusValue = this_character.status.map((statusItems, index) => {
           if(index === position){
-            return {...statusItems, ['current']: current, ['limit']: limit};
+            return {...statusItems, 'current': current, 'limit': limit};
           }
 
           return statusItems;
         })
 
-        return {...this_character, ['status']: newStatusValue}
+        return {...this_character, 'status': newStatusValue}
       }
 
       return this_character;
     })
 
     setCharacterList(updatedStatusItems);
+  }
+
+  function setInventoryItemsValue(character: Character, inventory: Array<string>){
+    const updatedInventory = characterList.map(this_character => {
+      if(this_character.id === character.id){
+        return {...this_character, 'inventory': inventory}
+      }
+
+      return this_character;
+    })
+
+    setCharacterList(updatedInventory);
+  }
+
+  async function initializeSession(
+    characters: Character[], scenarios: Scenario[], objects: ObjectItem[]
+  ){
+    try{
+
+      setSelectedCharacter(characters[0])
+      setCharacterList(characters);
+      setScenarioList(scenarios);
+      setObjectList(objects);
+      setOpenModals([false, false, false, false]);
+
+    } catch(err) {
+      console.error(err);
+    }
+
+    setLoading(false);
+  }
+
+  function cleanSession(){
+    setSelectedCharacter(characterList[0])
+    setCharacterList([]);
+    setScenarioList([]);
+    setObjectList([]);
+    setOpenModals([false, false, false, false]);
+  }
+
+  function updateSession(
+    characters: Character[], fixedCharacters: Character[], scenario: Scenario, object: ObjectItem
+  ){
+    setCharacterList(characters);
+    setFixedCharacterList(fixedCharacters);
+    setFixedScenario(scenario);
+    setFixedObject(object);
+  }
+
+  function updateCharacters(characters: Character[]){
+    setCharacterList(characters);
+  }
+
+  function updateFixedCharacters(characters: Character[]){
+    setFixedCharacterList(characters);
   }
 
   return(
@@ -213,12 +237,19 @@ export function SessionProvider({children}: SessionProviderProps){
         fixedObject,
         openModals,
         selectedCharacter,
+        loading,
+        initializeSession,
+        cleanSession,
+        updateSession,
+        updateCharacters,
+        updateFixedCharacters,
         toggleFixCharacter,
         toggleFixScenario,
         toggleFixObject,
         handleOpenModals,
         handleSelectedCharacter,
-        setStatusItemValue
+        setStatusItemValue,
+        setInventoryItemsValue
       }}
     >
       {children}

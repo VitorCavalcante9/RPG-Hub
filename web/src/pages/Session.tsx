@@ -1,123 +1,144 @@
-import React, { useContext, useState } from 'react';
-import classnames from 'classnames';
+import React, { useContext, useEffect, useState } from 'react';
+import { useHistory, useParams } from 'react-router';
+import { useLoading, Oval } from '@agney/react-loading';
+import manager from '../services/websocket';
+import api from '../services/api';
 
+import { RpgContext } from '../contexts/RpgHomeContext';
 import { SessionContext } from '../contexts/SessionContext';
+import { SessionAdmin } from './SessionAdmin';
+import { SessionParticipant } from './SessionParticipant';
 
-import styles from '../styles/pages/Session.module.css';
+interface RpgParams{
+  id: string;
+}
 
-import { Button } from '../components/Button';
-import { CharacterItem } from '../components/sessionItems/CharacterItem';
-import { ScenarioItem } from '../components/sessionItems/ScenarioItem';
-import { ObjectItem } from '../components/sessionItems/ObjectItem';
-import { DiceModal } from '../components/sessionItems/DiceModal';
-import { CharOptionsModal } from '../components/sessionItems/CharOptionsModal';
-import { NotesModal } from '../components/sessionItems/NotesModal';
-import { ChatModal } from '../components/sessionItems/ChatModal';
+interface Character{
+  id: string;
+  name: string;
+  icon?: string;
+  status: Array<{
+    name: string;
+    color: string;
+    current: number;
+    limit: number;
+  }>;
+  skills: Array<{
+    name: string;
+    current: number;
+    limit: number;
+  }>;
+  inventory: Array<string>;
+}
+
+interface Scenario{
+  id: string;
+  name: string;
+  image?: string;
+}
+
+interface ObjectItem{
+  id: string;
+  name: string;
+  image?: string;
+}
 
 export function Session(){
-  const {characterList, fixedCharacterList, scenarioList, fixedScenario, objectList, fixedObject, handleOpenModals, handleSelectedCharacter} = useContext(SessionContext);
-  const [selectedItem, setSelectedItem] = useState('characters');
+  const params = useParams<RpgParams>();
+  const history = useHistory();
+  const { isAdm } = useContext(RpgContext);
+  const { loading, initializeSession } = useContext(SessionContext);
 
-  const [openObjectModal, setOpenObjectModal] = useState(false);
+  const [roomIsOpen, setRoomIsOpen] = useState(false);
+  const [characterList, setCharacterList] = useState<Character[]>([]);
+  const [scenarioList, setScenarioList] = useState<Scenario[]>([]);
+  const [objectList, setObjectList] = useState<ObjectItem[]>([]);
+
+  const { containerProps, indicatorEl } = useLoading({
+    loading: true,
+    indicator: <Oval />
+  });
+
+  const socket = manager.socket('/session');
+  
+  useEffect(() => {
+
+    api.get(`rpgs/${params.id}/objects`)
+    .then(res => {
+      if(res.data){
+        setObjectList(res.data);
+      }
+    })
+
+    api.get(`rpgs/${params.id}/scenarios`)
+    .then(res => {
+      if(res.data){
+        console.log(res.data)
+        setScenarioList(res.data);
+      }
+    }) 
+
+    api.get(`rpgs/${params.id}/characters`)
+    .then(res => {
+      if(res.data){
+        setCharacterList(res.data);
+      }
+    }) 
+
+    socket.emit('open_rooms');
+  }, [params.id])
+
+  useEffect(() => {
+    if(characterList.length > 0 && (scenarioList.length > 0 || objectList.length > 0)){
+      initializeSession(characterList, scenarioList, objectList);
+    }
+  }, [characterList])
+
+  socket.on('rooms', (rooms: Array<string>) => {
+    const indexRoom = rooms.indexOf(params.id);
+    if(indexRoom !== -1){
+      setRoomIsOpen(true);
+    } else {
+      history.push(`/rpgs/${params.id}`);
+    }
+  });
+
+  if(roomIsOpen){
+    if(loading) return (
+      <div style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
+        <div {...containerProps} style={{ 
+          width: '100px'
+        }}>
+          {indicatorEl}
+        </div>
+      </div>
+    )
+    else if(isAdm && characterList.length > 0) return <SessionAdmin />
+    else if (characterList.length > 0) {
+      socket.emit('join_room', params.id);
+      return <SessionParticipant />
+    }
+  }
 
   return(
-    <>
-      <DiceModal />
-      <CharOptionsModal />
-      <NotesModal />
-      <ChatModal />
-
-      {/* The Object Modal */}
-      <div className={styles.modal} style={{display: openObjectModal ? 'block' : 'none'}}>
-        <span className={styles.close} onClick={() => setOpenObjectModal(false)}>&times;</span>
-        <img src={fixedObject?.image} alt={fixedObject?.name} className={styles.modalContent} />
+    <div style={{
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    }}>
+      <div {...containerProps} style={{ 
+        width: '100px'
+      }}>
+        {indicatorEl}
       </div>
-
-      <div className={styles.sessionContainer}>
-        <div className={styles.column1}>
-          <div id={styles.characterContainer} className={styles.blocks}>
-            {fixedCharacterList.map((character, index) => {
-              return(
-                <CharacterItem key={character.id} character={character} isMini={true} />
-              );
-            })}
-          </div>
-
-          <div className={styles.buttonsContainer}>
-            <Button className={styles.buttons} text="Notas" onClick={() => {handleOpenModals(2)}}/>
-            <Button className={styles.buttons} text="Jogar Dados" onClick={() => {handleOpenModals(0)}}/>
-            <Button className={styles.buttons} text="Chat" onClick={() => {handleOpenModals(3)}}/>
-          </div>
-
-          <div id={styles.scenarioContainer} className={styles.blocks}>
-            <img src={fixedScenario?.image} alt={fixedScenario?.name}/>
-            <div className={classnames({[styles.overlay]: fixedObject})}></div>
-            <div className={styles.objectItem} style={{display: fixedObject ? '' : 'none'}}>
-              <img onClick={() => setOpenObjectModal(true)} src={fixedObject?.image} alt={fixedObject?.name}/>
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.column2}>
-          <div id={styles.itemsContainer} className={styles.blocks}>
-            <div className={styles.itemsOptions}>
-              <Button 
-                className={classnames(styles.buttons, {[styles.selectedItemButton]: selectedItem === 'characters'})} 
-                text="Personagens"
-                onClick={() => setSelectedItem('characters')}  
-              />
-              <Button 
-                className={classnames(styles.buttons, {[styles.selectedItemButton]: selectedItem === 'scenarios'})} 
-                text="Cenários"
-                onClick={() => setSelectedItem('scenarios')}  
-              />
-              <Button 
-                className={classnames(styles.buttons, {[styles.selectedItemButton]: selectedItem === 'objects'})} 
-                text="Itens"
-                onClick={() => setSelectedItem('objects')}  
-              />
-            </div>
-            <div className={styles.itemsArea}>
-            {(() => {
-              if(selectedItem === 'characters'){
-                return(
-                  characterList.map((character) => {
-                    return(
-                      <CharacterItem 
-                        key={character.id} 
-                        className={styles.charItem} 
-                        character={character} 
-                        fixButton={true}
-                        onClick={() => {handleSelectedCharacter(character); handleOpenModals(1)}} />
-                    );
-                  })
-                )
-              }
-              else if(selectedItem === 'scenarios'){
-                return(
-                  scenarioList.map((scenario) => {
-                    return(
-                      <ScenarioItem scenario={scenario}/>
-                    );
-                  })
-                )
-              }   
-              else if(selectedItem === 'objects'){
-                return(
-                  objectList.map((objectItem) => {
-                    return(
-                      <ObjectItem object={objectItem} />
-                    );
-                  })
-                )
-              }      
-            })()}
-            </div>
-          </div>
-
-          <Button className={styles.logoutButton} text="Sair" />
-        </div>
-      </div>
-    </>
-  );
+    </div>
+  )
 }

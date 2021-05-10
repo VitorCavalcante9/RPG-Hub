@@ -5,7 +5,6 @@ import { useAlert } from 'react-alert';
 import api from '../services/api';
 import classnames from 'classnames';
 
-import { AuthContext } from '../contexts/AuthContext';
 import { Layout } from '../components/Layout';
 
 import styles from '../styles/pages/Home.module.css';
@@ -18,21 +17,17 @@ interface RPG{
 }
 
 export function Home(){
-  const { getToken } = useContext(AuthContext);
-  const token = getToken();
   const [rpgs, setRpgs] = useState<RPG[]>([]);
   const [rpgsParticipant, setRpgsParticipant] = useState<RPG[]>([]);
 
-  const {register, handleSubmit, errors} = useForm();
+  const {register, handleSubmit, reset, errors} = useForm();
   const history = useHistory();
   const alert = useAlert();
   const [openEnterRPGModal, setOpenEnterRPGModal] = useState(false);
-  const [inputRef, setInputRef] = useState<any>();
 
   useEffect(() => {
-    api.get('home', {
-      headers: { 'Authorization': `Bearer ${token}`}
-    }).then(res => {
+    api.get('home')
+    .then(res => {
       const {rpgs: your_rpgs, partipating_rpgs} = res.data;
 
       const rpg_ids = your_rpgs.map((rpg: RPG) =>{return rpg.id});
@@ -48,23 +43,18 @@ export function Home(){
   }, [errors, alert])
 
   const enterInRPG = async(data:any) => {
-    await api.post('invite', data, {
-      headers: { 'Authorization': `Bearer ${token}`}
-    }).then(res => {
+    await api.post('invite', data)
+    .then(res => {
       alert.success(res.data.message);
-      const { rpg_id } = data;
-      inputRef.value = '';
+      const { rpg_id } = data;      
+      reset({something: ''});
       history.push(`/rpgs/${rpg_id}`)
     }).catch(error => {
       if(!error.response) alert.error("Impossível conectar ao servidor!");
       else alert.error(error.response.data.message);
     })
   }
-
-  function setInput(ref: any){
-    setInputRef(ref);
-  }
-
+  
   return(
     <>
     {/* The EnterRPG Modal */}
@@ -78,7 +68,6 @@ export function Home(){
             type='text'
             label='Insira o código do RPG:' 
             inputRef={register({required: true})}
-            setInputRef={setInput}
           />
 
           <button className={styles.buttons} type='submit'>Entrar</button>
@@ -89,7 +78,7 @@ export function Home(){
           type='button' 
           onClick={() => {
             setOpenEnterRPGModal(false); 
-            inputRef.value = '';
+            reset({something: ''});
           }}
         >Cancelar</button> 
       </div>

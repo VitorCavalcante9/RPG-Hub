@@ -7,7 +7,6 @@ import api from '../../services/api';
 import styles from '../../styles/components/modals/AccountModal.module.css';
 
 import { RpgContext } from '../../contexts/RpgHomeContext';
-import { AuthContext } from '../../contexts/AuthContext';
 import { Modal } from './Modal';
 import { Button } from '../Button';
 
@@ -29,17 +28,14 @@ export function AccountModal(){
   const charId = searchContent.get('c');
 
   const {openAccountModal} = useContext(RpgContext);
-  const { getToken } = useContext(AuthContext);
-  const token = getToken();
   const alert = useAlert();
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [previousAccount, setPreviousAccount] = useState<Account>();
   const [account, setAccount] = useState<Account>();
 
   useEffect(() => {
-    api.get(`rpgs/${params.id}/characters/${charId}`, {
-      headers: { 'Authorization': `Bearer ${token}`}
-    }).then(res => {
+    api.get(`rpgs/${params.id}/characters/${charId}`)
+    .then(res => {
       const {user} = res.data;
       if(user.id){
         setPreviousAccount(user);
@@ -50,13 +46,12 @@ export function AccountModal(){
       }
     })
 
-    api.get(`rpgs/${params.id}`, {
-      headers: { 'Authorization': `Bearer ${token}`}
-    }).then(res => {
+    api.get(`rpgs/${params.id}`)
+    .then(res => {
       const {participants} = res.data;
       setAccounts(participants);
     })
-  }, [openAccountModal]);
+  }, [charId, openAccountModal, params.id]);
 
   function selectAccount(this_account: Account){
     setAccount(this_account);
@@ -68,9 +63,8 @@ export function AccountModal(){
         user_id: account.id
       }
       
-      api.patch(`/rpgs/${params.id}/characters/${charId}/link_account`, data, {
-        headers: { 'Authorization': `Bearer ${token}`}
-      }).then(res => {
+      api.patch(`/rpgs/${params.id}/characters/${charId}/link_account`, data)
+      .then(res => {
         alert.success(res.data.message);
         
         setPreviousAccount(account);
@@ -89,9 +83,8 @@ export function AccountModal(){
         user_id: previousAccount.id
       }
       
-      api.patch(`/rpgs/${params.id}/characters/${charId}/unlink_account`, data, {
-        headers: { 'Authorization': `Bearer ${token}`}
-      }).then(res => {
+      api.patch(`/rpgs/${params.id}/characters/${charId}/unlink_account`, data)
+      .then(res => {
         alert.success(res.data.message);
         
         setPreviousAccount({id: '', username: ''});

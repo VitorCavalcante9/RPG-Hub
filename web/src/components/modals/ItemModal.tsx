@@ -1,10 +1,8 @@
 import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
-import classnames from 'classnames';
 import { useForm } from 'react-hook-form';
 import { useAlert } from 'react-alert';
 import { useHistory } from 'react-router-dom';
 import { useParams } from 'react-router';
-import { AuthContext } from '../../contexts/AuthContext';
 import { RpgContext } from '../../contexts/RpgHomeContext';
 import { Modal } from './Modal';
 import api from '../../services/api';
@@ -27,14 +25,11 @@ export function ItemModal(){
 
   const {openModals, handleOpenModals} = useContext(RpgContext);
   const alert = useAlert();
-  const { getToken } = useContext(AuthContext);
-  const token = getToken();
 
   const [name, setName] = useState<string>();
   const [images, setImages] = useState<File[]>([]);
   const [previewImage, setPreviewImage] = useState('');
   const {register, handleSubmit, errors} = useForm();
-  const [inputRef, setInputRef] = useState<any>();
 
   useEffect(() => {
     setName('')
@@ -43,16 +38,15 @@ export function ItemModal(){
 
   useEffect(() => {
     if(objectId){
-      api.get(`rpgs/${params.id}/objects/${objectId}`, {
-        headers: { 'Authorization': `Bearer ${token}`}
-      }).then(res => {
+      api.get(`rpgs/${params.id}/objects/${objectId}`)
+      .then(res => {
         const { name: objectName, image } = res.data;
 
         setName(objectName)
         setPreviewImage(image);
       }) 
     }     
-  }, [objectId]);
+  }, [objectId, params.id]);
 
   useEffect(()=> {
     if(errors.name) alert.error("Insira um nome")
@@ -70,10 +64,6 @@ export function ItemModal(){
     setPreviewImage(selectImagePreview);
   }
 
-  function setInput(ref: any){
-    setInputRef(ref);
-  }
-
   const onSubmit = async(data:any) => {
     const { name } = data;
     const objectData = new FormData();
@@ -84,9 +74,8 @@ export function ItemModal(){
     else objectData.append('previousImage', previewImage);
 
     if(objectId){
-      await api.put(`rpgs/${params.id}/objects/${objectId}`, objectData, {
-        headers: { 'Authorization': `Bearer ${token}`}
-      }).then(res => {
+      await api.put(`rpgs/${params.id}/objects/${objectId}`, objectData)
+      .then(res => {
         alert.success(res.data.message);
         history.push(`/rpgs/${params.id}`);
         handleOpenModals(1);
@@ -96,9 +85,8 @@ export function ItemModal(){
         else alert.error(error.response.data.message);
       })
     } else {
-      await api.post(`rpgs/${params.id}/objects`, objectData, {
-        headers: { 'Authorization': `Bearer ${token}`}
-      }).then(res => {
+      await api.post(`rpgs/${params.id}/objects`, objectData)
+      .then(res => {
         alert.success(res.data.message);
         
         setName('')
@@ -137,7 +125,6 @@ export function ItemModal(){
               label='Nome' 
               value={name}
               inputRef={register({required: true})}
-              setInputRef={setInput}
               onChange={e => setName(e.target.value)}
             />
 

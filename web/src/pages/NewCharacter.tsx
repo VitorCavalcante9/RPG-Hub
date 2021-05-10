@@ -2,9 +2,8 @@ import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import api from '../services/api';
 import classnames from 'classnames';
 import { useAlert } from 'react-alert';
-import { Redirect, useHistory, useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { useForm } from 'react-hook-form';
-import { AuthContext } from '../contexts/AuthContext';
 import { RpgContext } from '../contexts/RpgHomeContext';
 
 import { Block } from '../components/Block';
@@ -46,15 +45,12 @@ export function NewCharacter(){
   const history = useHistory();
 
   const alert = useAlert();
-  const { getToken } = useContext(AuthContext);
-  const token = getToken();
   const {handleOpenAccountModal} = useContext(RpgContext);
 
   const [name, setName] = useState<string>();
   const [images, setImages] = useState<File[]>([]);
   const [previewImage, setPreviewImage] = useState('');
-  const [inputRef, setInputRef] = useState<any>();  
-  const {register, handleSubmit, errors} = useForm();
+  const {register, handleSubmit, reset, errors} = useForm();
 
   const [inventoryItems, setInventoryItems] = useState<string[]>([]);
   const [statusItems, setStatusItems] = useState<StatusItems[]>([]);
@@ -66,9 +62,8 @@ export function NewCharacter(){
 
   useEffect(() => {
     if(charId){
-      api.get(`rpgs/${params.id}/characters/${charId}`, {
-        headers: { 'Authorization': `Bearer ${token}`}
-      }).then(res => {
+      api.get(`rpgs/${params.id}/characters/${charId}`)
+      .then(res => {
         const { name: charName, icon, status, skills, inventory, limitOfPoints } = res.data;
 
         setName(charName)
@@ -80,9 +75,8 @@ export function NewCharacter(){
       }) 
 
     } else {
-      api.get(`rpgs/${params.id}/sheet`, {
-        headers: { 'Authorization': `Bearer ${token}`}
-      }).then(res => {
+      api.get(`rpgs/${params.id}/sheet`)
+      .then(res => {
         if(res.data.status && res.data.skills && res.data.limitOfPoints){
           const { status, skills, limitOfPoints } = res.data;
           
@@ -125,9 +119,8 @@ export function NewCharacter(){
       else characterData.append('previousIcon', previewImage);
 
       if(charId){
-        await api.put(`rpgs/${params.id}/characters/${charId}`, characterData, {
-          headers: { 'Authorization': `Bearer ${token}`}
-        }).then(res => {
+        await api.put(`rpgs/${params.id}/characters/${charId}`, characterData)
+        .then(res => {
           alert.success(res.data.message);
 
         }).catch(error => {
@@ -135,19 +128,17 @@ export function NewCharacter(){
           else alert.error(error.response.data);
         }) 
       } else {
-        await api.post(`rpgs/${params.id}/characters`, characterData, {
-          headers: { 'Authorization': `Bearer ${token}`}
-        }).then(res => {
+        await api.post(`rpgs/${params.id}/characters`, characterData)
+        .then(res => {
           alert.success(res.data.message);
-  
+          
+          reset({something: ''});
           setPreviewImage('');
-          inputRef.value = '';
           setInventoryItems([]);
           setName('');
   
-          api.get(`rpgs/${params.id}/sheet`, {
-            headers: { 'Authorization': `Bearer ${token}`}
-          }).then(res => {
+          api.get(`rpgs/${params.id}/sheet`)
+          .then(res => {
             if(res.data.status && res.data.skills && res.data.limitOfPoints){
               const { status, skills, limitOfPoints } = res.data;
               
@@ -233,14 +224,9 @@ export function NewCharacter(){
     setPreviewImage(selectImagePreview);
   }
 
-  function setInput(ref: any){
-    setInputRef(ref);
-  }
-
   async function deleteCharacter(){
-    api.delete(`rpgs/${params.id}/characters/${charId}`, {
-      headers: { 'Authorization': `Bearer ${token}`}
-    }).then(res => {
+    api.delete(`rpgs/${params.id}/characters/${charId}`)
+    .then(res => {
       history.push(`/rpgs/${params.id}`);
     }).catch(error => {
       if(!error.response) alert.error("Impossível conectar ao servidor!");
@@ -295,7 +281,6 @@ export function NewCharacter(){
               </div>
 
               <InputLabel 
-                setInputRef={setInput} 
                 className={styles.input} 
                 value={name}
                 name='name' 

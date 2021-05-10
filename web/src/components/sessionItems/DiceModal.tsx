@@ -1,5 +1,10 @@
-import React, { useContext, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { createRef, useContext, useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router';
+import api from '../../services/api';
+import manager from '../../services/websocket';
 import { SessionContext } from '../../contexts/SessionContext';
+import { RpgContext } from '../../contexts/RpgHomeContext';
 
 import styles from '../../styles/components/sessionItems/DiceModal.module.css';
 
@@ -7,7 +12,9 @@ import { Block } from '../Block';
 import { CharacterItem } from './CharacterItem';
 import { SkillsItems } from '../characterItems/SkillsItem';
 import { Button } from '../Button';
-import { RpgContext } from '../../contexts/RpgHomeContext';
+import { useAlert } from 'react-alert';
+import { Message } from './Message';
+import { InputLine } from '../InputLine';
 
 interface Skill{
   name: string;
@@ -15,14 +22,117 @@ interface Skill{
   limit: number;
 }
 
+interface RpgParams{
+  id: string;
+}
+
+interface DataDice{
+  dice: string;
+  skill: {
+    name: string;
+    value: number;
+  } | null;
+  bonus: number | null;
+}
+
 export function DiceModal(){
+  const params = useParams<RpgParams>();
   const {isAdm} = useContext(RpgContext);
+  const alert = useAlert();
   const {characterList, openModals, selectedCharacter, handleOpenModals, handleSelectedCharacter} = useContext(SessionContext);
+
+  const msgRef = useRef<HTMLDivElement>(null);
+  
   const [skill, setSkill] = useState<Skill | null>();
+  const [dices, setDices] = useState<string[]>([]);
+  const [dice, setDice] = useState('');
+  const [bonus, setBonus] = useState(0);
   const [isChoosingChar, setIsChoosingChar] = useState(false);
 
-  function selectSkill(this_skill: Skill){
-    setSkill(this_skill);
+  const [messages, setMessages] = useState<any[]>([]);
+  const [lastMessage, setLastMessage] = useState<any>(null);
+
+  const socket = manager.socket('/session');
+
+  useEffect(() => {
+    api.get(`rpgs/${params.id}/dices`)
+    .then(res => {
+      if(res.data){
+        setDices(res.data);
+        setDice(dices[0]);
+      }
+    })   
+    
+    socket.on('roll_dices', ({ message }: any) => {
+      try{
+        if(message.character){
+          const { results, sumResults, character, resultSkill, skillName, bonus } = message;
+          const newMessage = [`${results} → ${sumResults}\n`, <b>{character}</b>, ' tirou ', <b>{resultSkill}</b>, ' em ', <b>{skillName}</b>, `${bonus ? ` com ${bonus} de bônus` : ''}`];
+          setLastMessage(newMessage);
+        }
+        else setLastMessage(message);
+  
+      } catch(err){
+        console.log(err)
+      }
+    })
+  }, [params.id]);
+
+  useEffect(() => {
+    if(lastMessage){
+      setMessages([...messages, lastMessage]);
+      setLastMessage(null);
+    }
+  }, [lastMessage])
+
+  useEffect(() => {
+    if(msgRef.current) {
+      msgRef.current.scrollIntoView({ behavior: 'smooth'});
+    };
+  }, [messages])
+
+  function rollDices(){
+    let data: DataDice = {
+      dice,
+      skill: null,
+      bonus: null
+    }
+    
+    if(skill){
+      const skillData = {
+        name: skill.name,
+        value: skill.current
+      }
+
+      data.skill = skillData;  
+      
+      if(bonus) data.bonus = bonus;
+    }
+
+    api.post(`rpgs/${params.id}/roll_dices`, data)
+      .then(res => {
+        const { results, sumResults, resultSkill, skillName, bonus } = res.data;
+
+        const newMessage = resultSkill ? 
+          [`${JSON.stringify(results)} → ${sumResults}\n`, <b>{selectedCharacter.name}</b>, ' tirou ', <b>{resultSkill}</b>, ' em ', <b>{skillName}</b>, `${bonus ? ` com ${bonus} de bônus` : ''}`] :
+          `${selectedCharacter.name}: ${JSON.stringify(results)} → ${sumResults}`;
+
+        socket.emit('roll_dices', { room: params.id, message: resultSkill ? {
+          results: JSON.stringify(results),
+          sumResults,
+          character: selectedCharacter.name,
+          resultSkill,
+          skillName,
+          bonus
+        } : newMessage});
+        setMessages([...messages, newMessage]);
+
+        setBonus(0)
+
+      }).catch(err => {
+        if(!err.response) alert.error("Impossível conectar ao servidor!");
+        else if(err.response.status !== 404) alert.error(err.response.data.message);
+      })
   }
 
   return(
@@ -67,12 +177,24 @@ export function DiceModal(){
                         onClick={() => setSkill(this_skill)} 
                         key={this_skill.name} 
                         className={styles.skillItem}
-                        style={{backgroundColor: this_skill == skill ? '#501B1D' : 'transparent' }}>
+                        style={{backgroundColor: this_skill === skill ? '#501B1D' : 'transparent' }}>
                         <SkillsItems
                           value={this_skill.current} 
                           name={this_skill.name} 
                           limit={this_skill.limit}
                         />
+                        {(() => {
+                          if(this_skill === skill) return (
+                            <div className={styles.bonus}>
+                              <p>Bônus: </p>
+                              <InputLine
+                                value={bonus}
+                                maxValue={100 - this_skill.current}
+                                onChange={e => setBonus(Number(e.target.value))}
+                              />
+                            </div>
+                          )
+                        })()}
                       </div>
                     )
                   })}
@@ -82,18 +204,30 @@ export function DiceModal(){
             </div>
 
             <div className={styles.grid1}>
-              <Block name="Chat" className={styles.blocks}></Block>
+              <Block name="Chat" className={styles.blocks} >
+                {messages.map((message, index) => {
+                  return(
+                    <Message key={index} message={message} msgRef={msgRef} />
+                  )
+                })}
+              </Block>
 
               <div className={styles.dice}>
                 <p>Dado:</p>
 
-                <select value="" id="dice">
-                  <option value="1d100">1 d 100</option>
+                <select 
+                  value={dice} 
+                  id="dice"
+                  onChange={(e) => {setDice(e.target.value)}} 
+                >
+                  {dices.map((dice, index) => {
+                    return <option key={index} value={dice}>{dice}</option>
+                  })}
                 </select>
               </div>
             </div>
 
-            <Button text="Rolar Dados" className={styles.grid1} />
+            <Button onClick={rollDices} text="Rolar Dados" className={styles.grid1} />
             <Button text="Fechar" className={styles.grid2} onClick={() => {handleOpenModals(0)}}/>
           </div>
         </div>

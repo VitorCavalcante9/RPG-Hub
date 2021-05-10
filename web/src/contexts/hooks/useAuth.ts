@@ -13,29 +13,21 @@ export default function useAuth(){
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const socket = manager.socket('/rpgHome');
+
   useEffect(() => {
     const token = localStorage.getItem('token');
 
     if(token){
-      api.defaults.headers.Authorizarion = `Bearer ${JSON.parse(token)}`;
+      api.defaults.headers.Authorization = `Bearer ${JSON.parse(token)}`;
       setAuthenticated(true);
       
-      const socket = manager.socket('/rpgHome');
       socket.open();
-      socket.emit('login');
+      socket.emit('login', JSON.parse(token));
     }
 
     setLoading(false);
-  }, []);
-
-  function getToken(){
-    const token = localStorage.getItem('token');
-
-    if(token)
-      return JSON.parse(token);
-    else
-      return null
-  }
+  }, [socket]);
 
   function handleLogin(token: JSON){
     localStorage.setItem('token', JSON.stringify(token));
@@ -58,13 +50,14 @@ export default function useAuth(){
   }
 
   function handleLogout(){
+    socket.close();
     setAuthenticated(false);
     localStorage.removeItem('token');
     localStorage.removeItem('rpgs');
-    api.defaults.headers.Authorizarion = undefined;
+    api.defaults.headers.Authorization = undefined;
     window.location.href = "/";
   }
 
-  return {authenticated, loading, handleLogin, handleLogout, getToken}
+  return {authenticated, loading, handleLogin, handleLogout}
 
 }

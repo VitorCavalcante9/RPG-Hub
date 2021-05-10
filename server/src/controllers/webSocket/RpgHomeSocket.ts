@@ -1,14 +1,18 @@
-import { Request } from 'express';
+import jwt from 'jsonwebtoken';
 
-interface User{
+interface TokenPayLoad{
   id: string;
+  iat: number;
+  exp: number;
 }
 
 class RpgHomeSocket{
-  respond(endpoint, socket){
+  respond(endpoint, socket, user){
     console.log('user connected')
+    console.log(user)
 
     const emitUsers = () => {
+      console.log(1,getUsers());
       endpoint.emit('users', getUsers());
     }
 
@@ -19,16 +23,21 @@ class RpgHomeSocket{
         if(c.user != undefined) 
           users.push(c.user)
       })
-    
+      
       return users;
     }
     
-    socket.on('login', () => {
+    socket.on('login', token => {
+      const data = jwt.verify(token, process.env.APP_KEY);
+      const { id } = data as TokenPayLoad;
+      socket.user = id;      
+      console.log('login', id)
       emitUsers();
     })
 
     socket.on('update_users', () =>{
-      emitUsers();
+      console.log('update')
+      socket.emit('users', getUsers());
     });
 
     socket.on('disconnect', () => {

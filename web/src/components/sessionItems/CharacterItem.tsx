@@ -19,22 +19,24 @@ interface Character{
     current: number;
     limit: number;
   }>;
+  inventory: Array<string>;
 }
 
 interface CharacterItemProps extends HTMLAttributes<HTMLDivElement>{
   isMini?: boolean;
   fixButton?: boolean;
   character: Character;
+  hover?: boolean;
 }
 
-export function CharacterItem({isMini, fixButton, character, className, onClick}: CharacterItemProps){
+export function CharacterItem({isMini, hover, fixButton, character, className, onClick}: CharacterItemProps){
   const {toggleFixCharacter, fixedCharacterList, characterList} = useContext(SessionContext);
 
   const [textButton, setTextButton] = useState('Fixar');
 
   useEffect(() => {
     const verifyIfExists = fixedCharacterList.indexOf(character);
-    if(verifyIfExists != -1) setTextButton('Desafixar');
+    if(verifyIfExists !== -1) setTextButton('Desafixar');
   }, [])
 
   useEffect(() => {
@@ -51,10 +53,10 @@ export function CharacterItem({isMini, fixButton, character, className, onClick}
   }
   
   return(
-    <div className={classnames(className, styles.characterContainer, {[styles.miniContainer]: isMini})}>
+    <div className={classnames(className, styles.characterContainer, {[styles.miniContainer]: isMini, [styles.hover]: hover})}>
       <div className={styles.iconContainer} onClick={onClick}>
         <div className={styles.icon}>
-          <img src="" alt=""/>
+          <img src={character.icon} alt={character.name}/>
         </div>
       </div>
 

@@ -8,7 +8,6 @@ import { useHistory, useParams } from 'react-router';
 import { Button } from '../components/Button';
 import { InputLabel } from '../components/InputLabel';
 import { Layout } from '../components/Layout';
-import { AuthContext } from '../contexts/AuthContext';
 import api from '../services/api';
 
 import styles from '../styles/pages/NewScenario.module.css';
@@ -25,22 +24,18 @@ export function NewScenario(){
   const history = useHistory();
 
   const alert = useAlert();
-  const { getToken } = useContext(AuthContext);
-  const token = getToken();
 
   const [name, setName] = useState<string>();
   const [images, setImages] = useState<File[]>([]);
   const [previewImage, setPreviewImage] = useState('');
   const {register, handleSubmit, reset, errors} = useForm();
-  const [inputRef, setInputRef] = useState<any>();
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   useEffect(() => {
     if(scenId){
-      api.get(`rpgs/${params.id}/scenarios/${scenId}`, {
-        headers: { 'Authorization': `Bearer ${token}`}
-      }).then(res => {
+      api.get(`rpgs/${params.id}/scenarios/${scenId}`)
+      .then(res => {
         const { name: scenarioName, image } = res.data;
 
         setName(scenarioName)
@@ -75,9 +70,8 @@ export function NewScenario(){
     else scenarioData.append('previousImage', previewImage);
 
     if(scenId){
-      await api.put(`rpgs/${params.id}/scenarios/${scenId}`, scenarioData, {
-        headers: { 'Authorization': `Bearer ${token}`}
-      }).then(res => {
+      await api.put(`rpgs/${params.id}/scenarios/${scenId}`, scenarioData)
+      .then(res => {
         alert.success(res.data.message);
       }).catch(error => {
         console.error(error)
@@ -85,9 +79,8 @@ export function NewScenario(){
         else alert.error(error.response.data.message);
       })
     } else {
-      await api.post(`rpgs/${params.id}/scenarios`, scenarioData, {
-        headers: { 'Authorization': `Bearer ${token}`}
-      }).then(res => {
+      await api.post(`rpgs/${params.id}/scenarios`, scenarioData)
+      .then(res => {
         alert.success(res.data.message);
   
         setPreviewImage('');
@@ -99,15 +92,9 @@ export function NewScenario(){
       })
     }
   }
-
-  function setInput(ref: any){
-    setInputRef(ref);
-  }
-
   async function deleteScenario(){
-    api.delete(`rpgs/${params.id}/scenarios/${scenId}`, {
-      headers: { 'Authorization': `Bearer ${token}`}
-    }).then(res => {
+    api.delete(`rpgs/${params.id}/scenarios/${scenId}`)
+    .then(res => {
       history.push(`/rpgs/${params.id}`);
     }).catch(error => {
       if(!error.response) alert.error("Impossível conectar ao servidor!");
@@ -158,7 +145,6 @@ export function NewScenario(){
                 label='Nome' 
                 value={name}
                 inputRef={register({required: true})}
-                setInputRef={setInput}
                 onChange={e => setName(e.target.value)}
               />
 

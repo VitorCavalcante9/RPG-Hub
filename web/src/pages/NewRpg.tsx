@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form';
 import { useAlert } from 'react-alert';
 import { useHistory } from 'react-router';
 import api from '../services/api';
-import { AuthContext } from '../contexts/AuthContext';
 
 import { Button } from '../components/Button';
 import { InputLabel } from '../components/InputLabel';
@@ -17,11 +16,9 @@ export function NewRpg(){
   const search = window.location.search;
   const searchContent = new URLSearchParams(search);
   const rpgId = searchContent.get('r');
-  const { getToken } = useContext(AuthContext);
 
   const [name, setName] = useState<string>();
   const [images, setImages] = useState<File[]>([]);
-  const token = getToken();
   const [previewImage, setPreviewImage] = useState('');
 
   const {register, handleSubmit, errors} = useForm();
@@ -31,9 +28,8 @@ export function NewRpg(){
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   useEffect(() => {
-    api.get(`rpgs/${rpgId}`, {
-      headers: { 'Authorization': `Bearer ${token}`}
-    }).then(res => {
+    api.get(`rpgs/${rpgId}`)
+    .then(res => {
       const { name: rpgName, icon } = res.data;
 
       setName(rpgName)
@@ -55,9 +51,8 @@ export function NewRpg(){
     else rpgData.append('previousIcon', previewImage);
 
     if(rpgId){
-      await api.patch(`rpgs/${rpgId}`, rpgData, {
-        headers: { 'Authorization': `Bearer ${token}`}
-      }).then(res => {
+      await api.patch(`rpgs/${rpgId}`, rpgData)
+      .then(res => {
         alert.success(res.data.message);
         
         history.push(`/rpgs/${rpgId}`);
@@ -66,9 +61,8 @@ export function NewRpg(){
         else alert.error(error.response.data.message);
       })
     } else {
-      await api.post('rpgs', rpgData, {
-        headers: { 'Authorization': `Bearer ${token}`}
-      }).then(res => {
+      await api.post('rpgs', rpgData)
+      .then(res => {
         const { rpgId } = res.data;
         const rpgs = localStorage.getItem('rpgs');
         if(rpgs){
@@ -102,9 +96,8 @@ export function NewRpg(){
   }
 
   async function deleteRpg(){
-    api.delete(`rpgs/${rpgId}`, {
-      headers: { 'Authorization': `Bearer ${token}`}
-    }).then(res => {
+    api.delete(`rpgs/${rpgId}`)
+    .then(res => {
       alert.success(res.data.message);
       history.push(`/home`);
     }).catch(error => {
@@ -156,7 +149,6 @@ export function NewRpg(){
                 label='Nome' 
                 value={name}
                 inputRef={register({required: true})}
-                setInputRef={() => {}}
                 onChange={e => setName(e.target.value)}
               />
               <TextAreaLabel 

@@ -4,10 +4,20 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  transition: all 0.2s;
 }
 
 .scenarioContainer + .scenarioContainer{
   margin-top: 2rem;
+}
+
+.scenarioContainer:hover{
+  width: 28.5rem;
+}
+
+.scenarioContainer:hover .image{
+  height: 16.25rem;
 }
 
 .image{
@@ -16,6 +26,8 @@
   border-radius: 1.5rem;
   background-color: #FFF;
   overflow: hidden;
+
+  transition: all 0.2s;
 }
 
 .image img{
@@ -63,7 +75,16 @@
     width: 33rem;
   }
 
+  .scenarioContainer:hover{
+    width: 33.5rem;
+  }
+
   .image{
     height: 18.56rem;
   }
+
+  .scenarioContainer:hover .image{
+    height: 19.06rem;
+  }
+
 }

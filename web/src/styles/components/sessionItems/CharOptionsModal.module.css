@@ -169,6 +169,26 @@
   margin-top: 1.5rem;
 }
 
+.saveInventory{
+  cursor: pointer;
+  height: 2.2rem;
+  border-radius: 10rem;
+  width: 6.5rem;
+  margin-left: 1rem;
+  
+  background: var(--color-button);
+  color: var(--color-text-button);
+  text-align: center;
+  border: 0;
+
+  font: 600 1.6rem Rajdhani;
+  transition: background 0.2s;
+}
+
+.saveInventory:hover{
+  background: #913538;
+}
+
 @media (min-width:1100px){
   .container{
     width: 55%;

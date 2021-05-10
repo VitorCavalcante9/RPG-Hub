@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useContext, useEffect, useState } from 'react';
 import classnames from 'classnames';
 import { Link } from 'react-router-dom';
@@ -12,18 +13,17 @@ import user from '../assets/icons/user.svg';
 import moon from '../assets/icons/moon.svg';
 
 export function Sidebar(){
-  const {handleLogout, getToken} = useContext(AuthContext);
+  const { handleLogout } = useContext(AuthContext);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [userData, setUserData] = useState({username: '', icon: ''})
 
   useEffect(() => {
-    const token = getToken();
-    api.get('users', {
-      headers: { 'Authorization': `Bearer ${token}`}
-    }).then(res => {
+    api.get('users')
+    .then(res => {
       const { username, icon } = res.data;
       setUserData({username, icon});
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [window.location])
 
   const toggleCollapsed = () =>{

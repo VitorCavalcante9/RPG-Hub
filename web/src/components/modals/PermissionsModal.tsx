@@ -1,17 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { useAlert } from 'react-alert';
-import classnames from 'classnames';
 import api from '../../services/api';
 
 import styles from '../../styles/components/modals/PermissionsModal.module.css';
 
 import { RpgContext } from '../../contexts/RpgHomeContext';
-import { AuthContext } from '../../contexts/AuthContext';
 import { Modal } from './Modal';
 import { Button } from '../Button';
-
-import trash from '../../assets/icons/trash.svg';
 
 interface Permission{
   id: number;
@@ -38,15 +34,12 @@ export function PermissionsModal({newPermissions}: PermissionsModalProps){
   const params = useParams<RpgParams>();
 
   const {openModals, handleOpenModals} = useContext(RpgContext);
-  const { getToken } = useContext(AuthContext);
-  const token = getToken();
   const alert = useAlert();
   const [permissions, setPermissions] = useState<Permission[]>([]);
 
   useEffect(() => {
-    api.get(`rpgs/${params.id}/permissions`, {
-      headers: { 'Authorization': `Bearer ${token}`}
-    }).then(res => {
+    api.get(`rpgs/${params.id}/permissions`)
+    .then(res => {
       const permissionsRes = res.data;
       const filteredPermissions = permissionsRes.filter((this_permission: Permission) => !this_permission.permission);
       setPermissions(filteredPermissions)
@@ -57,16 +50,16 @@ export function PermissionsModal({newPermissions}: PermissionsModalProps){
     })
 
     if(permissions.length > 0) newPermissions(true);
-  }, [params.id, acceptPermission]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.id, acceptPermission, permissions.length, newPermissions]);
 
   useEffect(() => {
     newPermissions(false);
-  }, [openModals[4]])
+  }, [newPermissions])
 
   async function denyPermission(id: number){
-    api.delete(`rpgs/${params.id}/permissions/${id}`, {
-      headers: { 'Authorization': `Bearer ${token}`}
-    }).then(res => {
+    api.delete(`rpgs/${params.id}/permissions/${id}`)
+    .then(res => {
       alert.success(res.data.message)
     }).catch(err => {
       if(!err.response) alert.error("Impossível conectar ao servidor!");
@@ -74,10 +67,10 @@ export function PermissionsModal({newPermissions}: PermissionsModalProps){
     })
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   async function acceptPermission(id: number){
-    api.put(`rpgs/${params.id}/permissions/${id}`, null, {
-      headers: { 'Authorization': `Bearer ${token}`}
-    }).then(res => {
+    api.put(`rpgs/${params.id}/permissions/${id}`, null)
+    .then(res => {
       alert.success(res.data.message)
     }).catch(err => {
       if(!err.response) alert.error("Impossível conectar ao servidor!");

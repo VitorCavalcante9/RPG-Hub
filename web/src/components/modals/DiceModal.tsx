@@ -7,7 +7,6 @@ import { Modal } from './Modal';
 import styles from '../../styles/components/modals/DiceModal.module.css';
 
 import { RpgContext } from '../../contexts/RpgHomeContext';
-import { AuthContext } from '../../contexts/AuthContext';
 import { Button } from '../Button';
 import { Block } from '../Block';
 import { InputLine } from '../InputLine';
@@ -22,17 +21,14 @@ interface RpgParams{
 export function DiceModal(){
   const params = useParams<RpgParams>();
   const alert = useAlert();
-  const { getToken } = useContext(AuthContext);
-  const token = getToken();
 
   const {openModals} = useContext(RpgContext);
   const [dices, setDices] = useState<String[]>([]);
   const [dice, setDice] = useState({quantity: '', value: ''});
 
   useEffect(() => {
-    api.get(`rpgs/${params.id}/dices`, {
-      headers: { 'Authorization': `Bearer ${token}`}
-    }).then(res => {
+    api.get(`rpgs/${params.id}/dices`)
+    .then(res => {
       if(res.data){
         setDices(res.data);
       }
@@ -62,9 +58,8 @@ export function DiceModal(){
       const dicesData = {
         dices
       }
-      await api.patch(`rpgs/${params.id}/dices`, dicesData, {
-        headers: { 'Authorization': `Bearer ${token}`}
-      }).then(res => {
+      await api.patch(`rpgs/${params.id}/dices`, dicesData)
+      .then(res => {
         alert.success('Padrão de Dados atualizado com sucesso')
       }).catch(err => alert.error(err.response.data.message));
     } else {

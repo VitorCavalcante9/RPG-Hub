@@ -123,6 +123,20 @@ body{
   background: #913538;
 }
 
+.custom-scrollbar::-webkit-scrollbar{
+  width: 10px;
+  height: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb{
+  background: #888; 
+  border-radius: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover{
+  background: rgb(131, 131, 131); 
+}
+
 @media (min-width: 700px){
   :root{
     font-size: 62.5%;

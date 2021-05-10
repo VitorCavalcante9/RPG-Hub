@@ -19,11 +19,9 @@ interface Character{
 
 class GameController{
   async saveSession(req: Request, res: Response){
-    const { characters, notes } = req.body;
+    const { characters } = req.body;
     const charactersList: Character[] = characters;
-    const { rpg_id } = req.params;
     const charactersRepository = getCustomRepository(CharactersRepository);
-    const notesRepository = getCustomRepository(NotesRepository);
 
     const schema = yup.object().shape({
       characters: yup.array(yup.object({
@@ -35,8 +33,7 @@ class GameController{
           current: yup.number().min(0).integer().required('Insira um valor válido'),
           limit: yup.number().min(0).integer().required('Insira um valor válido')
         }))
-      })),
-      notes: yup.array(yup.string())
+      }))
     })
 
     try{
@@ -47,15 +44,6 @@ class GameController{
     }
     
     try{
-      //Save Notes
-      const currentNotesData = await notesRepository.findOneOrFail({ user_id: req.userId, rpg_id});
-      const newNotesData = {
-        ...currentNotesData,
-        notes
-      }
-
-      await notesRepository.update(currentNotesData.id, newNotesData);
-
       //Save Characters
       charactersList.map(async character => {
         const currentCharacterData = await charactersRepository.findOne(character.id);

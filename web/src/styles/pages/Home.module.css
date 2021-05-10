@@ -16,6 +16,7 @@
 .contentContainer .text h1{
   font: 600 2.3rem Rajdhani;
   color: var(--color-text-title);
+  text-align: left;
 }
 
 .contentContainer .text button{
@@ -44,13 +45,13 @@
 }
 
 .rpgItem:hover .icon{
-  width: 15.5rem;
-  height: 15.5rem;
+  width: 12.5rem;
+  height: 12.5rem;
 }
 
 .icon{
-  width: 15rem;
-  height: 15rem;
+  width: 12rem;
+  height: 12rem;
   border-radius: 1.5rem;
   background-color: #FFF;
   overflow: hidden;
@@ -133,5 +134,15 @@
 @media (min-width:1100px){
   .elementsList{
     padding: 0 2rem;
+  }
+
+  .rpgItem:hover .icon{
+    width: 15.5rem;
+    height: 15.5rem;
+  }
+  
+  .icon{
+    width: 15rem;
+    height: 15rem;
   }
 }

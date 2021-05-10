@@ -111,8 +111,12 @@
   border-radius: 2rem;
 }
 
-.skillItem, .skillItem div, .skillItem div div:last-child div input{
+.skillItem, 
+.skillItem div, 
+.skillItem div div:last-child div input,
+.bonus div input{
   font: 500 1.8rem Rajdhani;
+  color: var(--color-text-secondary);
 }
 
 .skillItem div div:last-child div hr{
@@ -121,6 +125,24 @@
 
 .skill{
   font: 600 1.8rem Rajdhani;
+}
+
+.bonus{
+  display: flex;
+  flex-direction: row;
+  margin-left: 5rem;
+}
+
+.bonus div input{
+  width: 3rem;
+}
+
+.bonus div hr{
+  width: 4rem;
+}
+
+.bonus p{
+  margin-right: 1rem;
 }
 
 .dice{

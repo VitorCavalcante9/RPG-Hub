@@ -87,6 +87,7 @@ class PermissionChangeController{
       const permissions = await permissionRepository.find({where: [{rpg_id}], 
         relations: ['character', 'character.participant', 'character.participant.user']
       });
+      
       if(permissions) return res.json(PermissionViews.renderMany(permissions));
       else return res.json(permissions)
 

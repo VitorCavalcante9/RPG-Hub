@@ -43,14 +43,13 @@ function RpgRoute({...props}: RouteProps){
   verifyIfIsAdm(id[2]);
 
   if(loading) return <h1>Loading...</h1>
-  if(isAdm){
+  else if(props.path === '/rpgs/:id/session') return <Route component={Session} {...props}/>
+  else if(isAdm){
     if(props.path === '/rpgs/:id') return <Route component={RpgHome} {...props}/>
-    else if(props.path === '/rpgs/:id/session') return <Route component={Session} {...props}/>
     else return <Route {...props} />
   } 
   else if(!isAdm && isAdm !== null) {
     if(props.path === '/rpgs/:id') return <Route component={RpgHomeParticipant} {...props}/>
-    else if(props.path === '/rpgs/:id/session') return <Route component={SessionParticipant} {...props}/>
     else return <Redirect to='/home'/>
   }
   else return <Redirect to='/home'/>

@@ -10,12 +10,19 @@
   margin-top: 2rem;
 }
 
+.objectContainer:hover .image{
+  width: 12.5rem;
+  height: 12.5rem;
+}
+
 .image{
   width: 12rem;
   height: 12rem;
   border-radius: 1.5rem;
   background-color: #FFF;
   overflow: hidden;
+
+  transition: all 0.2s;
 }
 
 .image img{
@@ -66,5 +73,10 @@
   .image{
     width: 14rem;
     height: 14rem;
+  }
+
+  .objectContainer:hover .image{
+    width: 14.5rem;
+    height: 14.5rem;
   }
 }

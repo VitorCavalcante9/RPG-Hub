@@ -1,4 +1,5 @@
-import React, { HTMLAttributes, useContext, useEffect, useRef, useState } from 'react';
+/* eslint-disable array-callback-return */
+import React, { HTMLAttributes, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { RpgContext } from '../../contexts/RpgHomeContext';
 

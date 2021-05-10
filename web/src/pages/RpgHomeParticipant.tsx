@@ -1,9 +1,9 @@
 import React, { FormEvent, useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { useAlert } from 'react-alert';
-import { AuthContext } from '../contexts/AuthContext';
 import { RpgContext } from '../contexts/RpgHomeContext';
 import api from '../services/api';
+import manager from '../services/websocket';
 
 import { Block } from '../components/Block';
 import { Button } from '../components/Button';
@@ -44,9 +44,8 @@ interface RpgParams{
 
 export function RpgHomeParticipant(){
   const params = useParams<RpgParams>();
-  const { getToken } = useContext(AuthContext);
-  const token = getToken();
   const alert = useAlert();
+  const history = useHistory();
   const {handleOpenModals} = useContext(RpgContext);
 
   const [rpg, setRpg] = useState({name: '', icon: '', admin: ''});
@@ -58,10 +57,10 @@ export function RpgHomeParticipant(){
   const [permission, setPermission] = useState<Permission | null>(null);
   const [currentPoints, setCurrentPoints] = useState(0);
 
+
   useEffect(() => {
-    api.get(`rpgs/${params.id}/participant`, {
-      headers: { 'Authorization': `Bearer ${token}`}
-    }).then(res => {
+    api.get(`rpgs/${params.id}/participant`)
+    .then(res => {
       const { name, icon, admin, character } = res.data;
 
       setRpg({ name, icon, admin });
@@ -108,14 +107,12 @@ export function RpgHomeParticipant(){
           skills: skillsItems
         }
 
-        await api.patch(`rpgs/${params.id}/characters/${character.id}`, characterData, {
-          headers: { 'Authorization': `Bearer ${token}`}
-        }).then(res => {
+        await api.patch(`rpgs/${params.id}/characters/${character.id}`, characterData)
+        .then(res => {
           alert.success(res.data.message);
 
-          api.get(`rpgs/${params.id}/participant`, {
-            headers: { 'Authorization': `Bearer ${token}`}
-          }).then(res => {
+          api.get(`rpgs/${params.id}/participant`)
+          .then(res => {
             const { character } = res.data;
             
             setPermission(character.permission);
@@ -133,9 +130,8 @@ export function RpgHomeParticipant(){
       }
     } else {
       
-      await api.post(`rpgs/${params.id}/characters/${character.id}/permission`, null, {
-        headers: { 'Authorization': `Bearer ${token}`}
-      }).then(res => {
+      await api.post(`rpgs/${params.id}/characters/${character.id}/permission`, null)
+      .then(res => {
         alert.success(res.data.message);
 
       }).catch(error => {
@@ -144,6 +140,12 @@ export function RpgHomeParticipant(){
         else alert.error(error.response.data.message);
       }) 
     }
+  }
+
+  function joinSession(){
+    const socketSession = manager.socket('/session');
+    socketSession.open();
+    history.push(`/rpgs/${params.id}/session`);
   }
 
   return(
@@ -231,7 +233,7 @@ export function RpgHomeParticipant(){
               />
 
             </form>
-            <ButtonSession text='Entrar na sessão' id={styles.buttonSession}/>
+            <ButtonSession onClick={joinSession} text='Entrar na sessão' id={styles.buttonSession}/>
           </div>
         </div>
       </div>

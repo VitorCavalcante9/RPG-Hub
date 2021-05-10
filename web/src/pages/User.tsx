@@ -19,8 +19,7 @@ interface RpgParams{
 
 export function User(){
   const params = useParams<RpgParams>();
-  const { getToken, handleLogout } = useContext(AuthContext);
-  const token = getToken();
+  const { handleLogout } = useContext(AuthContext);
   const alert = useAlert();
   const history = useHistory();
 
@@ -35,9 +34,7 @@ export function User(){
   const [changePassword, setChangePassword] = useState(false);
 
   useEffect(() => {
-    api.get(`users`, {
-      headers: { 'Authorization': `Bearer ${token}`}
-    }).then(res => {
+    api.get(`users`).then(res => {
       const { username, icon } = res.data;
 
       setName(username);
@@ -82,9 +79,8 @@ export function User(){
     if(images[0]) userData.append('icon', images[0]);
     else userData.append('previousIcon', previewImage);
 
-    await api.patch(`users`, userData, {
-      headers: { 'Authorization': `Bearer ${token}`}
-    }).then(res => {
+    await api.patch(`users`, userData)
+    .then(res => {
       alert.success(res.data.message);
       setIsEdit(false);
 
@@ -99,9 +95,8 @@ export function User(){
     const { newPassword, confirmPassword } = data;
     
     if(newPassword === confirmPassword){
-      await api.patch(`users/password`, data, {
-        headers: { 'Authorization': `Bearer ${token}`}
-      }).then(res => {
+      await api.patch(`users/password`, data)
+      .then(res => {
         alert.success(res.data.message);
         reset({something: ''});
         setChangePassword(false);
@@ -117,9 +112,8 @@ export function User(){
   }
 
   async function deleteAccount(){
-    api.delete(`users`, {
-      headers: { 'Authorization': `Bearer ${token}`}
-    }).then(res => {
+    api.delete(`users`)
+    .then(res => {
       handleLogout();
       history.push(`/`);
     }).catch(error => {
@@ -183,7 +177,6 @@ export function User(){
                     label='Nome' 
                     readOnly={isEdit ? false : true}
                     inputRef={register({required: true})}
-                    setInputRef={() => {}}
                   />
 
                   {(() => {
@@ -243,7 +236,6 @@ export function User(){
                     type='password'
                     label='Senha Atual' 
                     inputRef={register({required: true})}
-                    setInputRef={() => {}}
                   />
 
                   <InputLabel
@@ -251,7 +243,6 @@ export function User(){
                     type='password'
                     label='Nova Senha' 
                     inputRef={register({required: true})}
-                    setInputRef={() => {}}
                   />
 
                   <InputLabel
@@ -259,7 +250,6 @@ export function User(){
                     type='password'
                     label='Confirmar Senha' 
                     inputRef={register({required: true})}
-                    setInputRef={() => {}}
                   />
 
                   <Button 
