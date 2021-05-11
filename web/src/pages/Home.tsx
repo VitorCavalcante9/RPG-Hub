@@ -59,7 +59,7 @@ export function Home(){
     <>
     {/* The EnterRPG Modal */}
     <div className="modal" style={{display: openEnterRPGModal ? 'block' : 'none'}}>
-      <div className={`modalContent ${styles.modalContent}`}>
+      <div className={`${styles.modalContent} modalContent`}>
         <h2>Entrar em um RPG</h2>
 
         <form onSubmit={handleSubmit(enterInRPG)}>
@@ -96,7 +96,7 @@ export function Home(){
             return(
               <Link key={rpg.id} to={`/rpgs/${rpg.id}`} className={styles.rpgItem}>
                 <div className={styles.icon}>
-                  <img className={classnames({[styles.collapsedStyle]: (rpg.icon).includes('/null')})} src={rpg.icon} alt={rpg.name}/>
+                  <img className={classnames('image', {[styles.collapsedStyle]: (rpg.icon).includes('/null')})} src={rpg.icon} alt={rpg.name}/>
                 </div>
 
                 <p>{rpg.name}</p>
@@ -116,7 +116,7 @@ export function Home(){
             return(
               <Link key={rpg.id} to={`/rpgs/${rpg.id}`} className={styles.rpgItem}>
                 <div className={styles.icon}>
-                  <img className={classnames({[styles.collapsedStyle]: (rpg.icon).includes('/null')})} src={rpg.icon} alt={rpg.name}/>
+                  <img className={classnames('image', {[styles.collapsedStyle]: (rpg.icon).includes('/null')})} src={rpg.icon} alt={rpg.name}/>
                 </div>
 
                 <p>{rpg.name}</p>

@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { createRef, useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import classnames from 'classnames';
 import { useParams } from 'react-router';
 import api from '../../services/api';
 import manager from '../../services/websocket';
@@ -59,7 +60,7 @@ export function DiceModal(){
     .then(res => {
       if(res.data){
         setDices(res.data);
-        setDice(dices[0]);
+        if(dices.length > 0) setDice(dices[0]);
       }
     })   
     
@@ -141,7 +142,7 @@ export function DiceModal(){
       <div className={styles.overlay}>
         <div className={styles.container}>
           <header>
-            <CharacterItem character={selectedCharacter} />
+            <CharacterItem isMini={true} character={selectedCharacter} />
             <div className={styles.characterList} style={{display: isChoosingChar ? 'block' : ''}}>
               {characterList.map(character => {
                 return(
@@ -149,6 +150,7 @@ export function DiceModal(){
                     className={styles.characterItem}
                     onClick={() => {handleSelectedCharacter(character); setIsChoosingChar(false)}}>
                     <CharacterItem 
+                      isMini={true}
                       key={character.id} 
                       className={styles.item} 
                       character={character} 
@@ -158,13 +160,13 @@ export function DiceModal(){
               })}
             </div>
             {(() => {
-              if(isAdm) return <button onClick={() => {setIsChoosingChar(true)}} type='button'>Trocar</button>          
+              if(isAdm) return <button onClick={() => {setIsChoosingChar(isChoosingChar ? false : true)}} type='button'>Trocar</button>          
             })()}
           </header>
 
           <div className={styles.content}>
             <div className={styles.grid2}>
-              <Block name="Habilidades" className={styles.blocks}>
+              <Block id={styles.skills} name="Habilidades" className={styles.blocks}>
                 <div 
                   className={styles.skillItem}
                   onClick={() => setSkill(null)}
@@ -176,12 +178,13 @@ export function DiceModal(){
                       <div 
                         onClick={() => setSkill(this_skill)} 
                         key={this_skill.name} 
-                        className={styles.skillItem}
+                        className={classnames(styles.skillItem, {[styles.skillItemBonus]: this_skill === skill})}
                         style={{backgroundColor: this_skill === skill ? '#501B1D' : 'transparent' }}>
                         <SkillsItems
                           value={this_skill.current} 
                           name={this_skill.name} 
                           limit={this_skill.limit}
+                          isReadOnly={true}
                         />
                         {(() => {
                           if(this_skill === skill) return (
@@ -204,7 +207,7 @@ export function DiceModal(){
             </div>
 
             <div className={styles.grid1}>
-              <Block name="Chat" className={styles.blocks} >
+              <Block id={styles.chat} name="Chat" className={styles.blocks} >
                 {messages.map((message, index) => {
                   return(
                     <Message key={index} message={message} msgRef={msgRef} />

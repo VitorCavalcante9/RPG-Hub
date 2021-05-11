@@ -1,8 +1,5 @@
-.newRpgContainer h1{
-  font: 600 3rem Rajdhani;
-  color: var(--color-text-title);
-  margin-top: 2rem;
-  margin-bottom: 3rem;
+.newRpgContainer{
+  margin-bottom: 2rem;
 }
 
 .newRpgContainer .previewImage{
@@ -16,14 +13,8 @@
   height: 10rem;
   width: 10rem;
   border-radius: 2rem;
-  background: var(--color-secondary)
-}
-
-.newRpgContainer .image img{
-  height: 10rem;
-  width: 10rem;
-  border-radius: 2rem;
-  object-fit: cover;
+  background: var(--color-secondary);
+  overflow: hidden;
 }
 
 .newRpgContainer .previewImage label{

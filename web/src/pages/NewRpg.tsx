@@ -124,13 +124,13 @@ export function NewRpg(){
 
     <Layout linkBack={rpgId ? `/rpgs/${rpgId}` : '/home'}>
       <div className={styles.newRpgContainer}>
-        <h1>Dados do RPG</h1>
+        <h1 className='title'>Dados do RPG</h1>
 
         <div className={styles.formContainer}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className={styles.previewImage}>
               <div className={styles.image}>
-                <img src={previewImage} alt="Prévia da Imagem"/>
+                <img className='image' src={previewImage} alt="Prévia da Imagem"/>
               </div>
 
               <label htmlFor="image">Mudar foto</label>

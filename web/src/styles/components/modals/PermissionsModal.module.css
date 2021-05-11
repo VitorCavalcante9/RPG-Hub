@@ -68,7 +68,7 @@
 }
 
 .buttons{
-  padding: 0 0.75rem;
+  padding: 0 0.5rem;
 }
 
 #acceptButton{
@@ -77,4 +77,10 @@
 
 #acceptButton:hover{
   background: #358620;
+}
+
+@media (min-width: 375px){
+  .buttons{
+    padding: 0 0.75rem;
+  }
 }

@@ -16,7 +16,7 @@ import { IconElement } from '../components/IconElement';
 import { Layout } from '../components/Layout';
 import { DiceModal } from '../components/modals/DiceModal';
 import { InviteModal } from '../components/modals/InviteModal';
-import { ItemModal } from '../components/modals/ItemModal';
+import { ObjectModal } from '../components/modals/ObjectModal';
 import { PermissionsModal } from '../components/modals/PermissionsModal';
 
 import styles from '../styles/pages/RpgHome.module.css';
@@ -135,7 +135,7 @@ export function RpgHome(){
   return(
     <>
       <InviteModal />
-      <ItemModal />
+      <ObjectModal />
       <DiceModal />
       <PermissionsModal newPermissions={existsNewPermissions} />
 

@@ -25,7 +25,7 @@
 
 .previewImage label{
   cursor: pointer;
-  font: 600 1.8rem Rajdhani;
+  font: 600 1.6rem Rajdhani;
 }
 
 .previewImage input[type=file]{
@@ -49,4 +49,10 @@
 
 .buttonCreate{
   width: 100%;
+}
+
+@media (min-width: 375px){
+  .previewImage label{
+    font-size: 1.8rem;
+  }
 }

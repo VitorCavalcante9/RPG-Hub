@@ -15,7 +15,7 @@
   text-align: center;
   border: 0;
 
-  font: 600 2rem Rajdhani;
+  font: 600 1.8rem Rajdhani;
   transition: background 0.2s;
 }
 
@@ -29,4 +29,10 @@
 
 .buttonBlock button:disabled:hover{
   background: var(--color-button);
+}
+
+@media (min-width:1100px){
+  .buttonBlock button{
+    font-size: 2rem;
+  }
 }

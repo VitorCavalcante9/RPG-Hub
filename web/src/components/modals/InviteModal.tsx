@@ -22,18 +22,22 @@ export function InviteModal(){
       <div className={styles.content}>
         <div className={styles.line}>
           <p>Código: </p>
-          <input readOnly value={`${params.id}`} />
-          <button onClick={() => navigator.clipboard.writeText(params.id)}>
-            <img src={copy} alt="Copiar"/>
-          </button>
+          <div>
+            <input readOnly value={`${params.id}`} />
+            <button onClick={() => navigator.clipboard.writeText(params.id)}>
+              <img src={copy} alt="Copiar"/>
+            </button>
+          </div>
         </div>
 
         <div className={styles.line}>
           <p>Link: </p>
-          <input readOnly value={link} />
-          <button onClick={() => navigator.clipboard.writeText(link)}>
-            <img src={copy} alt="Copiar"/>
-          </button>
+          <div>
+            <input readOnly value={link} />
+            <button onClick={() => navigator.clipboard.writeText(link)}>
+              <img src={copy} alt="Copiar"/>
+            </button>
+          </div>
         </div>
       </div>
     </Modal>

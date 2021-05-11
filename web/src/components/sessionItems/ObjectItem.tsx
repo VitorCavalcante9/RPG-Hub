@@ -1,16 +1,17 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { HTMLAttributes, useContext, useEffect, useState } from 'react';
 import { SessionContext } from '../../contexts/SessionContext';
 
 import styles from '../../styles/components/sessionItems/ObjectItem.module.css';
 
-interface ObjectItem{
+interface ObjectItemInterface{
   id: string;
   name: string;
   image?: string;
 }
 
 interface ObjectItemProps extends HTMLAttributes<HTMLDivElement>{
-  object: ObjectItem;
+  object: ObjectItemInterface;
 }
 
 export function ObjectItem({object}: ObjectItemProps){
@@ -27,7 +28,7 @@ export function ObjectItem({object}: ObjectItemProps){
   }, [fixedObject])
 
   function toggleTextButton(){
-    if(textButton == 'Fixar'){
+    if(textButton === 'Fixar'){
       setTextButton('Desafixar');
       toggleFixObject(object)
     }
@@ -46,7 +47,7 @@ export function ObjectItem({object}: ObjectItemProps){
       <div className={styles.name}>
         <p>{object.name}</p>
 
-        <button onClick={toggleTextButton} type='button'>{textButton}</button>
+        <button className='fixButton' onClick={toggleTextButton} type='button'>{textButton}</button>
       </div>
     </div>
   )

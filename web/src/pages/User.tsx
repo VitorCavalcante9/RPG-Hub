@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import classnames from 'classnames';
 import api from '../services/api';
@@ -141,7 +142,7 @@ export function User(){
     <Layout linkBack='/home'>
       <div className={styles.accountContainer}>
         <div className={styles.header}>
-          <h1>{changePassword ? 'Alterar Senha' : 'Dados da Conta'}</h1>
+          <h1 className='title'>{changePassword ? 'Alterar Senha' : 'Dados da Conta'}</h1>
         </div>
         
         <div className={styles.body}>

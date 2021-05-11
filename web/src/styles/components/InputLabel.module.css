@@ -9,7 +9,7 @@
 }
 
 .inputBlock label{
-  font-size: 1.8rem;
+  font-size: 1.7rem;
   margin-bottom: 0.5rem;
   margin-left: 2rem;
 }
@@ -25,4 +25,10 @@
   padding: 0 2.4rem;
 
   font: 500 1.6rem Rajdhani;
+}
+
+@media (min-width:1100px){
+  .inputBlock label{
+    font-size: 1.8rem;
+  }
 }

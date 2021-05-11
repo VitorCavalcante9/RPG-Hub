@@ -8,11 +8,23 @@
 
 .line{
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  align-items: flex-start;
   text-align: center;
 
-  font: 600 2.2rem Rajdhani;
+  font: 600 2rem Rajdhani;
+}
+
+.line p{
+  margin-left: 2rem;
+}
+
+.line > div{
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .line input{
@@ -32,7 +44,7 @@
 }
 
 .line:first-of-type{
-  margin-top: 5rem;
+  margin-top: 3rem;
 }
 
 .line:first-of-type input{
@@ -57,7 +69,23 @@
   height: 2.5rem;
 }
 
-@media (min-width:1100px){
+@media (min-width:375px){
+  .line{
+    font-size: 2.2rem;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .line:first-of-type{
+    margin-top: 5rem;
+  }
+  
+  .line > div,
+  .line p{
+    margin: 0;
+  }
+
   .line input{
     width: 24rem;
   }

@@ -254,7 +254,7 @@ export function NewCharacter(){
 
     <Layout linkBack={`/rpgs/${params.id}`}>
       <div className={styles.header}>
-        <h1>Ficha do Personagem</h1>
+        <h1 className='title'>Ficha do Personagem</h1>
 
         {(() => {
           if(charId) {
@@ -328,19 +328,25 @@ export function NewCharacter(){
           </div>
 
           <div className={styles.column2}>
-            <Block name="Habilidades" id={styles.skills} className={classnames({[styles.edit]: charId})} options={
-              <div className={styles.pointsOptions}>
-                <div className={styles.points}>
-                  <p>Limite de pontos:</p>
-                  <InputLine
-                    value={limitPoints}
-                    className={styles.inputPoints}
-                    onChange={e => setLimitPoints(Number(e.target.value))}
-                  />
+            <Block 
+              name="Habilidades" 
+              id={styles.skills} 
+              className={classnames({[styles.edit]: charId})} 
+              options={
+                <div className={styles.pointsOptions}>
+                  <div className={styles.points}>
+                    <p>Limite de pontos:</p>
+                    <InputLine
+                      value={limitPoints}
+                      className={styles.inputPoints}
+                      onChange={e => setLimitPoints(Number(e.target.value))}
+                    />
+                  </div>
+                  <p className={styles.points}>Quantidade de pontos disponíveis: {currentPoints}</p>
                 </div>
-                <p className={styles.points}>Quantidade de pontos disponíveis: {currentPoints}</p>
-              </div>
-            }>
+              }
+              breakHeader={true}
+            >
               {skillsItems.map((skillsItem, index) => {
                 return(
                   <SkillsItems 

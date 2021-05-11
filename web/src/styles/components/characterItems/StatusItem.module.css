@@ -44,10 +44,7 @@
 }
 
 .inputs .input input{
-  font: 600 1.8rem Rajdhani;
-}
-
-.inputs .input input{
+  font: 600 1.6rem Rajdhani;
   color: var(--color-text-secondary);
   border-color: var(--color-text-secondary);
 }
@@ -61,11 +58,6 @@
 }
 
 @media (min-width: 1100px){
-
-  .statusContainer > p{
-    font: 600 1.8rem Rajdhani;
-    color: var(--color-text-secondary);
-  }
   
   .statusContainer .statusBar{
     height: 2.5rem;
@@ -74,5 +66,9 @@
   .statusContainer .statusBar .number{
     font: 500 1.8rem Rajdhani;
     top: calc(-2.5rem + 2px);
+  }
+
+  .inputs .input input{
+    font-size: 1.6rem;
   }
 }

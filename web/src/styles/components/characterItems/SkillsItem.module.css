@@ -1,11 +1,15 @@
 .skillItem{
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  text-align: center;
 
-  font: 600 2rem Rajdhani;
+  font: 600 1.8rem Rajdhani;
+}
+
+.skillItem > p{
+  max-width: 12.5rem;
+  text-align: left;
 }
 
 .skillItem .numbers{
@@ -15,13 +19,13 @@
 }
 
 .skillItem .input hr{
-  width: 4rem;
+  width: 3.5rem;
   position: relative;
   top: -4px;
 }
 
 .skillItem .input input{
-  font: 600 2rem Rajdhani;
+  font: 600 1.8rem Rajdhani;
   width: 3rem;
 }
 
@@ -33,4 +37,24 @@
 
 .skillItem + .skillItem{
   margin-top: 1rem;
+}
+
+input:read-only{
+  outline: 0;
+}
+
+@media(min-width: 1100px){
+  .skillItem,
+  .skillItem .input input{
+    font-size: 2rem;
+  }
+
+  .skillItem .input hr{
+    width: 4rem;
+  }
+
+  .skillItem > p{
+    max-width: none;
+  }
+
 }

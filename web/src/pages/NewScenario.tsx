@@ -120,13 +120,13 @@ export function NewScenario(){
 
     <Layout linkBack={`/rpgs/${params.id}`}>
       <div className={styles.newScenarioContainer}>
-        <h1>{scenId ? 'Editar Cenário' : 'Novo Cenário'}</h1>
+        <h1 className='title'>{scenId ? 'Editar Cenário' : 'Novo Cenário'}</h1>
 
         <div className={styles.formContainer}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className={styles.previewImage}>
               <div className={styles.image}>
-                <img src={previewImage} alt=''/>
+                <img className='image' src={previewImage} alt=''/>
               </div>
 
               <label htmlFor="image">Mudar foto</label>

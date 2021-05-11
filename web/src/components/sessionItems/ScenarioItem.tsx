@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { HTMLAttributes, useContext, useEffect, useState } from 'react';
 import { SessionContext } from '../../contexts/SessionContext';
 
@@ -27,7 +28,7 @@ export function ScenarioItem({scenario}: ScenarioItemProps){
   }, [fixedScenario])
 
   function toggleTextButton(){
-    if(textButton == 'Fixar'){
+    if(textButton === 'Fixar'){
       setTextButton('Desafixar');
       toggleFixScenario(scenario)
     }
@@ -40,7 +41,7 @@ export function ScenarioItem({scenario}: ScenarioItemProps){
   return(
     <div className={styles.scenarioContainer}>
       <div className={styles.image}>
-        <img src={scenario.image} alt={scenario.name}/>
+        <img className='image' src={scenario.image} alt={scenario.name}/>
       </div>
 
       <div className={styles.name}>

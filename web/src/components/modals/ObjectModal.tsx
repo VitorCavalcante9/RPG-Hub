@@ -7,7 +7,7 @@ import { RpgContext } from '../../contexts/RpgHomeContext';
 import { Modal } from './Modal';
 import api from '../../services/api';
 
-import styles from '../../styles/components/modals/ItemModal.module.css';
+import styles from '../../styles/components/modals/ObjectModal.module.css';
 
 import { Button } from '../Button';
 import { InputLabel } from '../InputLabel';
@@ -16,7 +16,7 @@ interface RpgParams{
   id: string;
 }
 
-export function ItemModal(){
+export function ObjectModal(){
   const params = useParams<RpgParams>();
   const search = window.location.search;
   const searchContent = new URLSearchParams(search);

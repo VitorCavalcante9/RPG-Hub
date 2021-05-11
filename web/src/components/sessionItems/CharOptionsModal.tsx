@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from 'react';
 import { SessionContext } from '../../contexts/SessionContext';
 
@@ -108,12 +109,17 @@ export function CharOptionsModal(){
                 })}
               </Block>
 
-              <Block name="Inventário" id={styles.inventory} options={
-                <div>
-                  <button type='button' onClick={addInventoryItem} className='buttonWithoutBG'>+ Novo Item</button>
-                  <button className={styles.saveInventory} onClick={setInventory} type='button'>Salvar</button>
-                </div>
-              }>
+              <Block 
+                name="Inventário" 
+                id={styles.inventory} 
+                options={
+                  <div className={styles.inventoryOptions}>
+                    <button type='button' onClick={addInventoryItem} className='buttonWithoutBG'>+ Novo Item</button>
+                    <button className={styles.saveInventory} onClick={setInventory} type='button'>Salvar</button>
+                  </div>
+                }
+                breakHeader={true}
+              >
                 {inventoryItems.map((inventoryItem, index) => {
                   return(
                     <div
@@ -144,6 +150,7 @@ export function CharOptionsModal(){
                         value={this_skill.current} 
                         name={this_skill.name} 
                         limit={this_skill.limit}
+                        isReadOnly={true}
                       />
                     )
                   })}

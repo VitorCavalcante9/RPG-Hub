@@ -1,8 +1,9 @@
-.sheetContainer h1{
-  font: 600 3rem Rajdhani;
-  color: var(--color-text-title);
+.sheetContainer{
+  margin-bottom: 2rem;
+}
+
+.skillsContent{
   margin-top: 2rem;
-  margin-bottom: 3rem;
 }
 
 .sheetContainer #status > div:last-child{
@@ -30,12 +31,12 @@
 
 .sheetContainer #status .statusElement .name input,
 .sheetContainer #skills .skillsElement > input{
-  width: 12rem;
+  width: 8rem;
   border: 0;
   background: none;
   padding-top: 0.5rem;
 
-  font: 600 1.8rem Rajdhani;
+  font: 600 1.7rem Rajdhani;
   color: var(--color-text-secondary);
 }
 
@@ -44,7 +45,7 @@
   width: 2rem;
   margin-top: 0.5rem;
 
-  margin-left: 2rem;
+  margin-left: 1rem;
   border-radius: 50%;
   border: 1px solid #FFF;
 }
@@ -55,6 +56,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  margin-left: 1rem;
 
   font: 600 1.8rem Rajdhani;
 }
@@ -63,6 +65,14 @@
 .sheetContainer .pointsContainer hr{
   color: var(--color-text-secondary);
   border-color: var(--color-text-secondary);
+}
+
+.sheetContainer .pointsContainer input{
+  font-size: 1.7rem;
+}
+
+.sheetContainer .pointsContainer hr{
+  width: 4.5rem;
 }
 
 .sheetContainer #skills > div:last-child{
@@ -80,7 +90,7 @@
 }
 
 .sheetContainer #skills .skillsElement > input{
-  width: 22rem;
+  width: 12rem;
 }
 
 .sheetContainer .points{
@@ -92,7 +102,7 @@
 }
 
 .sheetContainer .points p{
-  font: 600 2rem Rajdhani;
+  font: 600 1.8rem Rajdhani;
 }
 
 @media(min-width: 1100px){
@@ -120,10 +130,35 @@
     justify-content: space-between;
   }
   
+  .skillsContent{
+    margin-top: 0rem;
+  }
+
+  .sheetContainer #status .statusElement .buttonColor{
+    margin-left: 2rem;
+  }
+
+  .sheetContainer #status .statusElement .name input{
+    width: 12rem;
+    font-size: 1.8rem;
+  }
+
+  .sheetContainer .pointsContainer input{
+    font-size: 1.8rem;
+  }
+
+  .sheetContainer .pointsContainer hr{
+    width: 5.5rem;
+  }
+  
   .sheetContainer #status, .sheetContainer .skillsContent{
     margin-left: 1rem;
     margin-right: 1rem;
     width: 50%;
+  }
+
+  .sheetContainer #skills .skillsElement > input{
+    width: 22rem;
   }
 
   .sheetContainer #status > div:last-child{
@@ -132,6 +167,10 @@
 
   .sheetContainer #skills > div:last-child{
     height: 32rem;
+  }
+
+  .sheetContainer .points p{
+    font: 600 2rem Rajdhani;
   }
 
   .sheetContainer .buttonSave button{

@@ -19,14 +19,14 @@
   justify-content: space-between;
   align-items: center;
   
-  font: 600 2rem Rajdhani;
+  font: 600 1.7rem Rajdhani;
 
   margin-top: 2rem;
   margin-bottom: 1rem;
 }
 
 .header .options button{
-  font-size: 2rem;
+  font-size: 1.7rem;
 }
 
 .body .name{
@@ -38,7 +38,7 @@
 }
 
 .body .name p{
-  font: 600 1.9rem Rajdhani;
+  font: 600 1.8rem Rajdhani;
   margin-left: 1rem;
 }
 
@@ -68,6 +68,7 @@
 .points{
   width: 15rem;
   font: 500 1.5rem Rajdhani;
+  margin: 0.5rem 0;
 }
 
 #skills > div:last-child{
@@ -81,6 +82,10 @@
 #buttonSession{
   margin-bottom: 3rem;
   margin-top: 1rem;
+}
+
+#buttonSession button{
+  font-size: 2rem;
 }
 
 .inventoryItem{
@@ -105,11 +110,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    font-size: 2rem;
   }
 
   .header .options button{
     margin-top: 0;
     margin-right: 5rem;
+
+    font-size: 2rem;
   }
 
   .body{
@@ -138,6 +147,7 @@
 
   .body .name p{
     margin-left: 2rem;
+    font-size: 1.8rem;
   }
 
   .body .name .image{
@@ -157,6 +167,15 @@
   #skills > div:last-child{
     height: 30rem;
   }
+
+  .points{
+    margin: 0;
+  }
+
+  #buttonSession button{
+    font-size: 2.5rem;
+  }
+
 }
 
 @media (min-width:1750px){

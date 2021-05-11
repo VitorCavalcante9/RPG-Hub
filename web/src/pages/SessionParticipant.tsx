@@ -7,6 +7,7 @@ import api from '../services/api';
 import { SessionContext } from '../contexts/SessionContext';
 
 import styles from '../styles/pages/SessionParticipant.module.css';
+import stylesSession from '../styles/pages/Session.module.css';
 
 import { Button } from '../components/Button';
 import { CharacterItem } from '../components/sessionItems/CharacterItem';
@@ -118,14 +119,14 @@ export function SessionParticipant(){
       <ChatModal selectedCharacter={selectedCharacter} />
 
       {/* The Object Modal */}
-      <div className={styles.modal} style={{display: openObjectModal ? 'block' : 'none'}}>
-        <span className={styles.close} onClick={() => setOpenObjectModal(false)}>&times;</span>
-        <img src={fixedObject?.image} alt={fixedObject?.name} className={styles.modalContent} />
+      <div className={stylesSession.modal} style={{display: openObjectModal ? 'block' : 'none'}}>
+        <span className={stylesSession.close} onClick={() => setOpenObjectModal(false)}>&times;</span>
+        <img src={fixedObject?.image} alt={fixedObject?.name} className={stylesSession.modalContent} />
       </div>
 
-      <div className={styles.sessionContainer}>
-        <div className={styles.column1}>
-          <div id={styles.characterContainer} className={styles.blocks}>
+      <div className={stylesSession.sessionContainer}>
+        <div className={stylesSession.column1}>
+          <div id={stylesSession.characterContainer} className={stylesSession.blocks}>
             {fixedCharacterList.map((character, index) => {
               return(
                 <CharacterItem key={character.id} character={character} isMini={true} />
@@ -133,45 +134,45 @@ export function SessionParticipant(){
             })}
           </div>
 
-          <div className={styles.buttonsContainer}>
-            <Button className={styles.buttons} text="Notas" onClick={() => {handleOpenModals(2)}}/>
-            <Button className={styles.buttons} text="Jogar Dados" onClick={() => {handleOpenModals(0)}}/>
-            <Button className={styles.buttons} text="Chat" onClick={() => {handleOpenModals(3)}}/>
+          <div className={stylesSession.buttonsContainer}>
+            <Button className={stylesSession.buttons} text="Notas" onClick={() => {handleOpenModals(2)}}/>
+            <Button className={stylesSession.buttons} text="Jogar Dados" onClick={() => {handleOpenModals(0)}}/>
+            <Button className={stylesSession.buttons} text="Chat" onClick={() => {handleOpenModals(3)}}/>
           </div>
 
-          <div id={styles.scenarioContainer} className={styles.blocks}>
+          <div id={stylesSession.scenarioContainer} className={stylesSession.blocks}>
             <img src={fixedScenario?.image} alt={fixedScenario?.name}/>
-            <div className={classnames({[styles.overlay]: fixedObject})}></div>
-            <div className={styles.objectItem} style={{display: fixedObject ? '' : 'none'}}>
+            <div className={classnames({[stylesSession.overlay]: fixedObject})}></div>
+            <div className={stylesSession.objectItem} style={{display: fixedObject ? '' : 'none'}}>
               <img onClick={() => setOpenObjectModal(true)} src={fixedObject?.image} alt={fixedObject?.name}/>
             </div>
           </div>
         </div>
 
-        <div className={styles.column2}>
-          <div id={styles.itemsContainer} className={styles.blocks}>
+        <div className={stylesSession.column2}>
+          <div id={stylesSession.itemsContainer} className={stylesSession.blocks}>
             <CharacterItem 
               className={styles.charItem} 
               character={selectedCharacter}
             />
-            <div className={styles.itemsOptions}>
+            <div className={stylesSession.itemsOptions}>
               <Button 
-                className={classnames(styles.buttons, {[styles.selectedItemButton]: selectedItem === 'status'})} 
+                className={classnames(stylesSession.buttons, {[stylesSession.selectedItemButton]: selectedItem === 'status'})} 
                 text="Status"
                 onClick={() => setSelectedItem('status')}  
               />
               <Button 
-                className={classnames(styles.buttons, {[styles.selectedItemButton]: selectedItem === 'inventory'})} 
+                className={classnames(stylesSession.buttons, {[stylesSession.selectedItemButton]: selectedItem === 'inventory'})} 
                 text="Inventário"
                 onClick={() => setSelectedItem('inventory')}  
               />
               <Button 
-                className={classnames(styles.buttons, {[styles.selectedItemButton]: selectedItem === 'skills'})} 
+                className={classnames(stylesSession.buttons, {[stylesSession.selectedItemButton]: selectedItem === 'skills'})} 
                 text="Habilidades"
                 onClick={() => setSelectedItem('skills')}  
               />
             </div>
-            <div className={`${styles.itemsArea} custom-scrollbar`}>
+            <div className={`${stylesSession.itemsArea} ${styles.itemsArea} custom-scrollbar`}>
               <div></div>
             {(() => {
               if(selectedItem === 'status'){
@@ -221,7 +222,7 @@ export function SessionParticipant(){
             </div>
           </div>
 
-          <Button onClick={leaveSession} className={styles.logoutButton} text="Sair" />
+          <Button onClick={leaveSession} className={stylesSession.logoutButton} text="Sair" />
         </div>
       </div>
     </>

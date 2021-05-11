@@ -1,5 +1,5 @@
 .scenarioContainer{
-  width: 28rem;
+  width: 25rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -13,7 +13,7 @@
 }
 
 .scenarioContainer:hover{
-  width: 28.5rem;
+  width: 25.5rem;
 }
 
 .scenarioContainer:hover .image{
@@ -28,13 +28,6 @@
   overflow: hidden;
 
   transition: all 0.2s;
-}
-
-.image img{
-  width: 100%;
-  height: 100%;
-  object-position: center;
-  object-fit: cover;
 }
 
 .name{

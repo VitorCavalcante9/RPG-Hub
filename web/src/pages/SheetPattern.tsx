@@ -144,7 +144,7 @@ export function SheetPattern(){
   return(
     <Layout linkBack={`/rpgs/${params.id}`}>
       <div className={styles.sheetContainer}>
-        <h1>Padrão de ficha</h1>
+        <h1 className='title'>Padrão de ficha</h1>
 
         <div className={styles.content}>
           <Block id={styles.status} name="Status" options={

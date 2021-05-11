@@ -1,3 +1,7 @@
+.content{
+  margin-bottom: 2rem;
+}
+
 .diceOptions{
   display: flex;
   flex-direction: row;
@@ -58,7 +62,7 @@
 }
 
 .diceItem p{
-  font: 500 1.9rem Rajdhani;
+  font: 500 1.8rem Rajdhani;
   margin: 0 1rem;
 }
 
@@ -73,4 +77,10 @@
 
 .diceItem + .diceItem{
   margin-top: 0.75rem;
+}
+
+@media (min-width: 375px){
+  .diceItem p{
+    font-size: 1.9rem;
+  }
 }

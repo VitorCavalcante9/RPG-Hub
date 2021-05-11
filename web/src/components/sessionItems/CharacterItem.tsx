@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable array-callback-return */
 import React, { HTMLAttributes, useContext, useEffect, useState } from 'react';
 import classnames from 'classnames';
 
@@ -56,7 +58,7 @@ export function CharacterItem({isMini, hover, fixButton, character, className, o
     <div className={classnames(className, styles.characterContainer, {[styles.miniContainer]: isMini, [styles.hover]: hover})}>
       <div className={styles.iconContainer} onClick={onClick}>
         <div className={styles.icon}>
-          <img src={character.icon} alt={character.name}/>
+          <img className='image' src={character.icon} alt={character.name}/>
         </div>
       </div>
 
@@ -65,7 +67,7 @@ export function CharacterItem({isMini, hover, fixButton, character, className, o
           <p onClick={onClick}>{character.name}</p>
 
           {(() => {
-            if(fixButton) return <button onClick={() => {toggleTextButton(); toggleFixCharacter(character)}} type='button'>{textButton}</button>            
+            if(fixButton) return <button className='fixButton' onClick={() => {toggleTextButton(); toggleFixCharacter(character)}} type='button'>{textButton}</button>            
           })()}
         </div>
 

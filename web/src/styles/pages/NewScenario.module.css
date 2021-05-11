@@ -1,8 +1,5 @@
-.newScenarioContainer h1{
-  font: 600 3rem Rajdhani;
-  color: var(--color-text-title);
-  margin-top: 2rem;
-  margin-bottom: 3rem;
+.newScenarioContainer{
+  margin-bottom: 2rem;
 }
 
 .newScenarioContainer .previewImage{
@@ -14,7 +11,7 @@
 }
 
 .newScenarioContainer .image{
-  --width: 100vw;
+  --width: 90vw;
   width: 100%;
   max-width: 550px;
   height: calc((var(--width)*1080)/1920);
@@ -24,15 +21,8 @@
   overflow: hidden;
 }
 
-.newScenarioContainer .image img{
-  width: 100%;
-  height: 100%;
-  object-position: center;
-  object-fit: cover;
-}
-
 .newScenarioContainer .previewImage label{
-  font: 500 1.8rem Rajdhani;
+  font: 500 1.6rem Rajdhani;
   margin-left: 1.5rem;
   cursor: pointer;
 }
@@ -78,8 +68,21 @@
     align-items: center;
   }
 
+  .newScenarioContainer .image{
+    --width: 100vw;
+    width: 100%;
+    max-width: 550px;
+    height: calc((var(--width)*1080)/1920);
+    max-height: 310px;
+    border-radius: 2rem;
+    background: var(--color-secondary);
+    overflow: hidden;
+  }
+
   .newScenarioContainer .previewImage{
+    --width: 40rem;
     width: 40rem;
+    height: calc((var(--width)*1080)/1920);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -87,16 +90,12 @@
   
     cursor: pointer;
   }
+
+  .newScenarioContainer .previewImage label{
+    font-size: 1.8rem;
+  }
   
   .newScenarioContainer .image{
-    --width: 40rem;
-    width: 40rem;
-    max-width: none;
-    max-height: none;
-  }
-
-  .newScenarioContainer .image img{
-    --width: 40rem;
     width: 40rem;
     max-width: none;
     max-height: none;

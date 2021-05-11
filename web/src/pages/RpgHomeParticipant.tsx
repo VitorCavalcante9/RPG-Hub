@@ -1,3 +1,5 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { FormEvent, useContext, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { useAlert } from 'react-alert';
@@ -209,9 +211,14 @@ export function RpgHomeParticipant(){
 
           <div className={styles.column2}>
             <form onSubmit={handleSubmit}>
-              <Block name="Habilidades" id={styles.skills} options={
-                <p className={styles.points}>Quantidade de pontos disponíveis: {currentPoints}</p>
-              }>
+              <Block 
+                name="Habilidades" 
+                id={styles.skills} 
+                options={
+                  <p className={styles.points}>Quantidade de pontos disponíveis: {currentPoints}</p>
+                }
+                breakHeader={true}
+              >
                 {skillsItems?.map((skillsItem, index) => {
                   return(
                     <SkillsItems 

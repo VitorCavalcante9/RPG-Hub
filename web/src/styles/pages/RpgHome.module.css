@@ -23,7 +23,7 @@
 }
 
 .rpgHomeContainer .header .options button{
-  font-size: 1.8rem;
+  font-size: 1.7rem;
 }
 
 .rpgHomeContainer .body .buttons:nth-of-type(1) button{
@@ -69,8 +69,8 @@
 }
 
 .iconContainer .image{
-  width: 6rem;
-  height: 6rem;
+  width: 5.5rem;
+  height: 5.5rem;
   border-radius: 1rem;
   background-color: var(--color-text-primary);
   overflow: hidden;
@@ -158,7 +158,7 @@
 }
 
 .objectItem p{
-  font: 500 2rem Rajdhani;
+  font: 500 1.8rem Rajdhani;
   margin-right: 2.5rem;
 }
 
@@ -238,6 +238,11 @@
   .rpgHomeContainer .body .grid3:nth-of-type(4){
     grid-row-start: 1;
     grid-row-end: 3;
+  }
+
+  .iconContainer .image{
+    width: 6rem;
+    height: 6rem;
   }
 
   #char, #scenario, #object, #account{

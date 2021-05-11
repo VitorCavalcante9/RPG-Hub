@@ -1,7 +1,8 @@
+.accountContainer{
+  padding-bottom: 2rem;
+}
+
 .accountContainer h1{
-  font: 600 3rem Rajdhani;
-  color: var(--color-text-title);  
-  margin-top: 2rem;
   margin-bottom: 4rem;
 }
 
@@ -22,8 +23,8 @@
 }
 
 .imageNotEdit{
-  height: 15rem;
-  width: 15rem;
+  height: 14rem;
+  width: 14rem;
 }
 
 .image img{
@@ -50,7 +51,6 @@
 .inputsContainer .button:nth-of-type(2){
   margin-top: 3rem;
 }
-
 
 .inputsContainer .button:nth-of-type(4){
   margin-top: 4rem;
@@ -98,6 +98,11 @@
 
   .formPassword .inputsContainer{
     margin-top: 0;
+  }
+
+  .imageNotEdit{
+    height: 15rem;
+    width: 15rem;
   }
 
   .previewImage{

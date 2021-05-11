@@ -1,0 +1,300 @@
+.sessionContainer{
+  width: 90vw;
+  min-height: 90vh;
+  border-radius: 1rem;
+  margin: 4rem auto 7.5rem;
+}
+
+.blocks{
+  width: 100%;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+
+  background: var(--color-secondary);
+  border-radius: 1rem;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  overflow-y: auto;
+}
+
+.buttonsContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  margin-bottom: 2rem;
+}
+
+.buttonsContainer button{
+  font-size: 1.6rem;
+  height: 4rem;
+}
+
+.buttons + .buttons{
+  margin-left: 1rem;
+}
+
+#characterContainer{
+  height: 18rem;
+  overflow-y: auto;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: 7rem;
+  grid-gap: 1rem;
+}
+
+#scenarioContainer{
+  width: 100%;
+  min-height: 21rem;
+
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: relative;
+  overflow: hidden;
+}
+
+#scenarioContainer img{
+  max-width: 100%;
+  height: 100%;
+}
+
+#scenarioContainer .overlay{
+  position: absolute;
+  
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity: 0.5;
+
+  z-index: 1;
+}
+
+#scenarioContainer .objectItem{
+  position: absolute;
+  width: 90%;
+  height: 90%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 2;
+}
+
+#scenarioContainer .objectItem img{
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  cursor: pointer;
+}
+
+#itemsContainer{
+  height: 38rem;
+}
+
+.sessionContainer .logoutButton{
+  margin: 3rem 0;
+  padding-bottom: 6rem;
+}
+
+.itemsOptions{
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.itemsOptions button{
+  height: 2.5rem;
+  font-size: 1.4rem;
+  background: var(--color-button-secondary);
+  color: var(--color-text-button-secondary);
+}
+
+.itemsOptions button:hover{
+  color: var(--color-text-button);
+}
+
+.selectedItemButton button{
+  background: #913538;
+  color: var(--color-text-button);
+}
+
+.itemsArea{
+  width: 100%;
+  height: 100%;
+  padding: 2rem 1.5rem 0;
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Object modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 5;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.9);
+}
+
+.modalContent {
+  margin: auto;
+  display: block;
+  max-width: 90%;
+  max-height: 90%;
+  width: auto;
+  height: auto;
+}
+
+.modalContent {  
+  -webkit-animation-name: zoom;
+  -webkit-animation-duration: 0.6s;
+  animation-name: zoom;
+  animation-duration: 0.6s;
+}
+
+@-webkit-keyframes zoom {
+  from {-webkit-transform:scale(0)} 
+  to {-webkit-transform:scale(1)}
+}
+
+@keyframes zoom {
+  from {transform:scale(0)} 
+  to {transform:scale(1)}
+}
+
+.close {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 700px){
+  .modal-content {
+    width: 100%;
+  }
+}
+
+@media (min-width: 450px){
+  #characterContainer{
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 7rem;
+    grid-gap: 1rem;
+  }
+}
+
+@media (min-width: 1440px){
+  .sessionContainer{
+    width: 75vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+
+    margin: 4rem auto 0;
+  }
+
+  .column1{
+    width: 70%;
+  }
+  
+  .sessionContainer .column2{
+    width: 30%;
+    height: 100%;
+    display: grid;
+    grid-auto-rows: auto;
+  }
+
+  .column1 + .column2{
+    margin-left: 2rem;
+  }
+
+  .itemsOptions button{
+    font-size: 1.5rem;
+  }
+
+  #characterContainer{
+    height: 26rem;
+
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 11rem;
+    grid-gap: 1rem;
+  }
+  
+  #scenarioContainer{
+    width: 100%;
+    height: 45rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+    margin: 0;
+  }
+
+  #scenarioContainer .objectItem img{
+    max-width: 100%;
+    height: 100%;
+  }
+
+  .modalContent{
+    max-width: 90%;
+    height: 90%;
+  }
+
+  #itemsContainer{
+    height: 73rem;
+  }
+
+  .sessionContainer .logoutButton{
+    grid-row-start: 1;
+    grid-row-end: 2;
+
+    margin: 1rem 0;
+    padding: 0 1rem;
+  }
+
+  .buttonsContainer button{
+    font-size: 2rem;
+    height: 5rem;
+  }
+}
+
+@media (min-width:1600px){
+  .itemsArea{
+    padding: 2rem 3rem 0;
+  }
+}

@@ -9,9 +9,10 @@
 }
 
 .inputBlock label{
-  font-size: 1.8rem;
+  font-size: 1.7rem;
   margin-bottom: 0.5rem;
   margin-left: 2rem;
+  text-align: left;
 }
 
 .inputBlock textarea{

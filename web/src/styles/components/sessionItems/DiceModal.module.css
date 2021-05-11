@@ -18,11 +18,16 @@
   width: 90%;
   margin: 0 2rem;
   min-height: 40rem;
+  max-height: 600px;
   padding: 3rem 3rem;
   border-radius: 5px;
   box-shadow: 0 0 60px rgba(0, 0, 0, 0.05);
   text-align: center;
   position: relative;
+
+  top: 1rem;
+
+  overflow-y: auto;
 }
 
 .container header{
@@ -99,16 +104,28 @@
   height: 5rem;
 }
 
+#skills > div:last-child{
+  padding: 1rem;
+}
+
+#chat > div:last-child{
+  padding: 1.5rem;
+}
+
 .skillItem{
   cursor: pointer;
   width: 100%;
-  height: 2.5rem;
+  height: 5rem;
   display: flex;
   justify-content: flex-start;
   align-items: center;
 
   padding-left: 1rem;
   border-radius: 2rem;
+}
+
+.skillItem > div > p{
+  max-width: 11.5rem;
 }
 
 .skillItem, 
@@ -123,14 +140,22 @@
   display: none;
 }
 
+.skillItemBonus{
+  flex-direction: column;
+  height: 8rem;
+}
+
 .skill{
   font: 600 1.8rem Rajdhani;
+}
+
+.skillItem + .skillItem{
+  margin-top: 0.5rem;
 }
 
 .bonus{
   display: flex;
   flex-direction: row;
-  margin-left: 5rem;
 }
 
 .bonus div input{
@@ -179,6 +204,8 @@
 @media (min-width:1100px){
   .container{
     width: 55%;
+    top: 0;
+    max-height: none;
   }
 
   .container header button{
@@ -233,7 +260,7 @@
   }
 
   .skillItem, .skillItem div, .skillItem div div:last-child div input{
-    font: 600 2rem Rajdhani;
+    font-size: 1.9rem;
   }
 
   .grid1 button, .grid2 button{
@@ -250,5 +277,26 @@
 
   .characterList{
     width: 42rem;
+  }
+
+  .skillItem > div > p{
+    max-width: none;
+  }
+  
+  #skills > div:last-child{
+    padding: 2rem;
+  }
+
+  .skillItem{
+    height: 2.5rem;
+  }
+
+  .skillItemBonus{
+    flex-direction: row;
+    height: 2.5rem;
+  }
+
+  .bonus{
+    margin-left: 5rem;
   }
 }

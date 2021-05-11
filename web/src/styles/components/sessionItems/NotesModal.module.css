@@ -26,7 +26,7 @@
 }
 
 #notes h3{
-  font-size: 2.5rem;
+  font-size: 2.3rem;
   margin-bottom: 1.5rem;
 }
 
@@ -44,8 +44,8 @@
 }
 
 .newNoteContainer button{
-  height: 5rem;
-  width: 5rem;
+  height: 4.25rem;
+  width: 4.25rem;
   border-radius: 50%;
   border: 0;
   background: var(--color-button);
@@ -59,8 +59,8 @@
 }
 
 .newNoteContainer button img{
-  height: 3rem;
-  width: 3rem;
+  height: 2.25rem;
+  width: 2.25rem;
 }
 
 .inputNote{
@@ -85,8 +85,8 @@
 }
 
 .noteItem p{
-  font-size: 1.8rem;
-  line-height: 2.4rem;
+  font-size: 1.7rem;
+  line-height: 2.2rem;
   white-space: pre-wrap;
   text-align: left;
 }
@@ -111,7 +111,26 @@
     width: 50rem;
   }
 
+  #notes h3{
+    font-size: 2.5rem;
+  }
+
   #notes > div:last-child{
     height: 25rem;
+  }
+
+  .noteItem p{
+    font-size: 1.8rem;
+    line-height: 2.4rem;
+  }
+
+  .newNoteContainer button{
+    height: 5rem;
+    width: 5rem;
+  }
+  
+  .newNoteContainer button img{
+    height: 3rem;
+    width: 3rem;
   }
 }
