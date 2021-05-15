@@ -21,7 +21,7 @@ export default{
 
     return{
       rpgs: rpgs_content,
-      partipating_rpgs: rpgs_participant_content
+      participating_rpgs: rpgs_participant_content
     }
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { useAlert } from 'react-alert';
@@ -50,11 +51,11 @@ export function PermissionsModal({newPermissions}: PermissionsModalProps){
     })
 
     if(permissions.length > 0) newPermissions(true);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.id, acceptPermission, permissions.length, newPermissions]);
+    
+  }, [permissions, acceptPermission, denyPermission]);
 
   useEffect(() => {
-    newPermissions(false);
+    if(permissions.length === 0) newPermissions(false);
   }, [newPermissions])
 
   async function denyPermission(id: number){

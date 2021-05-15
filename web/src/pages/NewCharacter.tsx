@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import api from '../services/api';
 import classnames from 'classnames';
@@ -9,16 +10,17 @@ import { RpgContext } from '../contexts/RpgHomeContext';
 import { Block } from '../components/Block';
 import { Button } from '../components/Button';
 import { InputLabel } from '../components/InputLabel';
+import { InputLine } from '../components/InputLine';
 import { InventoryItem } from '../components/characterItems/InventoryItem';
 import { Layout } from '../components/Layout';
 import { StatusItem } from '../components/characterItems/StatusItem';
 import { SkillsItems } from '../components/characterItems/SkillsItem';
 import { AccountModal } from '../components/modals/AccountModal';
+import { ImageModal } from '../components/modals/ImageModal';
 
 import styles from '../styles/pages/NewCharacter.module.css';
 
 import remove from '../assets/icons/cancel.svg';
-import { InputLine } from '../components/InputLine';
 
 interface StatusItems{
   name: string;
@@ -48,7 +50,8 @@ export function NewCharacter(){
   const {handleOpenAccountModal} = useContext(RpgContext);
 
   const [name, setName] = useState<string>();
-  const [images, setImages] = useState<File[]>([]);
+  const [imageURL, setImageURL] = useState<any>();
+  const [image, setImage] = useState<any>();
   const [previewImage, setPreviewImage] = useState('');
   const {register, handleSubmit, reset, errors} = useForm();
 
@@ -59,6 +62,7 @@ export function NewCharacter(){
   const [currentPoints, setCurrentPoints] = useState(0);
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [openImageModal, setOpenImageModal] = useState(false);
 
   useEffect(() => {
     if(charId){
@@ -102,6 +106,12 @@ export function NewCharacter(){
     if(errors.name) alert.error("Insira um nome")
   }, [errors, alert])
 
+  useEffect(() => {
+    if(imageURL){
+      setOpenImageModal(true);
+    }
+  }, [imageURL]);
+
   async function onSubmit(data:any){
     const { name } = data;
     const characterData = new FormData();
@@ -115,7 +125,7 @@ export function NewCharacter(){
       characterData.append('skills', JSON.stringify(skillsItems));
       characterData.append('limitOfPoints', String(limitPoints))
 
-      if(images[0]) characterData.append('icon', images[0]);
+      if(image) characterData.append('icon', image);
       else characterData.append('previousIcon', previewImage);
 
       if(charId){
@@ -212,16 +222,23 @@ export function NewCharacter(){
     setInventoryItems(updatedInventoryItems);
   }
 
-  function handleSelectedImage(event: ChangeEvent<HTMLInputElement>){
-    if(!event.target.files){
+  function handleSelectedImage(e: ChangeEvent<HTMLInputElement>){
+    if(!e.target.files){
       return;
     }
 
-    const selectedImages = Array.from(event.target.files);
-    setImages(selectedImages);
+    let files;
+    if (e.target) {
+      files = e.target.files;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImageURL(reader.result as any);
+    };
+    if(files && files.length > 0) reader.readAsDataURL(files[0]);
 
-    const selectImagePreview = URL.createObjectURL(selectedImages[0]);
-    setPreviewImage(selectImagePreview);
+    const selectedImages = Array.from(e.target.files);
+    setImage(selectedImages[0]);
   }
 
   async function deleteCharacter(){
@@ -234,9 +251,28 @@ export function NewCharacter(){
     })
   }
 
+  function handleOpenImageModal(open: boolean){
+    setOpenImageModal(open);
+  }
+
+  function getCropDataImage(image: any){
+    const fileImage = new File([image], image.name);
+    setImage(fileImage)
+
+    const selectImagePreview = URL.createObjectURL(fileImage);
+    setPreviewImage(selectImagePreview);
+  }
+
   return(
     <>
     <AccountModal />
+    <ImageModal 
+      open={openImageModal}
+      image={imageURL}
+      square={true}
+      handleOpenImageModal={handleOpenImageModal}
+      getCropDataImage={getCropDataImage}
+    />
 
     {/* The Delete Modal */}
     <div className="modal" style={{display: openDeleteModal ? 'block' : 'none'}}>
@@ -273,7 +309,7 @@ export function NewCharacter(){
             <div className={styles.name}>
               <div className={styles.previewImage}>
                 <div className={styles.image}>
-                  <img src={previewImage} alt=''/>
+                  <img className='image' src={previewImage} alt=''/>
                 </div>
 
                 <label htmlFor='image'>Mudar foto</label>

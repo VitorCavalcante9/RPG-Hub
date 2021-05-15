@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from 'react';
 import classnames from 'classnames';
 import { useHistory, useParams } from 'react-router';
@@ -45,11 +46,25 @@ export function SessionAdmin(){
   const socket = manager.socket('/session');
 
   useEffect(() => {
+    if(characterList){
+      socket.on('req_update_session', () => {
+        console.log('epa')
+        socket.emit('update_session', {
+          room: params.id,
+          characters: characterList,
+          fixedCharacters: fixedCharacterList,
+          scenario: fixedScenario,
+          object: fixedObject
+        })
+      });
+    }
+  }, [characterList, fixedCharacterList, fixedScenario, fixedObject]);
+
+  useEffect(() => {
     socket.emit('fixed_characters', ({
       room: params.id,
       characters: fixedCharacterList
     }))
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fixedCharacterList]);
 
   useEffect(() => {
@@ -57,7 +72,6 @@ export function SessionAdmin(){
       room: params.id,
       characters: characterList
     }))
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [characterList]);
 
   useEffect(() => {
@@ -65,7 +79,6 @@ export function SessionAdmin(){
       room: params.id,
       scenario: fixedScenario
     }))
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fixedScenario]);
 
   useEffect(() => {
@@ -73,29 +86,18 @@ export function SessionAdmin(){
       room: params.id,
       object: fixedObject
     }))
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fixedObject]);
-
-  socket.on('req_update_session', () => {
-    socket.emit('update_session', {
-      room: params.id,
-      characters: characterList,
-      fixedCharacters: fixedCharacterList,
-      scenario: fixedScenario,
-      object: fixedObject
-    })
-  });
 
   function closeSession(){
     api.put(`rpgs/${params.id}/session`, { characters: characterList })
-      .then(res => alert.success())
+      .then(res => alert.success(res.data.message))
       .catch(err => {
         if(!err.response) alert.error("Impossível conectar ao servidor!");
         else alert.error(err.response.data.message);
       })
     socket.emit('leave_room', { room: params.id, admin: true });
-    cleanSession();
     history.push(`/rpgs/${params.id}`);
+    cleanSession();
   }
 
   return(

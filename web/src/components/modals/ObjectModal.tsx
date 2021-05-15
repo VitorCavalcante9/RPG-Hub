@@ -11,6 +11,7 @@ import styles from '../../styles/components/modals/ObjectModal.module.css';
 
 import { Button } from '../Button';
 import { InputLabel } from '../InputLabel';
+import { ImageModal } from './ImageModal';
 
 interface RpgParams{
   id: string;
@@ -24,10 +25,12 @@ export function ObjectModal(){
   const history = useHistory();
 
   const {openModals, handleOpenModals} = useContext(RpgContext);
+  const [openImageModal, setOpenImageModal] = useState(false);
   const alert = useAlert();
 
   const [name, setName] = useState<string>();
-  const [images, setImages] = useState<File[]>([]);
+  const [imageURL, setImageURL] = useState<any>();
+  const [image, setImage] = useState<any>();
   const [previewImage, setPreviewImage] = useState('');
   const {register, handleSubmit, errors} = useForm();
 
@@ -48,20 +51,33 @@ export function ObjectModal(){
     }     
   }, [objectId, params.id]);
 
+  useEffect(() => {
+    if(imageURL){
+      setOpenImageModal(true);
+    }
+  }, [imageURL]);
+
   useEffect(()=> {
     if(errors.name) alert.error("Insira um nome")
   }, [errors, alert])
 
-  function handleSelectedImage(event: ChangeEvent<HTMLInputElement>){
-    if(!event.target.files){
+  function handleSelectedImage(e: ChangeEvent<HTMLInputElement>){
+    if(!e.target.files){
       return;
     }
 
-    const selectedImages = Array.from(event.target.files);
-    setImages(selectedImages);
+    let files;
+    if (e.target) {
+      files = e.target.files;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImageURL(reader.result as any);
+    };
+    if(files && files.length > 0) reader.readAsDataURL(files[0]);
 
-    const selectImagePreview = URL.createObjectURL(selectedImages[0]);
-    setPreviewImage(selectImagePreview);
+    const selectedImages = Array.from(e.target.files);
+    setImage(selectedImages[0]);
   }
 
   const onSubmit = async(data:any) => {
@@ -70,7 +86,7 @@ export function ObjectModal(){
 
     objectData.append('name', name);
 
-    if(images[0]) objectData.append('image', images[0]);
+    if(image) objectData.append('image', image);
     else objectData.append('previousImage', previewImage);
 
     if(objectId){
@@ -100,14 +116,35 @@ export function ObjectModal(){
     }
   }
 
+  function handleOpenImageModal(open: boolean){
+    setOpenImageModal(open);
+  }
+
+  function getCropDataImage(image: any){
+    const fileImage = new File([image], image.name);
+    setImage(fileImage)
+
+    const selectImagePreview = URL.createObjectURL(fileImage);
+    setPreviewImage(selectImagePreview);
+  }
+
+
   return(
+    <>
+    <ImageModal 
+      open={openImageModal}
+      image={imageURL}
+      handleOpenImageModal={handleOpenImageModal}
+      getCropDataImage={getCropDataImage}
+    />
+
     <Modal link={`/rpgs/${params.id}`} open={openModals[1]} title={objectId ? 'Editar Objeto' : 'Novo Objeto'}>
       <div className={styles.content}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className={styles.line}>
             <div className={styles.previewImage}>
               <div className={styles.image}>
-                <img src={previewImage} alt=''/>
+                <img className='image' src={previewImage} alt=''/>
               </div>
 
               <label htmlFor="image">Mudar foto</label>
@@ -134,5 +171,6 @@ export function ObjectModal(){
         </form>
       </div>
     </Modal>
+    </>
   );
 }

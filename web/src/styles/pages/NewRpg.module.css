@@ -17,6 +17,10 @@
   overflow: hidden;
 }
 
+.image img{
+  object-fit: contain;
+}
+
 .newRpgContainer .previewImage label{
   font: 500 1.8rem Rajdhani;
   margin-left: 1.5rem;
@@ -48,6 +52,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    margin-bottom: 0;
   }
 
   .newRpgContainer h1{
@@ -81,16 +86,8 @@
   .newRpgContainer .image{
     height: 30rem;
     width: 30rem;
-    border-radius: 2rem;
-    background: var(--color-secondary);
   }
 
-  .newRpgContainer .image img{
-    height: 30rem;
-    width: 30rem;
-    border-radius: 2rem;
-  }
-  
   .newRpgContainer .previewImage p{
     font: 500 1.8rem Rajdhani;
     margin-left: 0rem;

@@ -204,9 +204,13 @@ export function SessionProvider({children}: SessionProviderProps){
   function cleanSession(){
     setSelectedCharacter(characterList[0])
     setCharacterList([]);
+    setFixedCharacterList([]);
     setScenarioList([]);
     setObjectList([]);
+    setFixedObject(null);
+    setFixedScenario(null);
     setOpenModals([false, false, false, false]);
+    setLoading(true);
   }
 
   function updateSession(

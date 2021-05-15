@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import classnames from 'classnames';
@@ -64,6 +65,8 @@ export function SessionParticipant(){
 
   const [openObjectModal, setOpenObjectModal] = useState(false);
 
+  const socket = manager.socket('/session');
+
   useEffect(() => {
     api.get(`rpgs/${params.id}/participant`).then(res => {
       const { character } = res.data;
@@ -73,43 +76,51 @@ export function SessionParticipant(){
       handleSelectedCharacter(characterList[index]);
     });
 
-    if(characterId) socket.emit('req_update_session', params.id); 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    socket.on('update_session', ({ 
+      characters, fixedCharacters, scenario, object 
+    }: any) => {
+      //updateSession(characters, fixedCharacters, scenario, object);
+      updateCharacters(characters);
+      toggleFixScenario(scenario);
+      toggleFixObject(object);
+      updateFixedCharacters(fixedCharacters);
+    });
+
+    socket.on('update_characters', (characters: Character[]) => {
+      updateCharacters(characters);
+    });
+
+    socket.on('update_scenario', (scenario: any) => {
+      toggleFixScenario(scenario);
+    });
+
+    socket.on('update_object', (object: any) => {
+      toggleFixObject(object);
+    });
+
+    socket.on('fixed_characters', (characters: Character[]) => {
+      updateFixedCharacters(characters);
+    });
   }, []);
 
-  const socket = manager.socket('/session');
+  useEffect(() => {
+    if(characterId) socket.emit('req_update_session', params.id);
+
+  }, [characterId])
+
+  useEffect(() => {
+    if(characterId){
+      const index = (characterList.map(c => c.id)).indexOf(characterId);
+      handleSelectedCharacter(characterList[index]);
+    }
+  }, [updateSession])
 
   socket.on('session_closed', () => leaveSession());
 
-  socket.on('update_session', ({ 
-    characters, fixedCharacters, scenario, object 
-  }: any) => {
-    console.log(characterId)
-    updateSession(characters, fixedCharacters, scenario, object);
-    const index = (characterList.map(c => c.id)).indexOf(characterId);
-    handleSelectedCharacter(characterList[index]);
-  });
-
-  socket.on('update_characters', (characters: Character[]) => {
-    updateCharacters(characters);
-  })
-
-  socket.on('update_scenario', (scenario: any) => {
-    toggleFixScenario(scenario);
-  })
-
-  socket.on('update_object', (object: any) => {
-    toggleFixObject(object);
-  })
-
-  socket.on('fixed_characters', (characters: Character[]) => {
-    updateFixedCharacters(characters)
-  })
-
   function leaveSession(){
     socket.emit('leave_room', { room: params.id, admin: false });
-    cleanSession();
     history.push(`/rpgs/${params.id}`);
+    cleanSession();
   }
 
   return(
@@ -177,7 +188,7 @@ export function SessionParticipant(){
             {(() => {
               if(selectedItem === 'status'){
                 return(
-                  selectedCharacter.status.map((this_status, index) => {
+                  selectedCharacter.status?.map((this_status, index) => {
                     return(
                       <StatusItem 
                         key={this_status.name}
@@ -193,7 +204,7 @@ export function SessionParticipant(){
               }
               else if(selectedItem === 'skills'){
                 return(
-                  selectedCharacter.skills.map(this_skill => {
+                  selectedCharacter.skills?.map(this_skill => {
                     return(
                       <SkillsItems
                         key={this_skill.name}

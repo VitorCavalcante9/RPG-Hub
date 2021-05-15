@@ -72,9 +72,6 @@ export function RpgHome(){
   useEffect(() => {
     if(participants.length > 0){
       socket.on('users', (users: any) => {
-        console.log('chegou')
-        console.log(participants)
-
         const updateParticipants = participantsStatus.map(participant => {
           const index = users.indexOf(participant.id);
           if(index !== -1){
@@ -91,6 +88,7 @@ export function RpgHome(){
   }, [participants])
 
   useEffect(() => {
+    console.log('bah')
     api.get(`rpgs/${params.id}`)
     .then(res => {
       setRpg(res.data);
@@ -99,14 +97,8 @@ export function RpgHome(){
         setParticipants(res.data.participants);
       }
       socket.emit('update_users');
-    });
-
-    
-  }, [params.id]);
-
-  function teste(users: any){
-    
-  }
+    });    
+  }, [params.id, handleOpenModals, openDeleteModal]);
 
   async function deleteObject(){
     const search = window.location.search;

@@ -20,7 +20,7 @@ function AuthRoute({...props}: RouteProps){
   const { loading, authenticated } = useContext(AuthContext);
 
   if(loading) return <h1>Loading...</h1>
-  if (props.path === '/' && authenticated){
+  else if (props.path === '/' && authenticated){
     return <Redirect to='/home' />
   }    
   else if(!authenticated && props.path !== '/'){

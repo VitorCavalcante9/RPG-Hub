@@ -113,6 +113,8 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
+
+    margin-bottom: 0;
   }
 
   .sheetContainer h1{

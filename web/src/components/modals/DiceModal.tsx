@@ -41,8 +41,10 @@ export function DiceModal(){
 
   function addDice(){
     const newDice = dice.quantity + ' d ' + dice.value;
-    setDices([...dices, newDice]);
-    setDice(({quantity: '', value: ''}));
+    if(dice.quantity && dice.value){
+      setDices([...dices, newDice]);
+      setDice(({quantity: '', value: ''}));
+    }
   }
 
   function removeDice(position: number){

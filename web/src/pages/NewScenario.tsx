@@ -1,14 +1,15 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { ChangeEvent, createRef, useContext, useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
+import api from '../services/api';
 import { useAlert } from 'react-alert';
 import { useForm } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router';
 
-
 import { Button } from '../components/Button';
 import { InputLabel } from '../components/InputLabel';
 import { Layout } from '../components/Layout';
-import api from '../services/api';
+import { ImageModal } from '../components/modals/ImageModal';
 
 import styles from '../styles/pages/NewScenario.module.css';
 
@@ -26,11 +27,13 @@ export function NewScenario(){
   const alert = useAlert();
 
   const [name, setName] = useState<string>();
-  const [images, setImages] = useState<File[]>([]);
+  const [imageURL, setImageURL] = useState<any>();
+  const [image, setImage] = useState<any>();
   const [previewImage, setPreviewImage] = useState('');
   const {register, handleSubmit, reset, errors} = useForm();
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [openImageModal, setOpenImageModal] = useState(false);
 
   useEffect(() => {
     if(scenId){
@@ -43,21 +46,34 @@ export function NewScenario(){
       }) 
     }     
   }, [params.id]);
+
+  useEffect(() => {
+    if(imageURL){
+      setOpenImageModal(true);
+    }
+  }, [imageURL]);
   
   useEffect(()=> {
     if(errors.name) alert.error("Insira um nome")
   }, [errors, alert])
 
-  function handleSelectedImage(event: ChangeEvent<HTMLInputElement>){
-    if(!event.target.files){
+  function handleSelectedImage(e: ChangeEvent<HTMLInputElement>){
+    if(!e.target.files){
       return;
     }
 
-    const selectedImages = Array.from(event.target.files);
-    setImages(selectedImages);
+    let files;
+    if(e.target) {
+      files = e.target.files;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      if(reader.result) setImageURL(reader.result as any);
+    };
+    if(files && files.length > 0) reader.readAsDataURL(files[0]);
 
-    const selectImagePreview = URL.createObjectURL(selectedImages[0]);
-    setPreviewImage(selectImagePreview);
+    const selectedImages = Array.from(e.target.files);
+    setImage(selectedImages[0]);
   }
 
   const onSubmit = async(data:any) =>{
@@ -66,7 +82,7 @@ export function NewScenario(){
 
     scenarioData.append('name', name);
 
-    if(images[0]) scenarioData.append('image', images[0]);
+    if(image) scenarioData.append('image', image);
     else scenarioData.append('previousImage', previewImage);
 
     if(scenId){
@@ -92,6 +108,7 @@ export function NewScenario(){
       })
     }
   }
+
   async function deleteScenario(){
     api.delete(`rpgs/${params.id}/scenarios/${scenId}`)
     .then(res => {
@@ -102,8 +119,28 @@ export function NewScenario(){
     })
   }
 
+  function handleOpenImageModal(open: boolean){
+    setOpenImageModal(open);
+  }
+
+
+  function getCropDataImage(image: any){
+    const fileImage = new File([image], image.name);
+    setImage(fileImage)
+
+    const selectImagePreview = URL.createObjectURL(fileImage);
+    setPreviewImage(selectImagePreview);
+  }
+
   return(
     <>
+    <ImageModal 
+      open={openImageModal}
+      image={imageURL}
+      handleOpenImageModal={handleOpenImageModal}
+      getCropDataImage={getCropDataImage}
+    />
+
     {/* The Delete Modal */}
     <div className="modal" style={{display: openDeleteModal ? 'block' : 'none'}}>
       <div className="modalContent">

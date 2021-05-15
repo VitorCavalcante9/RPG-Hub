@@ -9,6 +9,7 @@ import { Button } from '../components/Button';
 import { InputLabel } from '../components/InputLabel';
 import { Layout } from '../components/Layout';
 import { TextAreaLabel } from '../components/TextAreaLabel';
+import { ImageModal } from '../components/modals/ImageModal';
 
 import styles from '../styles/pages/NewRpg.module.css';
 
@@ -18,7 +19,8 @@ export function NewRpg(){
   const rpgId = searchContent.get('r');
 
   const [name, setName] = useState<string>();
-  const [images, setImages] = useState<File[]>([]);
+  const [imageURL, setImageURL] = useState<any>();
+  const [image, setImage] = useState<any>();
   const [previewImage, setPreviewImage] = useState('');
 
   const {register, handleSubmit, errors} = useForm();
@@ -26,6 +28,7 @@ export function NewRpg(){
   const alert = useAlert();
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [openImageModal, setOpenImageModal] = useState(false);
 
   useEffect(() => {
     api.get(`rpgs/${rpgId}`)
@@ -41,13 +44,19 @@ export function NewRpg(){
     if(errors.name) alert.error("Insira um nome")
   }, [errors, alert])
 
+  useEffect(() => {
+    if(imageURL){
+      setOpenImageModal(true);
+    }
+  }, [imageURL]);
+
   const onSubmit = async(data:any) => {
     const { name } = data;
     const rpgData = new FormData();
 
     rpgData.append('name', name);
     
-    if(images[0]) rpgData.append('icon', images[0]);
+    if(image) rpgData.append('icon', image);
     else rpgData.append('previousIcon', previewImage);
 
     if(rpgId){
@@ -83,16 +92,23 @@ export function NewRpg(){
     }
   }
 
-  function handleSelectedImage(event: ChangeEvent<HTMLInputElement>){
-    if(!event.target.files){
+  function handleSelectedImage(e: ChangeEvent<HTMLInputElement>){
+    if(!e.target.files){
       return;
     }
 
-    const selectedImages = Array.from(event.target.files);
-    setImages(selectedImages);
+    let files;
+    if (e.target) {
+      files = e.target.files;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImageURL(reader.result as any);
+    };
+    if(files && files.length > 0) reader.readAsDataURL(files[0]);
 
-    const selectImagePreview = URL.createObjectURL(selectedImages[0]);
-    setPreviewImage(selectImagePreview);
+    const selectedImages = Array.from(e.target.files);
+    setImage(selectedImages[0]);
   }
 
   async function deleteRpg(){
@@ -106,8 +122,28 @@ export function NewRpg(){
     })
   }
 
+  function handleOpenImageModal(open: boolean){
+    setOpenImageModal(open);
+  }
+
+  function getCropDataImage(image: any){
+    const fileImage = new File([image], image.name);
+    setImage(fileImage)
+
+    const selectImagePreview = URL.createObjectURL(fileImage);
+    setPreviewImage(selectImagePreview);
+  }
+
   return(
     <>
+    <ImageModal 
+      open={openImageModal}
+      image={imageURL}
+      square={true}
+      handleOpenImageModal={handleOpenImageModal}
+      getCropDataImage={getCropDataImage}
+    />
+
     {/* The Delete Modal */}
     <div className="modal" style={{display: openDeleteModal ? 'block' : 'none'}}>
       <div className="modalContent">

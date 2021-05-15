@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { useLoading, Oval } from '@agney/react-loading';
@@ -47,7 +48,7 @@ export function Session(){
   const params = useParams<RpgParams>();
   const history = useHistory();
   const { isAdm } = useContext(RpgContext);
-  const { loading, initializeSession } = useContext(SessionContext);
+  const { loading, initializeSession, cleanSession } = useContext(SessionContext);
 
   const [roomIsOpen, setRoomIsOpen] = useState(false);
   const [characterList, setCharacterList] = useState<Character[]>([]);
@@ -62,14 +63,6 @@ export function Session(){
   const socket = manager.socket('/session');
   
   useEffect(() => {
-
-    api.get(`rpgs/${params.id}/objects`)
-    .then(res => {
-      if(res.data){
-        setObjectList(res.data);
-      }
-    })
-
     api.get(`rpgs/${params.id}/scenarios`)
     .then(res => {
       if(res.data){
@@ -78,19 +71,25 @@ export function Session(){
       }
     }) 
 
+    api.get(`rpgs/${params.id}/objects`)
+    .then(res => {
+      if(res.data){
+        setObjectList(res.data);
+      }
+    })
+
     api.get(`rpgs/${params.id}/characters`)
     .then(res => {
       if(res.data){
         setCharacterList(res.data);
       }
     }) 
-
-    socket.emit('open_rooms');
   }, [params.id])
 
   useEffect(() => {
     if(characterList.length > 0 && (scenarioList.length > 0 || objectList.length > 0)){
       initializeSession(characterList, scenarioList, objectList);
+      socket.emit('open_rooms');
     }
   }, [characterList])
 
@@ -99,6 +98,7 @@ export function Session(){
     if(indexRoom !== -1){
       setRoomIsOpen(true);
     } else {
+      cleanSession();
       history.push(`/rpgs/${params.id}`);
     }
   });

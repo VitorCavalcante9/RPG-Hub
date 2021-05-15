@@ -217,7 +217,6 @@ export function RpgHomeParticipant(){
                 options={
                   <p className={styles.points}>Quantidade de pontos disponíveis: {currentPoints}</p>
                 }
-                breakHeader={true}
               >
                 {skillsItems?.map((skillsItem, index) => {
                   return(
@@ -240,7 +239,7 @@ export function RpgHomeParticipant(){
               />
 
             </form>
-            <ButtonSession onClick={joinSession} text='Entrar na sessão' id={styles.buttonSession}/>
+            <ButtonSession disabled={character.id ? false : true} onClick={joinSession} text='Entrar na sessão' id={styles.buttonSession}/>
           </div>
         </div>
       </div>

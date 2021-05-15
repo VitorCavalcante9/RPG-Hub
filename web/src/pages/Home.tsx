@@ -9,6 +9,7 @@ import { Layout } from '../components/Layout';
 
 import styles from '../styles/pages/Home.module.css';
 import { InputLabel } from '../components/InputLabel';
+import { RpgContext } from '../contexts/RpgHomeContext';
 
 interface RPG{
   id: string;
@@ -19,6 +20,7 @@ interface RPG{
 export function Home(){
   const [rpgs, setRpgs] = useState<RPG[]>([]);
   const [rpgsParticipant, setRpgsParticipant] = useState<RPG[]>([]);
+  const { cleanRPG } = useContext(RpgContext);
 
   const {register, handleSubmit, reset, errors} = useForm();
   const history = useHistory();
@@ -28,14 +30,16 @@ export function Home(){
   useEffect(() => {
     api.get('home')
     .then(res => {
-      const {rpgs: your_rpgs, partipating_rpgs} = res.data;
+      const {rpgs: your_rpgs, participating_rpgs} = res.data;
 
       const rpg_ids = your_rpgs.map((rpg: RPG) =>{return rpg.id});
       localStorage.setItem('rpgs', JSON.stringify(rpg_ids));
 
       setRpgs(your_rpgs);
-      setRpgsParticipant(partipating_rpgs);
+      setRpgsParticipant(participating_rpgs);
     })
+
+    cleanRPG();
   }, [])
 
   useEffect(()=> {
@@ -92,7 +96,6 @@ export function Home(){
         </div>
         <div className={styles.elementsList}>          
           {rpgs.map(rpg => {
-            console.log(rpg.icon)
             return(
               <Link key={rpg.id} to={`/rpgs/${rpg.id}`} className={styles.rpgItem}>
                 <div className={styles.icon}>

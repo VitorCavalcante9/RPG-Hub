@@ -35,12 +35,14 @@ class SessionSocket{
 
     //Update session participant
     socket.on('req_update_session', room => {
+      console.log('pediu')
       socket.to(room).emit('req_update_session');
     });
 
     socket.on('update_session', ({ 
       room, characters, fixedCharacters, scenario, object
     }) => {
+      console.log(scenario, object)
       socket.to(room).emit('update_session', { 
         characters, fixedCharacters, scenario, object 
       });

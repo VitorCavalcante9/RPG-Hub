@@ -39,10 +39,7 @@
 }
 
 .name .image img{
-  height: 100%;
-  width: 100%;
-  object-position: center;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .name .previewImage label{
@@ -142,11 +139,6 @@
   }
 
   .name .image{
-    height: 10rem;
-    width: 10rem;
-  }
-  
-  .name .image img{
     height: 10rem;
     width: 10rem;
   }

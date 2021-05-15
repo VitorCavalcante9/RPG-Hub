@@ -21,6 +21,10 @@
   overflow: hidden;
 }
 
+.image img{
+  object-fit: contain;
+}
+
 .newScenarioContainer .previewImage label{
   font: 500 1.6rem Rajdhani;
   margin-left: 1.5rem;
@@ -44,6 +48,8 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+
+    margin-bottom: 0;
   }
 
   .newScenarioContainer h1{

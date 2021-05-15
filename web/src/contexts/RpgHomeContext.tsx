@@ -22,6 +22,7 @@ interface RpgContextData{
   removeStatusItems: (position: number) => void;
   handleOpenModals: (modal: number) => void;
   handleOpenAccountModal: () => void;
+  cleanRPG: () => void;
 }
 
 interface RpgProviderProps{
@@ -120,6 +121,13 @@ export function RpgProvider({children}: RpgProviderProps){
     setStatusItems(updatedDiceItems);
   }
 
+  function cleanRPG(){
+    setOpenModals([false, false, false, false, false]);
+    setOpenAccountModal(false);
+    setIsAdm(false);
+    setLoading(true);
+  }
+
   return(
     <RpgContext.Provider
       value={{
@@ -134,7 +142,8 @@ export function RpgProvider({children}: RpgProviderProps){
         setStatusItemValue,
         removeStatusItems,
         handleOpenModals,
-        handleOpenAccountModal
+        handleOpenAccountModal,
+        cleanRPG
       }}
     >
       {children}

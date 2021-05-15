@@ -40,13 +40,6 @@
   overflow: hidden;
 }
 
-.previewImage .image img{
-  height: 100%;
-  width: 100%;
-  object-position: center;
-  object-fit: cover;
-}
-
 .buttonCreate{
   width: 100%;
 }

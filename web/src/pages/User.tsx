@@ -13,6 +13,7 @@ import styles from '../styles/pages/User.module.css';
 
 import { Button } from '../components/Button';
 import { InputLabel } from '../components/InputLabel';
+import { ImageModal } from '../components/modals/ImageModal';
 
 interface RpgParams{
   id: string;
@@ -25,12 +26,14 @@ export function User(){
   const history = useHistory();
 
   const [name, setName] = useState<string>();
-  const [images, setImages] = useState<File[]>([]);
+  const [imageURL, setImageURL] = useState<any>();
+  const [image, setImage] = useState<any>();
   const [previewImage, setPreviewImage] = useState('');
 
   const {register, handleSubmit, reset, setValue, errors} = useForm();
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [openImageModal, setOpenImageModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [changePassword, setChangePassword] = useState(false);
 
@@ -48,6 +51,12 @@ export function User(){
     })
   }, [params.id]);
 
+  useEffect(() => {
+    if(imageURL){
+      setOpenImageModal(true);
+    }
+  }, [imageURL]);
+
   useEffect(()=> {
     if(errors.name) alert.error("Insira um nome");
     if(errors.password) alert.error("Insira sua senha atual");
@@ -59,16 +68,23 @@ export function User(){
     setValue('username', name);
   }, [changePassword])
 
-  function handleSelectedImage(event: ChangeEvent<HTMLInputElement>){
-    if(!event.target.files){
+  function handleSelectedImage(e: ChangeEvent<HTMLInputElement>){
+    if(!e.target.files){
       return;
     }
 
-    const selectedImages = Array.from(event.target.files);
-    setImages(selectedImages);
+    let files;
+    if (e.target) {
+      files = e.target.files;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImageURL(reader.result as any);
+    };
+    if(files && files.length > 0) reader.readAsDataURL(files[0]);
 
-    const selectImagePreview = URL.createObjectURL(selectedImages[0]);
-    setPreviewImage(selectImagePreview);
+    const selectedImages = Array.from(e.target.files);
+    setImage(selectedImages[0]);
   }
 
   const onSubmit = async(data:any) => {
@@ -77,7 +93,7 @@ export function User(){
 
     userData.append('username', username);
     
-    if(images[0]) userData.append('icon', images[0]);
+    if(image) userData.append('icon', image);
     else userData.append('previousIcon', previewImage);
 
     await api.patch(`users`, userData)
@@ -123,8 +139,27 @@ export function User(){
     })
   }
 
+  function handleOpenImageModal(open: boolean){
+    setOpenImageModal(open);
+  }
+
+  function getCropDataImage(image: any){
+    const fileImage = new File([image], image.name);
+    setImage(fileImage)
+
+    const selectImagePreview = URL.createObjectURL(fileImage);
+    setPreviewImage(selectImagePreview);
+  }
+
   return(
     <>
+    <ImageModal 
+      open={openImageModal}
+      image={imageURL}
+      square={true}
+      handleOpenImageModal={handleOpenImageModal}
+      getCropDataImage={getCropDataImage}
+    />
     {/* The Delete Modal */}
     <div className="modal" style={{display: openDeleteModal ? 'block' : 'none'}}>
       <div className="modalContent">
@@ -151,7 +186,7 @@ export function User(){
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className={classnames(styles.previewImage)}>
                   <div className={classnames(styles.image, {[styles.imageNotEdit]: !isEdit})}>
-                    <img src={previewImage} alt="Prévia da Imagem"/>
+                    <img className="image" src={previewImage} alt="Prévia da Imagem"/>
                   </div>
 
                   {(() => {

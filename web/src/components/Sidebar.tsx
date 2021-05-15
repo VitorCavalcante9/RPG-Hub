@@ -22,6 +22,8 @@ export function Sidebar(){
     .then(res => {
       const { username, icon } = res.data;
       setUserData({username, icon});
+    }).catch(err => {
+      if(err.response.status === 401) handleLogout();
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [window.location])
