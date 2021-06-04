@@ -3,8 +3,6 @@ import { useForm } from 'react-hook-form';
 import { useAlert } from 'react-alert';
 import api from '../services/api';
 
-import logo from '../assets/images/logo.svg';
-
 import { Button } from '../components/Button';
 import { ButtonGoogle } from '../components/ButtonGoogle';
 import { Input } from '../components/Input';
@@ -16,7 +14,7 @@ import { useHistory } from 'react-router';
 export function Login(){
   const { handleLogin } = useContext(AuthContext);
   const [isRegistered, setIsRegistered] = useState(true);
-  const {register, handleSubmit, errors} = useForm();
+  const {register, handleSubmit, reset, errors} = useForm();
   const history = useHistory();
   const alert = useAlert();
 
@@ -58,6 +56,7 @@ export function Login(){
   const toggleForm = () =>{
     const new_value = isRegistered ? false : true;
     setIsRegistered(new_value);
+    reset({something: ''});
   }
 
   return(
@@ -86,7 +85,7 @@ export function Login(){
                   name="password"
                   type="password"
                   placeholder="Insira sua senha"
-                  maxLength={100}
+                  maxLength={50}
                   inputRef={register({required: true})}
                   style={{marginBottom: '5rem'}}
                 />
@@ -123,7 +122,7 @@ export function Login(){
                   name="password"
                   type="password"
                   placeholder="Insira sua senha"
-                  maxLength={100}
+                  maxLength={50}
                   inputRef={register({required: true})}
                   style={{marginBottom: '5rem'}}
                 />

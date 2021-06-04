@@ -1,6 +1,5 @@
-import React, { createContext, ReactNode, useContext, useState } from 'react';
-import api from '../services/api';
-import { AuthContext } from './AuthContext';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { createContext, ReactNode, useState } from 'react';
 
 interface StatusItem{
   name: string;
@@ -13,9 +12,7 @@ interface RpgContextData{
   statusItems: Array<StatusItem>;
   openModals: Array<boolean>;
   openAccountModal: boolean;
-  isAdm: boolean;
   loading: boolean;
-  verifyIfIsAdm: (rpg_id: string) => boolean;
   defaultStatus: (allStatus: StatusItem[]) => void;
   addNewStatus: (oneStatus?: StatusItem) => void;
   setStatusItemValue: (position: number, field: string, value: string) => void;
@@ -29,7 +26,6 @@ interface RpgProviderProps{
   children: ReactNode;
 }
 
-
 export const RpgContext = createContext({} as RpgContextData);
 
 export function RpgProvider({children}: RpgProviderProps){
@@ -38,25 +34,7 @@ export function RpgProvider({children}: RpgProviderProps){
   const [openModals, setOpenModals] = useState<boolean[]>([false, false, false, false, false]);
   const [openAccountModal, setOpenAccountModal] = useState(false);
 
-  const [isAdm, setIsAdm] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  const verifyIfIsAdm = (rpg_id: string) => {
-    const rpgs = localStorage.getItem('rpgs');
-
-    if(rpgs){
-      const indexRpg = rpgs.indexOf(rpg_id);
-      if(indexRpg !== -1){
-        setIsAdm(true);
-        setLoading(false);
-        return true;
-      }      
-    }
-      
-    setIsAdm(false);
-    setLoading(false);
-    return false; 
-  }
 
   function handleOpenModals(modal: number){
     const updatedOpenModals = openModals.map((openModal, index) => {
@@ -124,7 +102,6 @@ export function RpgProvider({children}: RpgProviderProps){
   function cleanRPG(){
     setOpenModals([false, false, false, false, false]);
     setOpenAccountModal(false);
-    setIsAdm(false);
     setLoading(true);
   }
 
@@ -134,9 +111,7 @@ export function RpgProvider({children}: RpgProviderProps){
         statusItems,
         openModals,
         openAccountModal,
-        isAdm,
         loading,
-        verifyIfIsAdm,
         defaultStatus,
         addNewStatus,
         setStatusItemValue,

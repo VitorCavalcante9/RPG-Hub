@@ -56,6 +56,7 @@
 .menu{
   width: 35rem;
   height: 100vh;
+  padding-left: 2rem;
 
   transform: translateX(0);
 
@@ -70,14 +71,12 @@
   text-align: center;
 
   transition: width 0.3s;
-  transition: transform 0.1s;
 }
 
 .collapsedMenu{
   width: 7.5rem;
   transform: translateX(-35rem);
   transition: width 0.3s;
-  transition: transform 0.1s;
 }
 
 .account a, .icon p{
@@ -99,6 +98,10 @@
 
 .moreIcon img{
   width: 3.5rem;
+}
+
+.moreIcon:nth-child(2){
+  margin-left: -2rem;
 }
 
 .menu .iconAccount{
@@ -212,7 +215,7 @@
   }
 
   .menu{
-    width: 22.5rem;
+    width: 25rem;
     padding: 2.6rem 1rem;
     transform: translateX(0);
     transition: width 0.3s;

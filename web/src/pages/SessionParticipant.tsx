@@ -76,6 +76,10 @@ export function SessionParticipant(){
       handleSelectedCharacter(characterList[index]);
     });
 
+    socket.on('session_closed', () => {
+      leaveSession()
+    });
+
     socket.on('update_session', ({ 
       characters, fixedCharacters, scenario, object 
     }: any) => {
@@ -87,6 +91,7 @@ export function SessionParticipant(){
     });
 
     socket.on('update_characters', (characters: Character[]) => {
+      console.log('char')
       updateCharacters(characters);
     });
 
@@ -106,21 +111,20 @@ export function SessionParticipant(){
   useEffect(() => {
     if(characterId) socket.emit('req_update_session', params.id);
 
-  }, [characterId])
+  }, [characterId]);
 
   useEffect(() => {
     if(characterId){
       const index = (characterList.map(c => c.id)).indexOf(characterId);
       handleSelectedCharacter(characterList[index]);
     }
-  }, [updateSession])
-
-  socket.on('session_closed', () => leaveSession());
+  }, [updateSession]);
 
   function leaveSession(){
     socket.emit('leave_room', { room: params.id, admin: false });
-    history.push(`/rpgs/${params.id}`);
     cleanSession();
+    history.push(`/rpgs/${params.id}`);
+    socket.close();
   }
 
   return(
@@ -162,10 +166,14 @@ export function SessionParticipant(){
 
         <div className={stylesSession.column2}>
           <div id={stylesSession.itemsContainer} className={stylesSession.blocks}>
-            <CharacterItem 
-              className={styles.charItem} 
-              character={selectedCharacter}
-            />
+            {(() => {
+              if(selectedCharacter) return (
+                <CharacterItem 
+                  className={styles.charItem} 
+                  character={selectedCharacter}
+                />
+              )
+            })()}
             <div className={stylesSession.itemsOptions}>
               <Button 
                 className={classnames(stylesSession.buttons, {[stylesSession.selectedItemButton]: selectedItem === 'status'})} 
@@ -183,12 +191,12 @@ export function SessionParticipant(){
                 onClick={() => setSelectedItem('skills')}  
               />
             </div>
-            <div className={`${stylesSession.itemsArea} ${styles.itemsArea} custom-scrollbar`}>
+            <div className={`${stylesSession.itemsArea} ${styles.itemsArea}`}>
               <div></div>
             {(() => {
               if(selectedItem === 'status'){
                 return(
-                  selectedCharacter.status?.map((this_status, index) => {
+                  selectedCharacter?.status.map((this_status, index) => {
                     return(
                       <StatusItem 
                         key={this_status.name}
@@ -204,7 +212,7 @@ export function SessionParticipant(){
               }
               else if(selectedItem === 'skills'){
                 return(
-                  selectedCharacter.skills?.map(this_skill => {
+                  selectedCharacter?.skills.map(this_skill => {
                     return(
                       <SkillsItems
                         key={this_skill.name}
@@ -220,7 +228,7 @@ export function SessionParticipant(){
               }   
               else if(selectedItem === 'inventory'){
                 return(
-                  selectedCharacter.inventory?.map((this_item, index) => {
+                  selectedCharacter?.inventory.map((this_item, index) => {
                     return(
                       <div key={index}  className={styles.inventoryItem}>
                         <InventoryItem isReadOnly={true} value={this_item} />

@@ -44,6 +44,7 @@ export function StatusItem({name, color, current, limit, edit, index, setStatusI
                   <span> / </span>
                   <InputLine
                     className={styles.input}
+                    minValue={current}
                     value={limit}
                     onChange={e => changeStatus(index, 'limit', e.target.value)}
                   />

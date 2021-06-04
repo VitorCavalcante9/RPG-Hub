@@ -22,7 +22,7 @@ export function DiceModal(){
   const params = useParams<RpgParams>();
   const alert = useAlert();
 
-  const {openModals} = useContext(RpgContext);
+  const { openModals } = useContext(RpgContext);
   const [dices, setDices] = useState<String[]>([]);
   const [dice, setDice] = useState({quantity: '', value: ''});
 

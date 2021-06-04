@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import classnames from 'classnames';
 import { useForm } from 'react-hook-form';
 import { useAlert } from 'react-alert';
@@ -75,12 +75,17 @@ export function NewRpg(){
         const { rpgId } = res.data;
         const rpgs = localStorage.getItem('rpgs');
         if(rpgs){
-          const rpgList:Array<string> = JSON.parse(rpgs);
-          rpgList.push(rpgId);
-          localStorage.setItem('rpgs', JSON.stringify(rpgList));
-        }
-        else{
-          const rpgList = [rpgId]
+          const allRpgs = JSON.parse(rpgs);
+          const yourRpgList:Array<string> = allRpgs.rpgs;
+          const participatingRpgList:Array<string> = allRpgs.participating_rpgs;
+
+          yourRpgList.push(rpgId);
+          
+          const rpgList = {
+            rpgs: yourRpgList,
+            participating_rpgs: participatingRpgList
+          }
+
           localStorage.setItem('rpgs', JSON.stringify(rpgList));
         }
         
@@ -126,9 +131,9 @@ export function NewRpg(){
     setOpenImageModal(open);
   }
 
-  function getCropDataImage(image: any){
-    const fileImage = new File([image], image.name);
-    setImage(fileImage)
+  function getCropDataImage(imageBlob: Blob){
+    const fileImage = new File([imageBlob], image.name, { type: imageBlob.type });
+    setImage(fileImage);
 
     const selectImagePreview = URL.createObjectURL(fileImage);
     setPreviewImage(selectImagePreview);

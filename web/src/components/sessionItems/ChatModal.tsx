@@ -1,17 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { KeyboardEvent, useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { SessionContext } from '../../contexts/SessionContext';
 import manager from '../../services/websocket';
+import useDetectMobile from '../../utils/isMobile';
 
 import styles from '../../styles/components/sessionItems/ChatModal.module.css';
 
 import { Block } from '../Block';
 import { Button } from '../Button';
-
-import send from '../../assets/icons/send.svg';
 import { TextAreaLabel } from '../TextAreaLabel';
 import { Message } from './Message';
+
+import send from '../../assets/icons/send.svg';
 
 interface Messages{
   name: string;
@@ -33,6 +34,7 @@ export function ChatModal({ selectedCharacter }: ChatModalProps){
   const [messages, setMessages] = useState<Messages[]>([]);
   const [lastMessage, setLastMessage] = useState<any>(null);
   const [newMessage, setNewMessage] = useState('');
+  const isMobile = useDetectMobile();
 
   const msgRef = useRef<HTMLDivElement>(null);
 
@@ -82,6 +84,11 @@ export function ChatModal({ selectedCharacter }: ChatModalProps){
       
     setNewMessage('');
   }
+
+  function pressEnter(e: KeyboardEvent<HTMLTextAreaElement>){
+    const key = e.key;
+    if(!isMobile && key === 'Enter' && ! e.shiftKey) sendMessage()
+  }
   
   return(
     <>
@@ -99,10 +106,11 @@ export function ChatModal({ selectedCharacter }: ChatModalProps){
           <div className={styles.newMessageContainer}>
             <TextAreaLabel
               className={styles.inputNote} 
-              name="note" 
+              name="message" 
               label="Escreva uma nova messagem" 
               value={newMessage}
               onChange={e => {setNewMessage(e.target.value)}}
+              onKeyUp={e => pressEnter(e)}
             />
             <button 
               type='button' 

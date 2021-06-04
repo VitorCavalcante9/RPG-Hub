@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -33,7 +34,14 @@ export function Home(){
       const {rpgs: your_rpgs, participating_rpgs} = res.data;
 
       const rpg_ids = your_rpgs.map((rpg: RPG) =>{return rpg.id});
-      localStorage.setItem('rpgs', JSON.stringify(rpg_ids));
+      const participant_rpg_ids = participating_rpgs.map((rpg: RPG) =>{return rpg.id});
+
+      const rpgs = {
+        rpgs: rpg_ids ? rpg_ids : [],
+        participating_rpgs: participant_rpg_ids ? participant_rpg_ids : []
+      }
+
+      localStorage.setItem('rpgs', JSON.stringify(rpgs));
 
       setRpgs(your_rpgs);
       setRpgsParticipant(participating_rpgs);

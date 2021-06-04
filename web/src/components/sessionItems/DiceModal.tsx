@@ -5,7 +5,6 @@ import { useParams } from 'react-router';
 import api from '../../services/api';
 import manager from '../../services/websocket';
 import { SessionContext } from '../../contexts/SessionContext';
-import { RpgContext } from '../../contexts/RpgHomeContext';
 
 import styles from '../../styles/components/sessionItems/DiceModal.module.css';
 
@@ -38,9 +37,9 @@ interface DataDice{
 
 export function DiceModal(){
   const params = useParams<RpgParams>();
-  const {isAdm} = useContext(RpgContext);
   const alert = useAlert();
   const {characterList, openModals, selectedCharacter, handleOpenModals, handleSelectedCharacter} = useContext(SessionContext);
+  const [isAdm, setIsAdm] = useState(false);
 
   const msgRef = useRef<HTMLDivElement>(null);
   
@@ -54,13 +53,19 @@ export function DiceModal(){
   const [lastMessage, setLastMessage] = useState<any>(null);
 
   const socket = manager.socket('/session');
-
+  
   useEffect(() => {
+    const rpgs = localStorage.getItem('rpgs');
+    if(rpgs){
+      const allRpgs = JSON.parse(rpgs);
+      const indexRpg = allRpgs.rpgs.indexOf(params.id);
+      if(indexRpg !== -1) setIsAdm(true);   
+    }
+
     api.get(`rpgs/${params.id}/dices`)
     .then(res => {
       if(res.data){
         setDices(res.data);
-        if(dices.length > 0) setDice(dices[0]);
       }
     })   
     
@@ -78,6 +83,10 @@ export function DiceModal(){
       }
     })
   }, [params.id]);
+
+  useEffect(() => {
+    if(dices.length > 0) setDice(dices[0])
+  }, [dices])
 
   useEffect(() => {
     if(lastMessage){

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 
 import api from '../../services/api';
@@ -27,21 +28,30 @@ export default function useAuth(){
     }
 
     setLoading(false);
-  }, [socket]);
+  }, []);
 
   function handleLogin(token: JSON){
     localStorage.setItem('token', JSON.stringify(token));
-    
+
     api.defaults.headers.Authorization = `Bearer ${token}`;
     setAuthenticated(true);
+    socket.open();
+    socket.emit('login', token);
 
     api.get('home', {
       headers: { 'Authorization': `Bearer ${token}`}
     }).then(res => {
-      const {rpgs} = res.data;
-      const rpg_ids = rpgs.map((rpg: RPG) =>{return rpg.id});
+      const {rpgs: your_rpgs, participating_rpgs} = res.data;
 
-      localStorage.setItem('rpgs', JSON.stringify(rpg_ids));
+      const rpg_ids = your_rpgs.map((rpg: RPG) =>{return rpg.id});
+      const participant_rpg_ids = participating_rpgs.map((rpg: RPG) =>{return rpg.id});
+
+      const rpgs = {
+        rpgs: rpg_ids ? rpg_ids : [],
+        participating_rpgs: participant_rpg_ids ? participant_rpg_ids : []
+      }
+
+      localStorage.setItem('rpgs', JSON.stringify(rpgs));
 
     }).catch(error => {
       if(!error.response) console.error("Impossível conectar ao servidor!");

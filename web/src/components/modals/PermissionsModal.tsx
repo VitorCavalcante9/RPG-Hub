@@ -39,6 +39,15 @@ export function PermissionsModal({newPermissions}: PermissionsModalProps){
   const [permissions, setPermissions] = useState<Permission[]>([]);
 
   useEffect(() => {
+    if(openModals[4]) reloadPermissions();
+  }, [openModals[4]]);
+
+  useEffect(() => {
+    if(permissions.length === 0) newPermissions(false)
+    else newPermissions(true);
+  }, [permissions]);
+
+  function reloadPermissions(){
     api.get(`rpgs/${params.id}/permissions`)
     .then(res => {
       const permissionsRes = res.data;
@@ -48,20 +57,14 @@ export function PermissionsModal({newPermissions}: PermissionsModalProps){
     }).catch(err => {
       if(!err.response) alert.error("Impossível conectar ao servidor!");
       else if(err.response.status !== 404) alert.error(err.response.data.message);
-    })
-
-    if(permissions.length > 0) newPermissions(true);
-    
-  }, [permissions, acceptPermission, denyPermission]);
-
-  useEffect(() => {
-    if(permissions.length === 0) newPermissions(false);
-  }, [newPermissions])
+    });
+  }
 
   async function denyPermission(id: number){
     api.delete(`rpgs/${params.id}/permissions/${id}`)
     .then(res => {
-      alert.success(res.data.message)
+      alert.success(res.data.message);
+      reloadPermissions();
     }).catch(err => {
       if(!err.response) alert.error("Impossível conectar ao servidor!");
       else alert.error(err.response.data.message);
@@ -72,11 +75,12 @@ export function PermissionsModal({newPermissions}: PermissionsModalProps){
   async function acceptPermission(id: number){
     api.put(`rpgs/${params.id}/permissions/${id}`, null)
     .then(res => {
-      alert.success(res.data.message)
+      alert.success(res.data.message);
+      reloadPermissions();
     }).catch(err => {
       if(!err.response) alert.error("Impossível conectar ao servidor!");
       else alert.error(err.response.data.message);
-    })
+    });
   }
 
   return(

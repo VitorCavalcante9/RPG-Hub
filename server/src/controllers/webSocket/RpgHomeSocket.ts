@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { AppError } from '../../models/AppError';
 
 interface TokenPayLoad{
   id: string;
@@ -8,11 +9,8 @@ interface TokenPayLoad{
 
 class RpgHomeSocket{
   respond(endpoint, socket, user){
-    console.log('user connected')
-    console.log(user)
 
     const emitUsers = () => {
-      console.log(1,getUsers());
       endpoint.emit('users', getUsers());
     }
 
@@ -28,20 +26,19 @@ class RpgHomeSocket{
     }
     
     socket.on('login', token => {
-      const data = jwt.verify(token, process.env.APP_KEY);
-      const { id } = data as TokenPayLoad;
-      socket.user = id;      
-      console.log('login', id)
-      emitUsers();
+      try{
+        const data = jwt.verify(token, process.env.APP_KEY);
+        const { id } = data as TokenPayLoad;
+        socket.user = id;      
+        emitUsers();
+      } catch {}
     })
 
     socket.on('update_users', () =>{
-      console.log('update')
       socket.emit('users', getUsers());
     });
 
     socket.on('disconnect', () => {
-      console.log('user disconnected')
       emitUsers();
     })
   }

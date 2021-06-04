@@ -32,9 +32,7 @@ export function AccountListModal(){
 
   useEffect(() => {
     if(players.length > 0){
-      socket.on('users', (users: any) => {
-        console.log('chegou')
-        
+      socket.on('users', (users: any) => {        
         const updatePlayers = playersStatus.map(player => {
           const index = users.indexOf(player.id);
           if(index !== -1){

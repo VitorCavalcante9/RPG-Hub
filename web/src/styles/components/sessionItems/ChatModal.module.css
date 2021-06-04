@@ -16,6 +16,7 @@
 .container{
   background: var(--color-modal);
   width: 90%;
+  max-width: 55rem;
   margin: 0 2rem;
   min-height: 40rem;
   padding: 3rem 3rem;
@@ -52,7 +53,7 @@
   background: var(--color-button);
 
   margin-left: 1rem;
-  margin-top: 4.75rem;
+  margin-top: 2.5rem;
 
   cursor: pointer;
   padding-top: 0.25rem;

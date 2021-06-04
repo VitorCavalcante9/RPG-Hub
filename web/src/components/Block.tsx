@@ -19,7 +19,7 @@ export function Block({className, id, name, options, center, breakHeader, childr
         
       </div>
 
-      <div className={`${styles.body} custom-scrollbar`}>
+      <div className={styles.body}>
         {children}
       </div>
     </div>

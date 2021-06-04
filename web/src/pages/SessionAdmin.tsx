@@ -45,10 +45,11 @@ export function SessionAdmin(){
 
   const socket = manager.socket('/session');
 
+  let interval: NodeJS.Timeout;
+
   useEffect(() => {
     if(characterList){
       socket.on('req_update_session', () => {
-        console.log('epa')
         socket.emit('update_session', {
           room: params.id,
           characters: characterList,
@@ -71,7 +72,18 @@ export function SessionAdmin(){
     socket.emit('update_characters', ({
       room: params.id,
       characters: characterList
-    }))
+    }));
+
+    if(characterList.length > 0){
+      interval = setInterval(() => {
+        api.put(`rpgs/${params.id}/session`, { characters: characterList })
+          .then()
+          .catch(err => {
+            if(!err.response) alert.error("Impossível conectar ao servidor!");
+            else alert.error(err.response.data.message);
+          })
+      }, 60000)
+    }
   }, [characterList]);
 
   useEffect(() => {
@@ -96,8 +108,10 @@ export function SessionAdmin(){
         else alert.error(err.response.data.message);
       })
     socket.emit('leave_room', { room: params.id, admin: true });
-    history.push(`/rpgs/${params.id}`);
+    clearInterval(interval);
     cleanSession();
+    history.push(`/rpgs/${params.id}`);
+    socket.close();
   }
 
   return(
@@ -157,7 +171,7 @@ export function SessionAdmin(){
                 onClick={() => setSelectedItem('objects')}  
               />
             </div>
-            <div className={`${stylesSession.itemsArea} ${styles.itemsArea} custom-scrollbar`}>
+            <div className={`${stylesSession.itemsArea} ${styles.itemsArea}`}>
             {(() => {
               if(selectedItem === 'characters'){
                 return(

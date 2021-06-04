@@ -14,7 +14,7 @@ export function ButtonGoogle({
 
   return(
     <div className={styles.buttonBlock}>
-      <button {...rest}><span>{text}</span><img src={googleIcon}/></button>
+      <button {...rest}><span>{text}</span><img src={googleIcon} alt='Login com Google'/></button>
     </div>
   );
 }

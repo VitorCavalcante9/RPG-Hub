@@ -86,6 +86,7 @@ router.delete('/rpgs/:rpg_id/user', [authMiddleware, adminMiddleware], InviteCon
 
 //game
 router.put('/rpgs/:rpg_id/session', [authMiddleware, adminMiddleware], GameController.saveSession);
+router.get('/rpgs/:rpg_id/session', [authMiddleware], GameController.initSession);
 router.put('/rpgs/:rpg_id/notes', [authMiddleware], GameController.saveNotes);
 router.get('/rpgs/:rpg_id/notes', [authMiddleware], GameController.showNotes);
 

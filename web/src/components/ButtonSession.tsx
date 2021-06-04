@@ -13,7 +13,7 @@ export function ButtonSession({className, text, id, ...rest}: ButtonProps){
   
   return(
     <div id={id} className={`${styles.buttonBlock} ${className}`}>
-      <button {...rest}><span>{textButton}</span><img src={playIcon}/></button>
+      <button {...rest}><span>{textButton}</span><img src={playIcon} alt='Iniciar Sessão'/></button>
     </div>
   );
 }

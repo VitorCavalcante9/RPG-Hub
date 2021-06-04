@@ -1,10 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { KeyboardEvent, useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { useAlert } from 'react-alert';
 import api from '../../services/api';
 import { SessionContext } from '../../contexts/SessionContext';
+import useDetectMobile from '../../utils/isMobile';
 
 import styles from '../../styles/components/sessionItems/NotesModal.module.css';
+
 import { Block } from '../Block';
 import { Button } from '../Button';
 import { TextAreaLabel } from '../TextAreaLabel';
@@ -27,6 +30,7 @@ export function NotesModal(){
   const alert = useAlert();
   const [notes, setNotes] = useState<Notes>({ id: 0, notes: []});
   const [oneNote, setOneNote] = useState('');
+  const isMobile = useDetectMobile();
 
   useEffect(() => {
     api.get(`rpgs/${params.id}/notes`)
@@ -70,6 +74,11 @@ export function NotesModal(){
     setOneNote('');
   }
 
+  function pressEnter(e: KeyboardEvent<HTMLTextAreaElement>){
+    const key = e.key;
+    if(!isMobile && key === 'Enter' && ! e.shiftKey) addNoteItem();
+  }
+  
   return(
     <>
     {openModals[2] ? (
@@ -93,6 +102,7 @@ export function NotesModal(){
               label="Escreva uma nova nota" 
               value={oneNote}
               onChange={e => {setOneNote(e.target.value)}}
+              onKeyUp={e => pressEnter(e)}
             />
             <button 
               type='button' 

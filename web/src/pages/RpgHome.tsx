@@ -24,6 +24,7 @@ import styles from '../styles/pages/RpgHome.module.css';
 import edit from '../assets/icons/edit.svg';
 import trash from '../assets/icons/trash.svg';
 import { AccountItem } from '../components/AccountItem';
+import { AuthContext } from '../contexts/AuthContext';
 
 interface RpgParams{
   id: string;
@@ -47,6 +48,10 @@ interface RPG{
     name: string;
     image: string;
   }>;
+  participants: Array<{
+    id: string;
+    name: string;
+  }>
 }
 
 interface User{
@@ -55,14 +60,28 @@ interface User{
   online?: boolean;
 }
 
+interface Permission{
+  id: number;
+  permission: boolean | null;
+  user: {
+    id: string;
+    username: string;
+  };
+  character: {
+    id: string;
+    name: string;
+  }
+}
+
+let interval: NodeJS.Timeout;
+
 export function RpgHome(){
   const params = useParams<RpgParams>();
   const alert = useAlert();
   const history = useHistory();
-  const {handleOpenModals} = useContext(RpgContext);
-  const [rpg, setRpg] = useState<RPG>({name: '', icon: '', characters: [], scenarios: [], objects: []});
+  const { handleOpenModals } = useContext(RpgContext);
+  const [rpg, setRpg] = useState<RPG>({name: '', icon: '', characters: [], scenarios: [], objects: [], participants: []});
   const [newPermissions, setNewPermissions] = useState(false);
-  const [participants, setParticipants] = useState<User[]>([]);
   const [participantsStatus, setParticipantsStatus] = useState<User[]>([]);
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -70,7 +89,30 @@ export function RpgHome(){
   const socket = manager.socket('/rpgHome');
 
   useEffect(() => {
-    if(participants.length > 0){
+    reloadPermissions();
+
+    interval = setInterval(() => {
+      reloadPermissions();
+    }, 10000);
+  }, []);
+
+  useEffect(() => {
+    clearInterval(interval);
+  }, [window.location])
+
+  useEffect(() => {
+    api.get(`rpgs/${params.id}`)
+    .then(res => {
+      if(res.data.participants) {
+        setParticipantsStatus(res.data.participants);
+      }
+      setRpg(res.data);
+      socket.emit('update_users');
+    });   
+  }, [params.id, openDeleteModal]);
+
+  useEffect(() => {
+    if(rpg.participants.length > 0){
       socket.on('users', (users: any) => {
         const updateParticipants = participantsStatus.map(participant => {
           const index = users.indexOf(participant.id);
@@ -85,20 +127,7 @@ export function RpgHome(){
       })
     }
     
-  }, [participants])
-
-  useEffect(() => {
-    console.log('bah')
-    api.get(`rpgs/${params.id}`)
-    .then(res => {
-      setRpg(res.data);
-      if(res.data.participants) {
-        setParticipantsStatus(res.data.participants);
-        setParticipants(res.data.participants);
-      }
-      socket.emit('update_users');
-    });    
-  }, [params.id, handleOpenModals, openDeleteModal]);
+  }, [rpg.participants])
 
   async function deleteObject(){
     const search = window.location.search;
@@ -114,6 +143,20 @@ export function RpgHome(){
   function existsNewPermissions(exists: boolean){
     if(exists) setNewPermissions(true);
     else setNewPermissions(false);
+  }
+
+  async function reloadPermissions(){
+    api.get(`rpgs/${params.id}/permissions`)
+    .then(res => {
+      const permissionsRes = res.data;
+      const filteredPermissions = permissionsRes.filter((this_permission: Permission) => !this_permission.permission);
+      if(filteredPermissions.length > 0) setNewPermissions(true)
+      else setNewPermissions(false);
+
+    }).catch(err => {
+      if(!err.response) alert.error("Impossível conectar ao servidor!");
+      else if(err.response.status !== 404) alert.error(err.response.data.message);
+    });
   }
 
   function openSession(){

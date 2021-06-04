@@ -13,18 +13,20 @@ import user from '../assets/icons/user.svg';
 import moon from '../assets/icons/moon.svg';
 
 export function Sidebar(){
-  const { handleLogout } = useContext(AuthContext);
+  const { loading, handleLogout } = useContext(AuthContext);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [userData, setUserData] = useState({username: '', icon: ''})
 
   useEffect(() => {
-    api.get('users')
-    .then(res => {
-      const { username, icon } = res.data;
-      setUserData({username, icon});
-    }).catch(err => {
-      if(err.response.status === 401) handleLogout();
-    })
+    if(!loading){
+      api.get('users')
+      .then(res => {
+        const { username, icon } = res.data;
+        setUserData({username, icon});
+      }).catch(err => {
+        if(err.response.status === 401) handleLogout();
+      });
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [window.location])
 

@@ -120,9 +120,9 @@ export function ObjectModal(){
     setOpenImageModal(open);
   }
 
-  function getCropDataImage(image: any){
-    const fileImage = new File([image], image.name);
-    setImage(fileImage)
+  function getCropDataImage(imageBlob: Blob){
+    const fileImage = new File([imageBlob], image.name, { type: imageBlob.type });
+    setImage(fileImage);
 
     const selectImagePreview = URL.createObjectURL(fileImage);
     setPreviewImage(selectImagePreview);

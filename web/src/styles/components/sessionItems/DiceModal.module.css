@@ -201,11 +201,16 @@
   margin-top: 1.5rem;
 }
 
+@media(min-height:730px){
+  .container{
+    max-height: none;
+  }
+}
+
 @media (min-width:1100px){
   .container{
     width: 55%;
     top: 0;
-    max-height: none;
   }
 
   .container header button{

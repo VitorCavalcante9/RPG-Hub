@@ -25,7 +25,6 @@ export default function authMiddleware(
     const { id } = data as TokenPayLoad;
 
     request.userId = id;
-    //console.log('id', id)
     io.user = id;
 
     return next();

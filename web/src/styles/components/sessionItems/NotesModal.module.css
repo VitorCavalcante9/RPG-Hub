@@ -16,6 +16,7 @@
 .container{
   background: var(--color-modal);
   width: 90%;
+  max-width: 55rem;
   margin: 0 2rem;
   min-height: 40rem;
   padding: 3rem 3rem;

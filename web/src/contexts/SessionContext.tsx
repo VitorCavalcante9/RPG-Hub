@@ -202,7 +202,7 @@ export function SessionProvider({children}: SessionProviderProps){
   }
 
   function cleanSession(){
-    setSelectedCharacter(characterList[0])
+    setSelectedCharacter(characterList[0]);
     setCharacterList([]);
     setFixedCharacterList([]);
     setScenarioList([]);

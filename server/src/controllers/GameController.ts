@@ -4,7 +4,10 @@ import * as yup from 'yup';
 import { AppError } from '../models/AppError';
 import { CharactersRepository } from '../repositories/CharactersRepository';
 import { NotesRepository } from '../repositories/NotesRepository';
+import { ObjectsRepository } from '../repositories/ObjectsRepository';
+import { ScenariosRepository } from '../repositories/ScenariosRepository';
 import NotesView from '../views/notes_views';
+import SessionView from '../views/session_view';
 
 interface Character{
   id: string;
@@ -18,6 +21,25 @@ interface Character{
 }
 
 class GameController{
+  async initSession(req: Request, res: Response){
+    const { rpg_id } = req.params;
+
+    const charactersRepository = getCustomRepository(CharactersRepository);
+    const scenariosRepository = getCustomRepository(ScenariosRepository);
+    const objectsRepository = getCustomRepository(ObjectsRepository);
+
+    try{
+      const characters = await charactersRepository.find({rpg_id});
+      const scenarios = await scenariosRepository.find({rpg_id});
+      const objects = await objectsRepository.find({rpg_id});
+
+      return res.json(SessionView.render(characters, scenarios, objects));
+
+    } catch {
+      throw new AppError('Error');
+    }
+  }
+
   async saveSession(req: Request, res: Response){
     const { characters } = req.body;
     const charactersList: Character[] = characters;

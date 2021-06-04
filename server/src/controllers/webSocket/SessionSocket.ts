@@ -2,8 +2,7 @@
 
 class SessionSocket{
   respond(endpoint, socket){
-    console.log('session user connected')
-
+    
     //Open, join and leave of the room
     socket.on('open_rooms', () => {
       let allSockets = Array.from(endpoint.adapter.rooms);
@@ -11,11 +10,12 @@ class SessionSocket{
         if(r[0].length !== 20) return r[0]
       })
       let rooms = allRooms.map(r => r[0]);
+      console.log(rooms)
       
       socket.emit('rooms', rooms);
     });
 
-    socket.on('join_room', room => {
+    socket.on('join_room', (room) => {
       socket.join(room);
     });
 
@@ -35,14 +35,12 @@ class SessionSocket{
 
     //Update session participant
     socket.on('req_update_session', room => {
-      console.log('pediu')
       socket.to(room).emit('req_update_session');
     });
 
     socket.on('update_session', ({ 
       room, characters, fixedCharacters, scenario, object
     }) => {
-      console.log(scenario, object)
       socket.to(room).emit('update_session', { 
         characters, fixedCharacters, scenario, object 
       });
@@ -62,8 +60,7 @@ class SessionSocket{
       let name = '';
       if(character) name = character.name;
       else name = 'Mestre'
-      
-      console.log(name, message)
+
       socket.to(room).emit('message', {
         message,
         name
@@ -72,7 +69,6 @@ class SessionSocket{
 
     //Roll Dice
     socket.on('roll_dices', ({room, message}) => {
-      console.log('chegou')
       socket.to(room).emit('roll_dices', {
         message
       });

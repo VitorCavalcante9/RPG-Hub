@@ -1,4 +1,4 @@
-import React, { createRef, InputHTMLAttributes, useRef, useState } from 'react';
+import React, { InputHTMLAttributes, useState } from 'react';
 import { useAlert } from 'react-alert';
 
 import styles from '../styles/components/InputLine.module.css';

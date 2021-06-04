@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes, TextareaHTMLAttributes, useState } from 'react';
+import React, { InputHTMLAttributes } from 'react';
 
 import styles from '../styles/components/InputLabel.module.css';
 

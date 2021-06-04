@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { createRef, KeyboardEvent, useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import api from '../services/api';
@@ -8,7 +9,6 @@ import { Button } from '../components/Button';
 import { InputLine } from '../components/InputLine';
 import { Layout } from '../components/Layout';
 import { Popper } from '../components/Popper';
-import { AuthContext } from '../contexts/AuthContext';
 import { RpgContext } from '../contexts/RpgHomeContext';
 
 import styles from '../styles/pages/SheetPattern.module.css';
@@ -28,6 +28,7 @@ export function SheetPattern(){
     {name: '', current: 0, limit: 100}
   ]);
   const [limitPoints, setLimitPoints] = useState<number>();
+  const [limitPointsSkill, setLimitPointsSkill] = useState(100);
 
   useEffect(() => {
     api.get(`rpgs/${params.id}/sheet`)
@@ -72,7 +73,7 @@ export function SheetPattern(){
   function addNewSkillsItem(){
     setSkillsItems([
       ...skillsItems,
-      {name: '', current: 0, limit: 100}
+      {name: '', current: 0, limit: limitPointsSkill}
     ])
   }
 
@@ -196,10 +197,21 @@ export function SheetPattern(){
 
           <div className={styles.skillsContent}>
             <Block id={styles.skills} name="Habilidades" options={
-              <button 
-                className='buttonWithoutBG'
-                onClick={addNewSkillsItem}
-              >+ Novo</button>
+              
+              <div className={styles.pointsOptions}>
+                <div className={styles.pointsSkill}>
+                  <p>Limite de pontos por habilidade:</p>
+                  <InputLine
+                    value={limitPointsSkill}
+                    className={styles.inputPoints}
+                    onChange={e => setLimitPointsSkill(Number(e.target.value))}
+                  />
+                </div>
+                <button 
+                  className='buttonWithoutBG'
+                  onClick={addNewSkillsItem}
+                >+ Novo</button>
+              </div>
             }>
               {skillsItems.map((skillsItem, index) => {
                 return(

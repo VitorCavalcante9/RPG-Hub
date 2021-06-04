@@ -1,9 +1,8 @@
 import React, { useContext } from 'react';
 import { BrowserRouter, Redirect, Route, RouteProps, Switch, useLocation } from 'react-router-dom';
+import { Loading } from './components/Loading';
 import { AuthContext } from './contexts/AuthContext';
-import api from './services/api';
 
-import { RpgContext } from './contexts/RpgHomeContext';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 import { NewCharacter } from './pages/NewCharacter';
@@ -12,14 +11,13 @@ import { NewScenario } from './pages/NewScenario';
 import { RpgHome } from './pages/RpgHome';
 import { RpgHomeParticipant } from './pages/RpgHomeParticipant';
 import { Session } from './pages/Session';
-import { SessionParticipant } from './pages/SessionParticipant';
 import { SheetPattern } from './pages/SheetPattern';
 import { User } from './pages/User';
 
 function AuthRoute({...props}: RouteProps){
   const { loading, authenticated } = useContext(AuthContext);
 
-  if(loading) return <h1>Loading...</h1>
+  if(loading) return <Loading />
   else if (props.path === '/' && authenticated){
     return <Redirect to='/home' />
   }    
@@ -34,21 +32,28 @@ function AuthRoute({...props}: RouteProps){
 }
 
 function RpgRoute({...props}: RouteProps){
-  const { loading, isAdm, verifyIfIsAdm } = useContext(RpgContext);
-
+  const { loading } = useContext(AuthContext);
   <AuthRoute {...props} />
   
   const location = useLocation();
   const id = location.pathname.split('/');
-  verifyIfIsAdm(id[2]);
 
-  if(loading) return <h1>Loading...</h1>
+  const rpgs = localStorage.getItem('rpgs');
+
+  const allRpgs = rpgs ? JSON.parse(rpgs) : null;
+  const indexRpg = allRpgs ? allRpgs.rpgs.indexOf(id[2]) : -1;
+  const isAdm = (indexRpg !== -1) ? true : false;
+
+  const indexRpgParticipant = allRpgs ? allRpgs.participating_rpgs.indexOf(id[2]) : -1;
+  const isParticipant = (indexRpgParticipant !== -1) ? true : false;
+  
+  if(loading) return <Loading/>
   else if(props.path === '/rpgs/:id/session') return <Route component={Session} {...props}/>
   else if(isAdm){
     if(props.path === '/rpgs/:id') return <Route component={RpgHome} {...props}/>
     else return <Route {...props} />
   } 
-  else if(!isAdm && isAdm !== null) {
+  else if(!isAdm && isParticipant) {
     if(props.path === '/rpgs/:id') return <Route component={RpgHomeParticipant} {...props}/>
     else return <Redirect to='/home'/>
   }

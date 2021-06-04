@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import api from '../services/api';
@@ -255,9 +256,9 @@ export function NewCharacter(){
     setOpenImageModal(open);
   }
 
-  function getCropDataImage(image: any){
-    const fileImage = new File([image], image.name);
-    setImage(fileImage)
+  function getCropDataImage(imageBlob: Blob){
+    const fileImage = new File([imageBlob], image.name, { type: imageBlob.type });
+    setImage(fileImage);
 
     const selectImagePreview = URL.createObjectURL(fileImage);
     setPreviewImage(selectImagePreview);

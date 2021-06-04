@@ -31,8 +31,9 @@ export function ImageModal({ open, image, square, handleOpenImageModal, getCropD
         image,
         cropData
       );
-      console.log(cropData, croppedImage)
       getCropDataImage(croppedImage);
+      
+      handleOpenImageModal(false);
     }
   }
 
@@ -51,12 +52,13 @@ export function ImageModal({ open, image, square, handleOpenImageModal, getCropD
                     src={image}
                     viewMode={1}
                     guides={true}
-                    minCropBoxHeight={10}
-                    minCropBoxWidth={10}
+                    minCropBoxHeight={100}
+                    minCropBoxWidth={100}
                     cropBoxResizable={square ? false : true}
                     background={false}
                     responsive={true}
                     autoCropArea={1}
+                    center={true}
                     checkOrientation={false}
                     crop={(e) => setCropData(e.detail)}
                   />

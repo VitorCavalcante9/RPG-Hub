@@ -14,8 +14,6 @@ interface ButtonBackProps{
 export function ButtonBack({withoutBackButton, linkBack}: ButtonBackProps){
   const [icon, setIcon] = useState(window.innerWidth >= 1100 ? back : arrow);
 
-  const [height, setHeight] = useState(0);
-
   useEffect(() => {
     const updateWindowDimensions = () => {
       const update_icon = window.innerWidth >= 1100 ? back : arrow;

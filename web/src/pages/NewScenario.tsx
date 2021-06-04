@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { ChangeEvent, createRef, useContext, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import classnames from 'classnames';
 import api from '../services/api';
 import { useAlert } from 'react-alert';
@@ -123,10 +123,9 @@ export function NewScenario(){
     setOpenImageModal(open);
   }
 
-
-  function getCropDataImage(image: any){
-    const fileImage = new File([image], image.name);
-    setImage(fileImage)
+  function getCropDataImage(imageBlob: Blob){
+    const fileImage = new File([imageBlob], image.name, { type: imageBlob.type });
+    setImage(fileImage);
 
     const selectImagePreview = URL.createObjectURL(fileImage);
     setPreviewImage(selectImagePreview);

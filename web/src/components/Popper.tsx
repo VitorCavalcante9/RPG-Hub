@@ -1,4 +1,4 @@
-import React, { useState, useRef, MutableRefObject, HTMLAttributes, useContext, useEffect } from "react";
+import React, { useState, useRef, MutableRefObject, HTMLAttributes, useContext } from "react";
 import { usePopper } from "react-popper";
 import { RpgContext } from "../contexts/RpgHomeContext";
 
