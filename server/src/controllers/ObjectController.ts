@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import { ObjectsRepository } from '../repositories/ObjectsRepository';
 import { DeleteFile } from '../services/deleteFile';
 import ObjectView from '../views/objects_views';
+import imageApi from '../services/imageApi';
 
 class ObjectController{
   async store(req: Request, res: Response){
@@ -16,6 +17,9 @@ class ObjectController{
     if(req.file){
       const requestIcon = req.file as Express.Multer.File;
       image = requestIcon.filename;
+      imageApi.post('/', { name: image })
+        .then(() => DeleteFile(image))
+        .catch(err => console.log(err.response.data));
     }
 
     const schema = yup.object().shape({
@@ -28,6 +32,8 @@ class ObjectController{
     catch(err){
       throw new AppError(err.errors);
     }
+
+    if(!image) throw new AppError('Insira uma imagem');
 
     const objectItem = objectsRepository.create({
       name, rpg_id, image
@@ -73,6 +79,9 @@ class ObjectController{
     if(req.file){
       const requestIcon = req.file as Express.Multer.File;
       image = requestIcon.filename;
+      imageApi.post('/', { name: image })
+        .then(() => DeleteFile(image))
+        .catch(err => console.log(err.response.data));
     }
 
     const schema = yup.object().shape({
@@ -88,7 +97,11 @@ class ObjectController{
 
     const currentObjectData = await objectsRepository.findOne(id);
 
-    if(image) DeleteFile(currentObjectData.image);
+    if(image) { 
+      DeleteFile(currentObjectData.image);
+      imageApi.delete('/', { data: { name: currentObjectData.image } })
+        .then().catch(err => console.log(err.response.data));
+    }
     else if(previousImage){
       const fileName = previousImage.split('uploads/');
       image = fileName[1];
@@ -117,6 +130,8 @@ class ObjectController{
     try{
       const currentObject = await objectsRepository.findOne(id);
       DeleteFile(currentObject.image);
+      imageApi.delete('/', { data: { name: currentObject.image } })
+        .then().catch(err => console.log(err.response.data));
 
       await objectsRepository.delete(id);
       return res.sendStatus(200);

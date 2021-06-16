@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import classnames from 'classnames';
 import { useForm } from 'react-hook-form';
@@ -49,6 +50,14 @@ export function NewRpg(){
       setOpenImageModal(true);
     }
   }, [imageURL]);
+
+  useEffect(() => {
+    if(!openImageModal && !previewImage){
+      setImageURL(null);
+      setImage(null);
+      console.log(image, imageURL)
+    }
+  }, [openImageModal])
 
   const onSubmit = async(data:any) => {
     const { name } = data;

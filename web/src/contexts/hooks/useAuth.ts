@@ -30,11 +30,16 @@ export default function useAuth(){
     setLoading(false);
   }, []);
 
-  function handleLogin(token: JSON){
+  function handleLogin(token: JSON, username: string, icon: string){
     localStorage.setItem('token', JSON.stringify(token));
 
+    const user = {
+      username, icon
+    }
+
+    localStorage.setItem('user', JSON.stringify(user));
+
     api.defaults.headers.Authorization = `Bearer ${token}`;
-    setAuthenticated(true);
     socket.open();
     socket.emit('login', token);
 
@@ -57,12 +62,15 @@ export default function useAuth(){
       if(!error.response) console.error("Impossível conectar ao servidor!");
       else console.error(error.response.data);
     });
+    
+    setAuthenticated(true);
   }
 
   function handleLogout(){
     socket.close();
     setAuthenticated(false);
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     localStorage.removeItem('rpgs');
     api.defaults.headers.Authorization = undefined;
     window.location.href = "/";

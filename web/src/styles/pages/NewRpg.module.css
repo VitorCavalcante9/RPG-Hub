@@ -57,7 +57,7 @@
 
   .newRpgContainer h1{
     margin-left: 2rem;
-    margin-bottom: 7rem;
+    margin-bottom: 4rem;
     margin-top: 4rem;
   }
 
@@ -84,8 +84,8 @@
   }
 
   .newRpgContainer .image{
-    height: 30rem;
-    width: 30rem;
+    height: 25rem;
+    width: 25rem;
   }
 
   .newRpgContainer .previewImage p{
@@ -96,6 +96,21 @@
 
   .textarea textarea{
     height: 17.5rem;
+  }
+
+  .newRpgContainer button{
+    margin-top: 3rem;
+  }
+}
+
+@media (min-width: 1600px){
+  .newRpgContainer h1{
+    margin-bottom: 7rem;
+  }
+
+  .newRpgContainer .image{
+    height: 30rem;
+    width: 30rem;
   }
 
   .newRpgContainer button{

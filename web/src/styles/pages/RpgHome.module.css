@@ -33,6 +33,7 @@
 #char > div:last-child{
   height: 20rem;
   align-items: flex-start;
+  padding: 1.5rem;
 }
 
 #scenario > div:last-child, 
@@ -40,6 +41,7 @@
 #account > div:last-child{
   height: 15rem;
   align-items: flex-start;
+  padding: 1.5rem;
 }
 
 #scenario > div:last-child{
@@ -134,14 +136,14 @@
 }
 
 .scenarioItem .name p{
-  width: 6.4rem;
+  width: 5.4rem;
   overflow: hidden;
   text-align: left;
 }
 
 .scenarioItem .image{
-  width: 9rem;
-  height: 9rem;
+  width: 8rem;
+  height: 8rem;
   border-radius: 1.5rem;
   background-color: var(--color-text-primary);
   overflow: hidden;
@@ -213,6 +215,8 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: auto;
+    grid-gap: 2rem;
+    margin: 0 1rem;
   }
 
   .rpgHomeContainer .body .grid1{
@@ -240,35 +244,74 @@
     grid-row-end: 3;
   }
 
-  .iconContainer .image{
-    width: 6rem;
-    height: 6rem;
-  }
-
-  #char, #scenario, #object, #account{
-    margin-left: 1rem;
-    margin-right: 1rem;
-  }
-
-  #char{
+  #char, #account{
     margin-top: 2.5rem;
   }
 
-  #account{
-    margin-top: 2.5rem;
+  #object{
+    margin-top: 0;
+  }
+
+  #object > div:last-child{
+    height: 12rem;
   }
 
   #scenario > div:last-child{
-    max-width: 35rem;
+    max-width: 37rem;
+    max-height: 13rem;
   }
 
   #char > div:last-child, #account > div:last-child{
     height: 100%;
-    max-height: 37rem;
+    max-height: 33rem;
   }
 
+  #session{
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .rpgHomeContainer .body .buttons:nth-of-type(1) button,
   .rpgHomeContainer .body .grid2:nth-last-of-type(2) button{
-    margin-top: 3rem;
+    margin-top: 1.5rem;
+  }
+  
+  @media (min-height:850px){
+    #char > div:last-child, #account > div:last-child{
+      max-height: 37rem;
+    }
+
+    .iconContainer .image{
+      width: 6rem;
+      height: 6rem;
+    }
+
+    .scenarioItem .image{
+      width: 9rem;
+      height: 9rem;
+    }
+
+    #object > div:last-child{
+      height: 15rem;
+    }
+    
+    .rpgHomeContainer .body .buttons:nth-of-type(1) button,
+    .rpgHomeContainer .body .grid2:nth-last-of-type(2) button{
+      margin-top: 3rem;
+    }
+
+    #session{
+      margin-top: 1.5rem;
+    }
+  }
+}
+
+@media (min-width: 1660px){
+  #char > div:last-child, 
+  #account > div:last-child,
+  #object > div:last-child,
+  #scenario > div:last-child{
+    padding: 2rem;
   }
 
   .buttons{
@@ -276,9 +319,8 @@
     padding-right: 1rem;
   }
 
-  #session{
-    margin-top: 1.5rem;
-    margin-bottom: 0;
-  }
   
+  #scenario > div:last-child{
+    max-height: none;
+  }
 }

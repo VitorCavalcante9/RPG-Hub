@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAlert } from 'react-alert';
@@ -56,6 +57,14 @@ export function ObjectModal(){
       setOpenImageModal(true);
     }
   }, [imageURL]);
+
+  useEffect(() => {
+    if(!openImageModal && !previewImage){
+      setImageURL(null);
+      setImage(null);
+      console.log(image, imageURL)
+    }
+  }, [openImageModal])
 
   useEffect(()=> {
     if(errors.name) alert.error("Insira um nome")

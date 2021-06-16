@@ -4,7 +4,7 @@ import useAuth from './hooks/useAuth';
 interface AuthContextData {
   authenticated: boolean;
   loading: boolean;
-  handleLogin: (token: JSON) => void;
+  handleLogin: (token: JSON, username: string, icon: string) => void;
   handleLogout: () => void;
 }
 

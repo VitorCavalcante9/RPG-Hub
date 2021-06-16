@@ -27,8 +27,8 @@ export function Login(){
     }
 
     api.post('auth', login).then((response) => {
-      const { data: { token } } = response;
-      handleLogin(token);
+      const { data: { token, username, icon } } = response;
+      handleLogin(token, username, icon);
       history.push('/home');
     }).catch(error => {
       if(!error.response) alert.error("Impossível conectar ao servidor!");
@@ -38,8 +38,8 @@ export function Login(){
 
   const onLogin = async(data:any) => {
     api.post('auth', data).then((response) => {
-      const { data: { token } } = response;
-      handleLogin(token);
+      const { data: { token, username, icon } } = response;
+      handleLogin(token, username, icon);
       history.push('/home');
     }).catch(error => {
       if(!error.response) alert.error("Impossível conectar ao servidor!");

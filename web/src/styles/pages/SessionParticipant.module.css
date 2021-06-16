@@ -9,7 +9,6 @@
 
 .inventoryItem div, .inventoryItem div:last-child div input{
   color: #fff;
-  font-size: 2rem;
   outline: 0;
 }
 
@@ -19,7 +18,7 @@
 
 .charItem{
   margin: 2rem 0 3rem;
-  padding: 0 3rem;
+  padding: 0 1rem;
 }
 
 .skillItem{
@@ -32,4 +31,10 @@
 
 .skillItem div:last-child div hr{
   display: none;
+}
+
+@media (min-width: 1600px){
+  .charItem{
+    padding: 0 3rem;
+  }
 }

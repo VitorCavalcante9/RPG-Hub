@@ -140,6 +140,10 @@ div.modalContent{
     padding: 0 2rem;
   }
 
+  .contentContainer:last-child{
+    margin-bottom: 2rem;
+  }
+
   .rpgItem:hover .icon{
     width: 15.5rem;
     height: 15.5rem;

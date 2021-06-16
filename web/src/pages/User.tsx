@@ -57,6 +57,14 @@ export function User(){
     }
   }, [imageURL]);
 
+  useEffect(() => {
+    if(!openImageModal && !previewImage){
+      setImageURL(null);
+      setImage(null);
+      console.log(image, imageURL)
+    }
+  }, [openImageModal])
+
   useEffect(()=> {
     if(errors.name) alert.error("Insira um nome");
     if(errors.password) alert.error("Insira sua senha atual");
@@ -98,6 +106,14 @@ export function User(){
 
     await api.patch(`users`, userData)
     .then(res => {
+      const { username, icon } = res.data;
+
+      const user = {
+        username, icon
+      }
+  
+      localStorage.setItem('user', JSON.stringify(user));
+      
       alert.success(res.data.message);
       setIsEdit(false);
 

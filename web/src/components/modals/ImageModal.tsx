@@ -7,7 +7,7 @@ import styles from '../../styles/components/modals/ImageModal.module.css';
 
 import close from '../../assets/icons/cancel.svg';
 import { Button } from '../Button';
-import { getCroppedImg } from '../../utils/cropImage';
+import { getCroppedImg } from '../../utils/cropImageTeste';
 
 interface ImageModalProps extends HTMLAttributes<HTMLDivElement>{
   open: boolean;

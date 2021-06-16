@@ -113,6 +113,14 @@ export function NewCharacter(){
     }
   }, [imageURL]);
 
+  useEffect(() => {
+    if(!openImageModal && !previewImage){
+      setImageURL(null);
+      setImage(null);
+      console.log(image, imageURL)
+    }
+  }, [openImageModal])
+
   async function onSubmit(data:any){
     const { name } = data;
     const characterData = new FormData();

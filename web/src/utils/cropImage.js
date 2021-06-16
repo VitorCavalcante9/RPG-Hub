@@ -10,6 +10,8 @@ const createImage = (url) =>
 module.exports = {
   getCroppedImg: async (imageSrc, crop) => {
     const image = await createImage(imageSrc)
+    console.log(image)
+    console.log(crop)
     const canvas = document.createElement('canvas')
     const ctx = canvas.getContext('2d')
 

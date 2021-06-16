@@ -92,12 +92,12 @@ class UserController{
       }
 
       await usersRepository.update(id, newUserData);
+
+      return res.status(200).json(UsersView.minRender(username, icon));
       
     } catch {
       throw new AppError('Error updating');
     }
-
-    return res.status(200).json({ message: 'Successfully updated!'});
   }
 
   async updatePassword(req: Request, res: Response){

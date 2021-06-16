@@ -203,11 +203,11 @@
   }
 
   .sheetContainer #status > div:last-child{
-    height: 38rem;
+    height: 33rem;
   }
 
   .sheetContainer #skills > div:last-child{
-    height: 32rem;
+    height: 27rem;
   }
 
   .sheetContainer .points p{
@@ -216,7 +216,21 @@
 
   .sheetContainer .buttonSave button{
     width: 40%;
-    margin-top: 4rem;
+    margin-top: 1rem;
   }
 
+}
+
+@media (min-width: 1600px){
+  .sheetContainer #status > div:last-child{
+    height: 38rem;
+  }
+
+  .sheetContainer #skills > div:last-child{
+    height: 32rem;
+  }
+
+  .sheetContainer .buttonSave button{
+    margin-top: 4rem;
+  }
 }

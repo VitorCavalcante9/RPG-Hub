@@ -69,6 +69,7 @@
   max-width: 100%;
   height: 100%;
   max-height: 862px;
+  object-fit: contain;
 }
 
 #scenarioContainer .overlay{
@@ -141,6 +142,7 @@
   height: 100%;
   padding: 2rem 1.5rem 0;
   overflow-y: auto;
+  overflow-x: hidden;
 
   display: flex;
   flex-direction: column;
@@ -219,7 +221,7 @@
   }
 }
 
-@media (min-width: 1440px){
+@media (min-width: 1360px){
   .sessionContainer{
     width: 75vw;
     display: flex;
@@ -245,25 +247,28 @@
     margin-left: 2rem;
   }
 
-  .itemsOptions button{
-    font-size: 1.5rem;
-  }
-
   #characterContainer{
     height: 26rem;
 
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     grid-auto-rows: 11rem;
     grid-gap: 1rem;
   }
   
   #scenarioContainer{
     width: 100%;
-    height: 45rem;
+    height: 36rem;
     margin-left: auto;
     margin-right: auto;
     padding: 0;
     margin: 0;
+  }
+  
+  #scenarioContainer img{
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: auto;
   }
 
   #scenarioContainer .objectItem img{
@@ -271,13 +276,14 @@
     height: 100%;
   }
 
+
   .modalContent{
     max-width: 90%;
     height: 90%;
   }
 
   #itemsContainer{
-    height: 73rem;
+    height: 64rem;
   }
 
   .sessionContainer .logoutButton{
@@ -289,7 +295,7 @@
   }
 
   .buttonsContainer button{
-    font-size: 2rem;
+    font-size: 1.8rem;
     height: 5rem;
   }
 }
@@ -297,5 +303,29 @@
 @media (min-width:1600px){
   .itemsArea{
     padding: 2rem 3rem 0;
+  }
+}
+
+@media (min-width: 1530px){
+  
+  #characterContainer{
+    height: 26rem;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  #scenarioContainer{
+    height: 45rem;
+  }
+  
+  #itemsContainer{
+    height: 73rem;
+  }
+
+  .buttonsContainer button{
+    font-size: 2rem;
+  }
+
+  .itemsOptions button{
+    font-size: 1.5rem;
   }
 }

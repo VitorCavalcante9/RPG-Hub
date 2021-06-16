@@ -27,3 +27,9 @@
 .readOnly{
   outline: 0;
 }
+
+@media (min-width: 1600px){
+  .inventoryItem{
+    font-size: 2rem;
+  }
+}

@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Request, Response, Router } from 'express';
 import multer from 'multer';
 
 import uploadConfig from './config/upload';
@@ -18,7 +18,6 @@ import SheetController from './controllers/SheetController';
 import UserController from './controllers/UserController';
 import adminMiddleware from './middleware/adminMiddleware';
 import authMiddleware from './middleware/authMiddleware';
-
 const router = Router();
 const upload = multer(uploadConfig);
 

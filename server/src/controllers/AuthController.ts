@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { getCustomRepository } from 'typeorm';
 import { UsersRepository } from '../repositories/UsersRepository';
 import { AppError } from '../models/AppError';
+import UsersView from '../views/users_view';
 
 class AuthController{
   async authenticate(request: Request, response: Response){
@@ -23,7 +24,7 @@ class AuthController{
 
     const token = jwt.sign({ id: user.id }, process.env.APP_KEY, { expiresIn: '7d' });
 
-    return response.json({ user, token });
+    return response.json(UsersView.authRender(user, token));
   }
 }
 

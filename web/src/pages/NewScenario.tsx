@@ -52,6 +52,14 @@ export function NewScenario(){
       setOpenImageModal(true);
     }
   }, [imageURL]);
+
+  useEffect(() => {
+    if(!openImageModal && !previewImage){
+      setImageURL(null);
+      setImage(null);
+      console.log(image, imageURL)
+    }
+  }, [openImageModal])
   
   useEffect(()=> {
     if(errors.name) alert.error("Insira um nome")

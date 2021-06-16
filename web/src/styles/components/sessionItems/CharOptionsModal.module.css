@@ -35,7 +35,7 @@
 }
 
 #status > div:last-child{
-  height: 15.6rem;
+  height: 16rem;
 }
 
 .statusContainer{
@@ -242,12 +242,8 @@
     grid-gap: 5rem;
   }
 
-  #status > div:last-child{
-    height: 20rem;
-  }
-
   #skills > div:last-child{
-    height: 40rem;
+    height: 32rem;
     padding-right: 2rem;
   }
   
@@ -256,7 +252,7 @@
   }
 
   #inventory > div:last-child{
-    height: 21.5rem;
+    height: 17.5rem;
   }
 
   #status h3,
@@ -266,16 +262,16 @@
   }
   
   .statusContainer .statusBar{
-    height: 2.5rem;
+    height: 2.4rem;
   }
 
   .statusContainer .statusBar .number{
-    font: 500 1.8rem Rajdhani;
-    top: calc(-2.5rem + 2px);
+    font: 500 1.7rem Rajdhani;
+    top: calc(-2.4rem + 2px);
   }
   
   .statusItem > p{
-    font-size: 1.9rem;
+    font-size: 1.8rem;
   }
 
   .statusItem .input input{
@@ -306,5 +302,33 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
+  }
+}
+
+@media (min-width: 1530){
+
+  #status > div:last-child{
+    height: 20rem;
+  }
+
+  #inventory > div:last-child{
+    height: 21.5rem;
+  }
+  
+  #skills > div:last-child{
+    height: 40rem;
+  }
+
+  .statusItem > p{
+    font-size: 1.9rem;
+  }
+  
+  .statusContainer .statusBar{
+    height: 2.5rem;
+  }
+
+  .statusContainer .statusBar .number{
+    font: 500 1.8rem Rajdhani;
+    top: calc(-2.5rem + 2px);
   }
 }

@@ -84,10 +84,6 @@
   margin-top: 1rem;
 }
 
-#buttonSession button{
-  font-size: 2rem;
-}
-
 .inventoryItem{
   display: flex;
   flex-direction: row;
@@ -150,12 +146,19 @@
     font-size: 1.8rem;
   }
 
-  .body .name .image{
-    height: 10rem;
-    width: 10rem;
+  #skills > div:last-child{
+    height: 23rem;
   }
-  
-  .body .name .image img{
+
+  .points{
+    margin: 0;
+  }
+
+}
+
+@media (min-width: 1600px){
+
+  .body .name .image{
     height: 10rem;
     width: 10rem;
   }
@@ -166,14 +169,6 @@
 
   #skills > div:last-child{
     height: 30rem;
-  }
-
-  .points{
-    margin: 0;
-  }
-
-  #buttonSession button{
-    font-size: 2.5rem;
   }
 
 }

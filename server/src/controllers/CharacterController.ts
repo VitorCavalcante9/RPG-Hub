@@ -7,6 +7,7 @@ import { PermissionChangeRepository } from '../repositories/PermissionChangesRep
 import { RpgParticipantsRepository } from '../repositories/RpgParticipantsRepository';
 import { DeleteFile } from '../services/deleteFile';
 import CharacterView from '../views/characters_views';
+import imageApi from '../services/imageApi';
 
 class CharacterController{
   async store(req: Request, res: Response){
@@ -18,6 +19,9 @@ class CharacterController{
     if(req.file){
       const requestIcon = req.file as Express.Multer.File;
       icon = requestIcon.filename;
+      imageApi.post('/', { name: icon })
+        .then(() => DeleteFile(icon))
+        .catch(err => console.log(err.response.data));
     }
 
     const schema = yup.object().shape({
@@ -113,6 +117,9 @@ class CharacterController{
     if(req.file){
       const requestIcon = req.file as Express.Multer.File;
       icon = requestIcon.filename;
+      imageApi.post('/', { name: icon })
+        .then(() => DeleteFile(icon))
+        .catch(err => console.log(err.response.data));
     }
 
     const schema = yup.object().shape({
@@ -142,7 +149,11 @@ class CharacterController{
 
     const currentCharacterData = await charactersRepository.findOne(id);
 
-    if(icon) DeleteFile(currentCharacterData.icon);
+    if(icon) { 
+      DeleteFile(currentCharacterData.icon);
+      imageApi.delete('/', { data: { name: currentCharacterData.icon } })
+        .then().catch(err => console.log(err.response.data));
+    }
     else if(previousIcon){
       const fileName = previousIcon.split('uploads/');
       icon = fileName[1];
@@ -227,22 +238,26 @@ class CharacterController{
 
       const rpgsParticipantRepository = getCustomRepository(RpgParticipantsRepository);
       const currentRpgPartData = await rpgsParticipantRepository.findOne(
-        { where:[{ user_id: req.userId, rpg_id }] }
+        { where:[{ character_id: id, rpg_id }] }
       );
 
-      const newRpgPartData = {
-        ...currentRpgPartData,
-        character_id: null
+      if(currentRpgPartData){
+        const newRpgPartData = {
+          ...currentRpgPartData,
+          character_id: null
+        }
+        await rpgsParticipantRepository.update(currentRpgPartData.id, newRpgPartData);
       }
-      await rpgsParticipantRepository.update(currentRpgPartData.id, newRpgPartData);
       
       DeleteFile(currentCharacter.icon);
+      imageApi.delete('/', { data: { name: currentCharacter.icon } })
+        .then().catch(err => console.log(err.response.data));
 
       await charactersRepository.delete(id);
       return res.sendStatus(200);
 
-    } catch {
-      throw new AppError('Error');
+    } catch(err) {
+      throw new AppError(err.message);
     }
   }
 

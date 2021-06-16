@@ -127,7 +127,7 @@
   position: relative;
 }
 
-@media(min-width:1100px){
+@media(min-width:1360px){
   .iconContainer,
   .miniContainer .iconContainer{
     width: 8.3rem;
@@ -149,10 +149,11 @@
 
   .info{
     height: 6.5rem;
+    width: 66%;
   }
 
   .miniContainer .info{
-    width: 70%;
+    width: 66%;
   }
 
   .statusItem .statusBar{
@@ -162,4 +163,13 @@
   .hover:hover .statusItem .statusBar{
     height: 2.55rem;
   }
+}
+
+@media (min-width: 1530px){
+
+  .miniContainer .info,
+  .info{
+    width: 70%;
+  }
+  
 }

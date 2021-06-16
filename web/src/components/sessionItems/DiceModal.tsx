@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
@@ -44,6 +45,7 @@ export function DiceModal(){
   const msgRef = useRef<HTMLDivElement>(null);
   
   const [skill, setSkill] = useState<Skill | null>();
+  const [searchSkill, setSearchSkill] = useState('');
   const [dices, setDices] = useState<string[]>([]);
   const [dice, setDice] = useState('');
   const [bonus, setBonus] = useState(0);
@@ -175,7 +177,16 @@ export function DiceModal(){
 
           <div className={styles.content}>
             <div className={styles.grid2}>
-              <Block id={styles.skills} name="Habilidades" className={styles.blocks}>
+              <Block id={styles.skills} name="Habilidades" className={styles.blocks} options={
+                <div className={styles.searchSkill}>
+                  <input 
+                    type='search' 
+                    placeholder='Pesquisar habilidade'
+                    value={searchSkill}
+                    onChange={e => setSearchSkill(e.target.value)}  
+                  />
+                </div>
+              }>
                 <div 
                   className={styles.skillItem}
                   onClick={() => setSkill(null)}
@@ -183,32 +194,35 @@ export function DiceModal(){
                   <p>Nenhuma Habilidade</p>
                 </div>
                 {selectedCharacter.skills.map(this_skill => {
-                    return(
-                      <div 
-                        onClick={() => setSkill(this_skill)} 
-                        key={this_skill.name} 
-                        className={classnames(styles.skillItem, {[styles.skillItemBonus]: this_skill === skill})}
-                        style={{backgroundColor: this_skill === skill ? '#501B1D' : 'transparent' }}>
-                        <SkillsItems
-                          value={this_skill.current} 
-                          name={this_skill.name} 
-                          limit={this_skill.limit}
-                          isReadOnly={true}
-                        />
-                        {(() => {
-                          if(this_skill === skill) return (
-                            <div className={styles.bonus}>
-                              <p>Bônus: </p>
-                              <InputLine
-                                value={bonus}
-                                maxValue={100 - this_skill.current}
-                                onChange={e => setBonus(Number(e.target.value))}
-                              />
-                            </div>
-                          )
-                        })()}
-                      </div>
-                    )
+                    if(this_skill.name.includes(searchSkill)){
+                      return(
+                        <div 
+                          onClick={() => { setSkill(this_skill); setSearchSkill('') }} 
+                          key={this_skill.name} 
+                          className={classnames(styles.skillItem, {[styles.skillItemBonus]: this_skill === skill})}
+                          style={{backgroundColor: this_skill === skill ? '#501B1D' : 'transparent' }}>
+                          <SkillsItems
+                            className={classnames({[styles.selectedSkill]: this_skill === skill})}
+                            value={this_skill.current} 
+                            name={this_skill.name} 
+                            limit={this_skill.limit}
+                            isReadOnly={true}
+                          />
+                          {(() => {
+                            if(this_skill === skill) return (
+                              <div className={styles.bonus}>
+                                <p>Bônus: </p>
+                                <InputLine
+                                  value={bonus}
+                                  maxValue={100 - this_skill.current}
+                                  onChange={e => setBonus(Number(e.target.value))}
+                                />
+                              </div>
+                            )
+                          })()}
+                        </div>
+                      )
+                    }
                   })}
               </Block>
 

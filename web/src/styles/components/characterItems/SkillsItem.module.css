@@ -43,7 +43,7 @@ input:read-only{
   outline: 0;
 }
 
-@media(min-width: 1100px){
+@media(min-width: 1600px){
   .skillItem,
   .skillItem .input input{
     font-size: 2rem;

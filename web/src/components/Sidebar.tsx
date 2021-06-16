@@ -18,14 +18,10 @@ export function Sidebar(){
   const [userData, setUserData] = useState({username: '', icon: ''})
 
   useEffect(() => {
-    if(!loading){
-      api.get('users')
-      .then(res => {
-        const { username, icon } = res.data;
-        setUserData({username, icon});
-      }).catch(err => {
-        if(err.response.status === 401) handleLogout();
-      });
+    const user = localStorage.getItem('user');
+
+    if(user){
+      setUserData(JSON.parse(user));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [window.location])

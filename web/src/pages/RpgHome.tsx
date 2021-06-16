@@ -24,7 +24,6 @@ import styles from '../styles/pages/RpgHome.module.css';
 import edit from '../assets/icons/edit.svg';
 import trash from '../assets/icons/trash.svg';
 import { AccountItem } from '../components/AccountItem';
-import { AuthContext } from '../contexts/AuthContext';
 
 interface RpgParams{
   id: string;
@@ -98,18 +97,11 @@ export function RpgHome(){
 
   useEffect(() => {
     clearInterval(interval);
-  }, [window.location])
+  }, [window.location]);
 
   useEffect(() => {
-    api.get(`rpgs/${params.id}`)
-    .then(res => {
-      if(res.data.participants) {
-        setParticipantsStatus(res.data.participants);
-      }
-      setRpg(res.data);
-      socket.emit('update_users');
-    });   
-  }, [params.id, openDeleteModal]);
+    reloadRpgData(true);
+  }, [params.id, handleOpenModals]);
 
   useEffect(() => {
     if(rpg.participants.length > 0){
@@ -127,14 +119,28 @@ export function RpgHome(){
       })
     }
     
-  }, [rpg.participants])
+  }, [rpg.participants]);
+
+  async function reloadRpgData(load: boolean){
+    api.get(`rpgs/${params.id}`)
+    .then(res => {
+      if(res.data.participants) {
+        setParticipantsStatus(res.data.participants);
+      }
+      setRpg(res.data);
+      if(load) socket.emit('update_users');
+    });   
+  }
 
   async function deleteObject(){
     const search = window.location.search;
     const searchContent = new URLSearchParams(search);
     const objectId = searchContent.get('o');
     api.delete(`rpgs/${params.id}/objects/${objectId}`)
-    .then(res => history.push(`/rpgs/${params.id}`)).catch(error => {
+    .then(res =>  { 
+      history.push(`/rpgs/${params.id}`);
+      reloadRpgData(false);
+    }).catch(error => {
       if(!error.response) alert.error("Impossível conectar ao servidor!");
       else alert.error(error.response.data.message);
     })
