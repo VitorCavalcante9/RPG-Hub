@@ -5,21 +5,27 @@ import * as yup from 'yup';
 import { ObjectsRepository } from '../repositories/ObjectsRepository';
 import { DeleteFile } from '../services/deleteFile';
 import ObjectView from '../views/objects_views';
-import imageApi from '../services/imageApi';
+
+interface Image {
+  name: string,
+  key: string,
+  url: string
+}
 
 class ObjectController{
   async store(req: Request, res: Response){
     const { name } = req.body;
     const { rpg_id } = req.params;
-    let image: any = null;
+    let image: Image;
     const objectsRepository = getCustomRepository(ObjectsRepository);
 
     if(req.file){
       const requestIcon = req.file as Express.Multer.File;
-      image = requestIcon.filename;
-      imageApi.post('/', { name: image })
-        .then(() => DeleteFile(image))
-        .catch(err => console.log(err.response.data));
+      image = {
+        name: requestIcon.originalname,
+        key: requestIcon.key,
+        url: requestIcon.location ? requestIcon.location : `${process.env.APP_URL}/${requestIcon.key}`,
+      };
     }
 
     const schema = yup.object().shape({
@@ -33,13 +39,17 @@ class ObjectController{
       throw new AppError(err.errors);
     }
 
-    if(!image) throw new AppError('Insira uma imagem');
+    if(!image?.key) throw new AppError('Insira uma imagem');
 
     const objectItem = objectsRepository.create({
-      name, rpg_id, image
+      name, rpg_id
     });
 
     await objectsRepository.save(objectItem);
+
+    if(image?.key){
+      await objectsRepository.insertImage(objectItem.id, image);
+    }
 
     return res.status(201).json({ message: 'Object created successfully!'});
   }
@@ -49,7 +59,9 @@ class ObjectController{
     const objectsRepository = getCustomRepository(ObjectsRepository);
 
     try{
-      const objectItem = await objectsRepository.findOneOrFail(id);
+      const objectItem = await objectsRepository.findOneOrFail(id, {
+        relations: ['image']
+      });
       return res.json(ObjectView.render(objectItem));
 
     } catch {
@@ -62,7 +74,10 @@ class ObjectController{
     const objectsRepository = getCustomRepository(ObjectsRepository);
 
     try{
-      const objects = await objectsRepository.find({rpg_id});
+      const objects = await objectsRepository.find({ where: { rpg_id }, 
+        relations: ['image']
+      });
+
       return res.json(ObjectView.renderMany(objects));
 
     } catch {
@@ -73,15 +88,16 @@ class ObjectController{
   async update(req: Request, res: Response){
     const { name, previousImage } = req.body;
     const { id } = req.params;
-    let image: any = null;
+    let image: Image;
     const objectsRepository = getCustomRepository(ObjectsRepository);
 
     if(req.file){
       const requestIcon = req.file as Express.Multer.File;
-      image = requestIcon.filename;
-      imageApi.post('/', { name: image })
-        .then(() => DeleteFile(image))
-        .catch(err => console.log(err.response.data));
+      image = {
+        name: requestIcon.originalname,
+        key: requestIcon.key,
+        url: requestIcon.location ? requestIcon.location : `${process.env.APP_URL}/${requestIcon.key}`,
+      };
     }
 
     const schema = yup.object().shape({
@@ -97,20 +113,17 @@ class ObjectController{
 
     const currentObjectData = await objectsRepository.findOne(id);
 
-    if(image) { 
-      DeleteFile(currentObjectData.image);
-      imageApi.delete('/', { data: { name: currentObjectData.image } })
-        .then().catch(err => console.log(err.response.data));
+    if(image?.key) {
+      await objectsRepository.deleteImage(currentObjectData.id);
+      await objectsRepository.insertImage(currentObjectData.id, image);
     }
-    else if(previousImage){
-      const fileName = previousImage.split('uploads/');
-      image = fileName[1];
+    else if(!image?.key && !previousImage){
+      await objectsRepository.deleteImage(currentObjectData.id);
     }
 
     const newObjectData = {
       ...currentObjectData,
-      name,
-      image
+      name
     }
 
     try{
@@ -128,10 +141,7 @@ class ObjectController{
     const objectsRepository = getCustomRepository(ObjectsRepository);
 
     try{
-      const currentObject = await objectsRepository.findOne(id);
-      DeleteFile(currentObject.image);
-      imageApi.delete('/', { data: { name: currentObject.image } })
-        .then().catch(err => console.log(err.response.data));
+      await objectsRepository.deleteImage(Number(id));
 
       await objectsRepository.delete(id);
       return res.sendStatus(200);

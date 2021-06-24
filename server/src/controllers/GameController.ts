@@ -29,9 +29,15 @@ class GameController{
     const objectsRepository = getCustomRepository(ObjectsRepository);
 
     try{
-      const characters = await charactersRepository.find({rpg_id});
-      const scenarios = await scenariosRepository.find({rpg_id});
-      const objects = await objectsRepository.find({rpg_id});
+      const characters = await charactersRepository.find({ where: {rpg_id}, 
+        relations: ['icon']
+      });
+      const scenarios = await scenariosRepository.find({ where: {rpg_id}, 
+        relations: ['image']
+      });
+      const objects = await objectsRepository.find({ where: {rpg_id}, 
+        relations: ['image']
+      });
 
       return res.json(SessionView.render(characters, scenarios, objects));
 

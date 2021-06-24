@@ -1,4 +1,4 @@
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, OneToMany, PrimaryColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import {v4 as uuid} from 'uuid';
 import bcrypt from 'bcryptjs';
 
@@ -6,6 +6,7 @@ import { Rpg } from './Rpg';
 import { RpgParticipants } from './RpgParticipants';
 import { Notes } from './Notes';
 import { PermissionChange } from './PermissionChange';
+import { Image } from './Image';
 
 @Entity('users')
 class User{
@@ -14,9 +15,6 @@ class User{
 
   @Column()
   username: string;
-
-  @Column()
-  icon: string;
 
   @Column()
   email: string;
@@ -42,6 +40,11 @@ class User{
   })
   @JoinColumn({name: 'user_id'})
   rpgs: Rpg[];
+
+  @OneToOne(() => Image, image => image.user, {
+    cascade: ['insert', 'update', 'remove']
+  })
+  icon: Image;
 
   @OneToMany(() => RpgParticipants, rpgs_participant => rpgs_participant.user, {
     cascade: ['insert', 'update', 'remove']

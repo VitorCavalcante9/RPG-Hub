@@ -6,16 +6,26 @@ import { ScenariosRepository } from '../repositories/ScenariosRepository';
 import { DeleteFile } from '../services/deleteFile';
 import ScenarioView from '../views/scenarios_views';
 
+interface Image {
+  name: string,
+  key: string,
+  url: string
+}
+
 class ScenarioController{
   async store(req: Request, res: Response){
     const { name } = req.body;
     const { rpg_id } = req.params;
-    let image: any = null;
+    let image: Image;
     const scenariosRepository = getCustomRepository(ScenariosRepository);
 
     if(req.file){
       const requestIcon = req.file as Express.Multer.File;
-      image = requestIcon.filename;
+      image = {
+        name: requestIcon.originalname,
+        key: requestIcon.key,
+        url: requestIcon.location ? requestIcon.location : `${process.env.APP_URL}/${requestIcon.key}`,
+      };
     }
 
     const schema = yup.object().shape({
@@ -29,13 +39,17 @@ class ScenarioController{
       throw new AppError(err.errors);
     }
     
-    if(!image) throw new AppError('Insira uma imagem');
+    if(!image?.key) throw new AppError('Insira uma imagem');
 
     const scenario = scenariosRepository.create({
-      name, rpg_id, image
+      name, rpg_id
     });
 
     await scenariosRepository.save(scenario);
+
+    if(image?.key){
+      await scenariosRepository.insertImage(scenario.id, image);
+    }
 
     return res.status(201).json({ message: 'Scenario created successfully!'});
   }
@@ -45,7 +59,9 @@ class ScenarioController{
     const scenariosRepository = getCustomRepository(ScenariosRepository);
 
     try{
-      const scenario = await scenariosRepository.findOneOrFail(id);
+      const scenario = await scenariosRepository.findOneOrFail(id, {
+        relations: ['image']
+      });
       return res.json(ScenarioView.render(scenario));
 
     } catch {
@@ -58,7 +74,9 @@ class ScenarioController{
     const scenariosRepository = getCustomRepository(ScenariosRepository);
 
     try{
-      const scenarios = await scenariosRepository.find({rpg_id});
+      const scenarios = await scenariosRepository.find({ where: { rpg_id },
+        relations: ['image']
+      });
       return res.json(ScenarioView.renderMany(scenarios));
 
     } catch {
@@ -69,12 +87,16 @@ class ScenarioController{
   async update(req: Request, res: Response){
     const { name, previousImage } = req.body;
     const { id } = req.params;
-    let image: any = null;
+    let image: Image;
     const scenariosRepository = getCustomRepository(ScenariosRepository);
 
     if(req.file){
       const requestIcon = req.file as Express.Multer.File;
-      image = requestIcon.filename;
+      image = {
+        name: requestIcon.originalname,
+        key: requestIcon.key,
+        url: requestIcon.location ? requestIcon.location : `${process.env.APP_URL}/${requestIcon.key}`,
+      };
     }
 
     const schema = yup.object().shape({
@@ -90,21 +112,21 @@ class ScenarioController{
 
     const currentScenarioData = await scenariosRepository.findOne(id);
 
-    if(image) {
-      DeleteFile(currentScenarioData.image);
+    if(image?.key) {
+      await scenariosRepository.deleteImage(currentScenarioData.id);
+      await scenariosRepository.insertImage(currentScenarioData.id, image);
     }
-    else if(previousImage){
-      const fileName = previousImage.split('uploads/');
-      image = fileName[1];
+    else if(!image?.key && !previousImage){
+      await scenariosRepository.deleteImage(currentScenarioData.id);
     }
 
     const newScenarioData = {
       ...currentScenarioData,
-      name,
-      image
+      name
     }
     
     try{
+
       await scenariosRepository.update(id, newScenarioData);
 
     } catch {
@@ -119,8 +141,7 @@ class ScenarioController{
     const { id } = req.params;
 
     try{
-      const currentScenario = await scenariosRepository.findOne(id);
-      DeleteFile(currentScenario.image);
+      await scenariosRepository.deleteImage(Number(id));
       
       await scenariosRepository.delete(id);
       return res.sendStatus(200);

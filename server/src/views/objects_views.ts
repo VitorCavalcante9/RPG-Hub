@@ -5,7 +5,7 @@ export default{
     return{
       id: objectItem.id,
       name: objectItem.name,
-      image: `http://${process.env.HOST}:${process.env.PORT}/uploads/${objectItem.image}`
+      image: objectItem.image?.url ? objectItem.image?.url : ''
     }
   },
   renderMany(objectItems: ObjectItem[]){

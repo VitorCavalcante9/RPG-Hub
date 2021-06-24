@@ -9,7 +9,7 @@ export default{
       return {
         id: character.id,
         name: character.name,
-        icon: `http://${process.env.HOST}:${process.env.PORT}/uploads/${character.icon}`,
+        icon: character.icon?.url ? character.icon?.url : '',
         inventory: character.inventory,
         status: character.status,
         skills: character.skills,
@@ -20,7 +20,7 @@ export default{
       return {
         id: scenario.id,
         name: scenario.name,
-        image: `http://${process.env.HOST}:${process.env.PORT}/uploads/${scenario.image}`
+        image: scenario.image?.url ? scenario.image?.url : ''
       }
     });
 
@@ -28,7 +28,7 @@ export default{
       return {
         id: objectItem.id,
         name: objectItem.name,
-        image: `http://${process.env.HOST}:${process.env.PORT}/uploads/${objectItem.image}`
+        image: objectItem.image?.url ? objectItem.image?.url : ''
       }
     })
 

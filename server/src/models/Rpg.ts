@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import {v4 as uuid} from 'uuid';
 import { Character } from './Character';
 import { Notes } from './Notes';
@@ -7,6 +7,7 @@ import { PermissionChange } from './PermissionChange';
 import { RpgParticipants } from './RpgParticipants';
 import { Scenario } from './Scenario';
 import { User } from './User';
+import { Image } from './Image';
 
 @Entity('rpgs')
 class Rpg{
@@ -19,14 +20,11 @@ class Rpg{
   @Column()
   name: string;
 
-  @Column()
-  icon: string;
-
   @Column('json')
   dices: string[];
 
   @Column('json')
-  sheet: {status: any[], skills: [], limitOfPoints: number};
+  sheet: { status: any[], skills: [], limitOfPoints: number };
 
   constructor(){
     if(!this.id) this.id = uuid();
@@ -35,6 +33,11 @@ class Rpg{
   @ManyToOne(() => User, user => user.rpgs)
   @JoinColumn({name: 'user_id'})
   user: User;
+
+  @OneToOne(() => Image, image => image.rpg, {
+    cascade: ['insert', 'update', 'remove']
+  })
+  icon: Image;
 
   @OneToMany(() => Character, character => character.rpg, {
     cascade: ['insert', 'update', 'remove']

@@ -5,7 +5,7 @@ export default{
     return{
       id: scenario.id,
       name: scenario.name,
-      image: `http://${process.env.HOST}:${process.env.PORT}/uploads/${scenario.image}`
+      image: scenario.image?.url ? scenario.image?.url : ''
     }
   },
   renderMany(scenarios: Scenario[]){

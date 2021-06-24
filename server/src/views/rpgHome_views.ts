@@ -8,7 +8,7 @@ export default{
       return {
         id: character.id,
         name: character.name,
-        icon: `http://${process.env.HOST}:${process.env.PORT}/uploads/${character.icon}`
+        icon: character.icon?.url ? character.icon?.url : ''
       }
     })
 
@@ -16,7 +16,7 @@ export default{
       return {
         id: scenario.id,
         name: scenario.name,
-        image: `http://${process.env.HOST}:${process.env.PORT}/uploads/${scenario.image}`
+        image: scenario.image?.url ? scenario.image?.url : ''
       }
     })
 
@@ -24,7 +24,7 @@ export default{
       return {
         id: object.id,
         name: object.name,
-        image: `http://${process.env.HOST}:${process.env.PORT}/uploads/${object.image}`
+        image: object.image?.url ? object.image?.url : ''
       }
     })
 
@@ -37,7 +37,7 @@ export default{
 
     return{
       name: rpg.name,
-      icon: `http://${process.env.HOST}:${process.env.PORT}/uploads/${rpg.icon}`,
+      icon: rpg.icon?.url ? rpg.icon?.url : '',
       characters,
       scenarios,
       objects,
@@ -81,12 +81,12 @@ export default{
 
     return{
       name: rpg_content.name,
-      icon: `http://${process.env.HOST}:${process.env.PORT}/uploads/${rpg_content.icon}`,
+      icon: rpg_content.icon?.url ? rpg_content.icon?.url : '',
       admin: rpg_content.user.username,
       character: {
         id: character_content.id,
         name: character_content.name,
-        icon: `http://${process.env.HOST}:${process.env.PORT}/uploads/${character_content.icon}`,
+        icon: character_content.icon?.url ? character_content.icon?.url : '',
         status: character_content.status,
         inventory: character_content.inventory,
         skills: character_content.skills,

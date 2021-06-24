@@ -1,5 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import {v4 as uuid} from 'uuid';
+import { Image } from './Image';
 import { PermissionChange } from './PermissionChange';
 import { Rpg } from './Rpg';
 import { RpgParticipants } from './RpgParticipants';
@@ -28,9 +29,6 @@ class Character{
   @Column()
   rpg_id: string;
 
-  @Column()
-  icon: string;
-
   @Column('json')
   inventory: string[];
 
@@ -50,6 +48,11 @@ class Character{
   @ManyToOne(() => Rpg, rpg => rpg.characters)
   @JoinColumn({name: 'rpg_id'})
   rpg: Rpg;
+  
+  @OneToOne(() => Image, image => image.character, {
+    cascade: ['insert', 'update', 'remove']
+  })
+  icon: Image;
 
   @OneToOne(() => RpgParticipants, rpgs_participant => rpgs_participant.character)
   participant: RpgParticipants;

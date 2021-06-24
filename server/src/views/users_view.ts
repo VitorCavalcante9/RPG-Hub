@@ -1,4 +1,11 @@
 import { User } from "../models/User";
+import { Image } from "../models/Image";
+
+interface Icon {
+  name: string,
+  key: string,
+  url: string
+}
 
 export default{
   render(user: User){
@@ -6,20 +13,20 @@ export default{
       id: user.id,
       username: user.username,
       email: user.email,
-      icon: `http://${process.env.HOST}:${process.env.PORT}/uploads/${user.icon}`
+      icon: user.icon?.url ? user.icon?.url : ''
     }
   },
-  minRender(username: string, icon: string){
+  minRender(username: string, icon: Icon){
     return {
       username,
-      icon: `http://${process.env.HOST}:${process.env.PORT}/uploads/${icon}`
+      icon: icon?.url ? icon.url : ''
     }
   },
   authRender(user: User, token: string){
     return {
       id: user.id,
       username: user.username,
-      icon: `http://${process.env.HOST}:${process.env.PORT}/uploads/${user.icon}`,
+      icon: user.icon?.url ? user.icon?.url : '',
       token
     }
   }

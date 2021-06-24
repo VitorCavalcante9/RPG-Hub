@@ -6,7 +6,12 @@ import bcrypt from 'bcryptjs';
 import { AppError } from '../models/AppError';
 import { UsersRepository } from '../repositories/UsersRepository';
 import UsersView from '../views/users_view';
-import { DeleteFile } from '../services/deleteFile';
+
+interface Icon {
+  name: string,
+  key: string,
+  url: string
+}
 
 class UserController{
   async store(req: Request, res: Response){
@@ -46,18 +51,24 @@ class UserController{
     const usersRepository = getCustomRepository(UsersRepository);
     
     const id = req.userId;
-    const user = await usersRepository.findOne({id});
+    const user = await usersRepository.findOne(id, {
+      relations: ['icon']
+    });
 
     return res.json(UsersView.render(user));
   }
 
   async update(req: Request, res: Response){
     const { username, previousIcon } = req.body;
-    let icon: any = null;
+    let icon: Icon;
 
     if(req.file){
       const requestIcon = req.file as Express.Multer.File;
-      icon = requestIcon.filename;
+      icon = {
+        name: requestIcon.originalname,
+        key: requestIcon.key,
+        url: requestIcon.location ? requestIcon.location : `${process.env.APP_URL}/${requestIcon.key}`,
+      };
     }
 
     const schema = yup.object().shape({
@@ -79,24 +90,26 @@ class UserController{
 
       const currentUserData = await usersRepository.findOne(id);
 
-      if(icon) DeleteFile(currentUserData.icon);
-      else if(previousIcon){
-        const fileName = previousIcon.split('uploads/');
-        icon = fileName[1];
+      if(icon?.key) {
+        await usersRepository.deleteImage(id);
+        await usersRepository.insertImage(id, icon);
+      }
+      else if(!icon?.key && !previousIcon){
+        await usersRepository.deleteImage(id);
       }
 
       const newUserData = {
         ...currentUserData,
-        username,
-        icon
+        username
       }
 
       await usersRepository.update(id, newUserData);
 
       return res.status(200).json(UsersView.minRender(username, icon));
       
-    } catch {
-      throw new AppError('Error updating');
+    } catch(err) {
+      console.log(err)
+      throw new AppError(err.message);
     }
   }
 
@@ -149,18 +162,12 @@ class UserController{
 
     try{
       const currentUser = await usersRepository.findOne(id, {
-        relations: ['rpgs', 'rpgs.characters', 'rpgs.scenarios', 'rpgs.objects']
+        relations: ['rpgs', 'rpgs.icon', 'rpgs.characters', 'rpgs.characters.icon', 'rpgs.scenarios', 'rpgs.scenarios.image', 'rpgs.objects', 'rpgs.objects.image']
       });
-      DeleteFile(currentUser.icon);
+      await usersRepository.deleteImage(id);
 
       if(currentUser.rpgs){
-        currentUser.rpgs.map(rpg => {
-          rpg.scenarios.map(scenario => DeleteFile(scenario.image));
-          rpg.characters.map(character => DeleteFile(character.icon));
-          rpg.objects.map(object => DeleteFile(object.image));
-  
-          DeleteFile(rpg.icon);
-        })
+        await usersRepository.deleteRelationsImages(currentUser.rpgs);
       }
 
       await usersRepository.delete(id);

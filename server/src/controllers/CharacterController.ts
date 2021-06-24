@@ -5,9 +5,13 @@ import { AppError } from '../models/AppError';
 import { CharactersRepository } from '../repositories/CharactersRepository';
 import { PermissionChangeRepository } from '../repositories/PermissionChangesRepository';
 import { RpgParticipantsRepository } from '../repositories/RpgParticipantsRepository';
-import { DeleteFile } from '../services/deleteFile';
 import CharacterView from '../views/characters_views';
-import imageApi from '../services/imageApi';
+
+interface Icon {
+  name: string,
+  key: string,
+  url: string
+}
 
 class CharacterController{
   async store(req: Request, res: Response){
@@ -18,10 +22,11 @@ class CharacterController{
 
     if(req.file){
       const requestIcon = req.file as Express.Multer.File;
-      icon = requestIcon.filename;
-      imageApi.post('/', { name: icon })
-        .then(() => DeleteFile(icon))
-        .catch(err => console.log(err.response.data));
+      icon = {
+        name: requestIcon.originalname,
+        key: requestIcon.key,
+        url: requestIcon.location ? requestIcon.location : `${process.env.APP_URL}/${requestIcon.key}`,
+      };
     }
 
     const schema = yup.object().shape({
@@ -45,13 +50,15 @@ class CharacterController{
       await schema.validate(req.body, {abortEarly: false});
     }
     catch(err){
-      throw new AppError(err.errors);
+      const errors = err.inner.map(inner => {
+        return `${inner.errors[0]} em ${inner.path}` 
+      })
+      throw new AppError(errors);
     }
 
     const character = charactersRepository.create({
       name, 
       rpg_id, 
-      icon, 
       inventory: JSON.parse(inventory), 
       status: JSON.parse(status), 
       skills: JSON.parse(skills),
@@ -59,13 +66,17 @@ class CharacterController{
     });
 
     try{
-      const newCharacter = await charactersRepository.save(character);
+      await charactersRepository.save(character);
+
+      if(icon?.key){
+        await charactersRepository.insertImage(character.id, icon);
+      }
 
       const permissionRepository = getCustomRepository(PermissionChangeRepository);
 
       const permission = permissionRepository.create({
         rpg_id, 
-        character_id: newCharacter.id,
+        character_id: character.id,
         permission: true
       });
       await permissionRepository.save(permission);
@@ -84,7 +95,7 @@ class CharacterController{
 
     try{
       const character = await charactersRepository.findOneOrFail(id, {
-        relations: ['participant', 'participant.user']
+        relations: ['participant', 'participant.user', 'icon']
       });
       return res.json(CharacterView.render(character));
 
@@ -99,7 +110,7 @@ class CharacterController{
 
     try{
       const character = await charactersRepository.find({where: [{rpg_id}], 
-        relations: ['participant', 'participant.user']
+        relations: ['participant', 'participant.user', 'icon']
       });
       return res.json(CharacterView.renderMany(character));
 
@@ -111,15 +122,16 @@ class CharacterController{
   async update(req: Request, res: Response){
     const { name, previousIcon, inventory, status, skills, limitOfPoints } = req.body;
     const { id } = req.params;
-    let icon: any = null;
+    let icon: Icon;
     const charactersRepository = getCustomRepository(CharactersRepository);
 
     if(req.file){
       const requestIcon = req.file as Express.Multer.File;
-      icon = requestIcon.filename;
-      imageApi.post('/', { name: icon })
-        .then(() => DeleteFile(icon))
-        .catch(err => console.log(err.response.data));
+      icon = {
+        name: requestIcon.originalname,
+        key: requestIcon.key,
+        url: requestIcon.location ? requestIcon.location : `${process.env.APP_URL}/${requestIcon.key}`,
+      };
     }
 
     const schema = yup.object().shape({
@@ -144,25 +156,23 @@ class CharacterController{
       await schema.validate(req.body, {abortEarly: false});
     }
     catch(err){
+      console.log(err)
       throw new AppError(err.errors);
     }
 
     const currentCharacterData = await charactersRepository.findOne(id);
 
-    if(icon) { 
-      DeleteFile(currentCharacterData.icon);
-      imageApi.delete('/', { data: { name: currentCharacterData.icon } })
-        .then().catch(err => console.log(err.response.data));
+    if(icon?.key) {
+      await charactersRepository.deleteImage(id);
+      await charactersRepository.insertImage(id, icon);
     }
-    else if(previousIcon){
-      const fileName = previousIcon.split('uploads/');
-      icon = fileName[1];
+    else if(!icon?.key && !previousIcon){
+      await charactersRepository.deleteImage(id);
     }
 
     const newCharacterData = {
       ...currentCharacterData,
       name, 
-      icon, 
       inventory: JSON.parse(inventory), 
       status: JSON.parse(status), 
       skills: JSON.parse(skills),
@@ -234,7 +244,6 @@ class CharacterController{
     const charactersRepository = getCustomRepository(CharactersRepository);
 
     try{
-      const currentCharacter = await charactersRepository.findOne(id);
 
       const rpgsParticipantRepository = getCustomRepository(RpgParticipantsRepository);
       const currentRpgPartData = await rpgsParticipantRepository.findOne(
@@ -248,10 +257,8 @@ class CharacterController{
         }
         await rpgsParticipantRepository.update(currentRpgPartData.id, newRpgPartData);
       }
-      
-      DeleteFile(currentCharacter.icon);
-      imageApi.delete('/', { data: { name: currentCharacter.icon } })
-        .then().catch(err => console.log(err.response.data));
+
+      await charactersRepository.deleteImage(id);
 
       await charactersRepository.delete(id);
       return res.sendStatus(200);

@@ -11,7 +11,7 @@ class AuthController{
     const usersRepository = getCustomRepository(UsersRepository);
     const { email, password } = request.body;
     
-    const user = await usersRepository.findOne({ where: { email } });
+    const user = await usersRepository.findOne({ where: { email }, relations: ['icon'] });
 
     if(!user){
       return response.status(401).json({message: 'Usuário e/ou senha inválidos'});

@@ -13,7 +13,7 @@ export default{
     return{
       id: character.id,
       name: character.name,
-      icon: `http://${process.env.HOST}:${process.env.PORT}/uploads/${character.icon}`,
+      icon: character.icon?.url ? character.icon?.url : '',
       inventory: character.inventory,
       status: character.status,
       skills: character.skills,

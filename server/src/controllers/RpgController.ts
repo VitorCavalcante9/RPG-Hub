@@ -4,19 +4,28 @@ import * as yup from 'yup';
 import { AppError } from '../models/AppError';
 import { RpgsRepository } from '../repositories/RpgsRepository';
 import { NotesRepository } from '../repositories/NotesRepository';
-import { DeleteFile } from '../services/deleteFile';
 
 import RpgsView from '../views/rpgs_views';
+
+interface Icon {
+  name: string,
+  key: string,
+  url: string
+}
 
 class RpgController{
   async store(req: Request, res: Response){
     const { name } = req.body;
-    let icon: any = null;
+    let icon: Icon;
     const rpgsRepository = getCustomRepository(RpgsRepository);
 
     if(req.file){
       const requestIcon = req.file as Express.Multer.File;
-      icon = requestIcon.filename;
+      icon = {
+        name: requestIcon.originalname,
+        key: requestIcon.key,
+        url: requestIcon.location ? requestIcon.location : `${process.env.APP_URL}/${requestIcon.key}`,
+      };
     }
 
     const schema = yup.object().shape({
@@ -32,7 +41,6 @@ class RpgController{
 
     const rpg = rpgsRepository.create({
       name,
-      icon,
       user_id: req.userId,
       sheet: {
         status: [
@@ -51,6 +59,10 @@ class RpgController{
 
     await rpgsRepository.save(rpg);
 
+    if(icon?.key){
+      await rpgsRepository.insertImage(rpg.id, icon);
+    }
+
     const notesRepository = getCustomRepository(NotesRepository);
     const notes = await notesRepository.create({
       rpg_id: rpg.id,
@@ -68,7 +80,9 @@ class RpgController{
     const rpgsRepository = getCustomRepository(RpgsRepository);
     
     try{
-      const rpg = await rpgsRepository.findOneOrFail(id);
+      const rpg = await rpgsRepository.findOneOrFail(id, {
+        relations: ['icon']
+      });
       return res.json(RpgsView.render(rpg));
 
     } catch {
@@ -79,12 +93,16 @@ class RpgController{
   async update(req: Request, res: Response){
     const { name, previousIcon } = req.body;
     const { rpg_id: id } = req.params;
-    let icon: any = null;
+    let icon: Icon;
     const rpgsRepository = getCustomRepository(RpgsRepository);
 
     if(req.file){
       const requestIcon = req.file as Express.Multer.File;
-      icon = requestIcon.filename;
+      icon = {
+        name: requestIcon.originalname,
+        key: requestIcon.key,
+        url: requestIcon.location ? requestIcon.location : `${process.env.APP_URL}/${requestIcon.key}`,
+      };
     }
 
     const schema = yup.object().shape({
@@ -102,16 +120,17 @@ class RpgController{
 
       const currentRpgData = await rpgsRepository.findOne(id);
 
-      if(icon) DeleteFile(currentRpgData.icon);
-      else if(previousIcon){
-        const fileName = previousIcon.split('uploads/');
-        icon = fileName[1];
+      if(icon?.key) {
+        await rpgsRepository.deleteImage(id);
+        await rpgsRepository.insertImage(id, icon);
+      }
+      else if(!icon?.key && !previousIcon){
+        await rpgsRepository.deleteImage(id);
       }
 
       const newRpgData = {
         ...currentRpgData,
-        name,
-        icon
+        name
       }
     
       await rpgsRepository.update(id, newRpgData);
@@ -129,14 +148,11 @@ class RpgController{
 
     try{
       const currentRpgData = await rpgsRepository.findOne(id, {
-        relations: ['characters', 'scenarios', 'objects']
+        relations: ['icon', 'characters', 'characters.icon', 'scenarios', 'scenarios.image', 'objects', 'objects.image']
       });
-      DeleteFile(currentRpgData.icon);
-
-      if(currentRpgData.scenarios) currentRpgData.scenarios.map(scenario => DeleteFile(scenario.image));
-      if(currentRpgData.characters) currentRpgData.characters.map(character => DeleteFile(character.icon));
-      if(currentRpgData.objects) currentRpgData.objects.map(object => DeleteFile(object.image));
       
+      await rpgsRepository.deleteRelationsImages(currentRpgData);
+
       await rpgsRepository.delete(id);
 
       return res.json({message: 'RPG successFully deleted'});

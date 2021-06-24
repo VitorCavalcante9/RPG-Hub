@@ -5,7 +5,7 @@ export default{
     return{
       id: rpg.id,
       name: rpg.name,
-      icon: `http://${process.env.HOST}:${process.env.PORT}/uploads/${rpg.icon}`
+      icon: rpg.icon?.url ? rpg.icon?.url : ''
     }
   }
 }

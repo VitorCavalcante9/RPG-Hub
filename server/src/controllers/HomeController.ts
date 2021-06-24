@@ -11,7 +11,7 @@ class HomeController{
 
     try{
       const user = await usersRepository.findOne(id, {
-        relations: ['rpgs', 'rpgs_participant', 'rpgs_participant.rpg']
+        relations: ['rpgs', 'rpgs.icon', 'rpgs_participant', 'rpgs_participant.rpg', 'rpgs_participant.rpg.icon']
       });
   
       return res.json(HomeView.render(user));

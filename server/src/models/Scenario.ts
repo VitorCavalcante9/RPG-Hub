@@ -1,4 +1,5 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Image } from './Image';
 import { Rpg } from './Rpg';
 
 @Entity('scenarios')
@@ -12,8 +13,10 @@ class Scenario{
   @Column()
   name: string;
 
-  @Column()
-  image: string;
+  @OneToOne(() => Image, image => image.scenario, {
+    cascade: ['insert', 'update', 'remove']
+  })
+  image: Image;
 
   @ManyToOne(() => Rpg, rpg => rpg.scenarios)
   @JoinColumn({name: 'rpg_id'})
