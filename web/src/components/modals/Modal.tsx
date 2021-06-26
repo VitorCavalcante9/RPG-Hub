@@ -42,6 +42,7 @@ export function Modal({title, open, account, link, children}:ModalProps){
     <>
       {isOpen ? (
         <div className={styles.overlay}>
+          <div className={styles.background} onClick={handleOpenModal}></div>
           <div className={styles.container}>
             <header>{title}</header>
               {children}

@@ -9,12 +9,13 @@ import styles from '../styles/components/Layout.module.css';
 interface LayoutProps extends HTMLAttributes<HTMLDivElement>{
   withoutBackButton?: boolean;
   linkBack?: string;
+  updateUser?: () => void;
 }
 
-export function Layout({children, withoutBackButton, linkBack}:LayoutProps){
+export function Layout({children, withoutBackButton, linkBack, updateUser}:LayoutProps){
   return(
     <>
-      <Sidebar />
+      <Sidebar updateUser={updateUser} />
 
       <div className={styles.pageContainer}>
 

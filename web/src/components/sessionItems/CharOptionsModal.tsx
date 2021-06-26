@@ -67,6 +67,7 @@ export function CharOptionsModal(){
     <>
     {openModals[1] ? (
       <div className={styles.overlay}>
+        <div className={styles.background} onClick={() => handleOpenModals(1)}/>
         <div className={styles.container}>
           <header>
             <CharacterItem character={selectedCharacter} />

@@ -94,6 +94,7 @@ export function ChatModal({ selectedCharacter }: ChatModalProps){
     <>
     {openModals[3] ? (
       <div className={styles.overlay}>
+        <div className={styles.background} onClick={() => handleOpenModals(3)}/>
         <div className={styles.container}>
           <Block name="Chat" id={styles.chat} center={true}>
             {messages.map((message, index) => {

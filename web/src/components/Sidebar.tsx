@@ -3,7 +3,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import classnames from 'classnames';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
-import api from '../services/api';
 
 import styles from '../styles/components/Sidebar.module.css';
 
@@ -12,19 +11,31 @@ import home from '../assets/icons/home.svg';
 import user from '../assets/icons/user.svg';
 import moon from '../assets/icons/moon.svg';
 
-export function Sidebar(){
-  const { loading, handleLogout } = useContext(AuthContext);
+interface SidebarProps{
+  updateUser?: () => void;
+}
+
+export function Sidebar({ updateUser }: SidebarProps){
+  const { handleLogout } = useContext(AuthContext);
   const [isCollapsed, setIsCollapsed] = useState(true);
-  const [userData, setUserData] = useState({username: '', icon: ''})
+  const [userData, setUserData] = useState({username: '', icon: ''});
 
   useEffect(() => {
+    getUser();
+  }, []);
+
+  useEffect(() => {
+    getUser();
+  }, [updateUser]);
+
+  function getUser(){
     const user = localStorage.getItem('user');
+    console.log('me chamaram')
 
     if(user){
       setUserData(JSON.parse(user));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [window.location])
+  }
 
   const toggleCollapsed = () =>{
     const new_value = isCollapsed ? false : true;

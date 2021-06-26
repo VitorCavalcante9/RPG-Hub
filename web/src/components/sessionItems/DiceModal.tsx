@@ -46,8 +46,7 @@ export function DiceModal(){
   
   const [skill, setSkill] = useState<Skill | null>();
   const [searchSkill, setSearchSkill] = useState('');
-  const [dices, setDices] = useState<string[]>([]);
-  const [dice, setDice] = useState('');
+  const [dice, setDice] = useState({quantity: 1, value: 100});
   const [bonus, setBonus] = useState(0);
   const [isChoosingChar, setIsChoosingChar] = useState(false);
 
@@ -63,19 +62,12 @@ export function DiceModal(){
       const indexRpg = allRpgs.rpgs.indexOf(params.id);
       if(indexRpg !== -1) setIsAdm(true);   
     }
-
-    api.get(`rpgs/${params.id}/dices`)
-    .then(res => {
-      if(res.data){
-        setDices(res.data);
-      }
-    })   
     
     socket.on('roll_dices', ({ message }: any) => {
       try{
         if(message.character){
-          const { results, sumResults, character, resultSkill, skillName, bonus } = message;
-          const newMessage = [`${results} → ${sumResults}\n`, <b>{character}</b>, ' tirou ', <b>{resultSkill}</b>, ' em ', <b>{skillName}</b>, `${bonus ? ` com ${bonus} de bônus` : ''}`];
+          const { diceValue, results, sumResults, character, resultSkill, skillName, bonus } = message;
+          const newMessage = [`${diceValue}: ${results} → ${sumResults}\n`, <b>{character}</b>, ' tirou ', <b>{resultSkill}</b>, ' em ', <b>{skillName}</b>, `${bonus ? ` com ${bonus} de bônus` : ''}`];
           setLastMessage(newMessage);
         }
         else setLastMessage(message);
@@ -85,10 +77,6 @@ export function DiceModal(){
       }
     })
   }, [params.id]);
-
-  useEffect(() => {
-    if(dices.length > 0) setDice(dices[0])
-  }, [dices])
 
   useEffect(() => {
     if(lastMessage){
@@ -103,9 +91,13 @@ export function DiceModal(){
     };
   }, [messages])
 
+  function setDiceItemValue(field: string, value: string){
+    setDice({...dice, [field]: value});
+  }
+
   function rollDices(){
     let data: DataDice = {
-      dice,
+      dice: `${dice.quantity}d${dice.value}`,
       skill: null,
       bonus: null
     }
@@ -123,13 +115,14 @@ export function DiceModal(){
 
     api.post(`rpgs/${params.id}/roll_dices`, data)
       .then(res => {
-        const { results, sumResults, resultSkill, skillName, bonus } = res.data;
+        const { diceValue, results, sumResults, resultSkill, skillName, bonus } = res.data;
 
         const newMessage = resultSkill ? 
-          [`${JSON.stringify(results)} → ${sumResults}\n`, <b>{selectedCharacter.name}</b>, ' tirou ', <b>{resultSkill}</b>, ' em ', <b>{skillName}</b>, `${bonus ? ` com ${bonus} de bônus` : ''}`] :
-          `${selectedCharacter.name}: ${JSON.stringify(results)} → ${sumResults}`;
+          [`${diceValue}: ${JSON.stringify(results)} → ${sumResults}\n`, <b>{selectedCharacter.name}</b>, ' tirou ', <b>{resultSkill}</b>, ' em ', <b>{skillName}</b>, `${bonus ? ` com ${bonus} de bônus` : ''}`] :
+          `${selectedCharacter.name}: ${diceValue} - ${JSON.stringify(results)} → ${sumResults}`;
 
         socket.emit('roll_dices', { room: params.id, message: resultSkill ? {
+          diceValue,
           results: JSON.stringify(results),
           sumResults,
           character: selectedCharacter.name,
@@ -151,6 +144,7 @@ export function DiceModal(){
     <>
     {openModals[0] ? (
       <div className={styles.overlay}>
+        <div className={styles.background} onClick={() => handleOpenModals(0)}/>
         <div className={styles.container}>
           <header>
             <CharacterItem isMini={true} character={selectedCharacter} />
@@ -241,15 +235,19 @@ export function DiceModal(){
               <div className={styles.dice}>
                 <p>Dado:</p>
 
-                <select 
-                  value={dice} 
-                  id="dice"
-                  onChange={(e) => {setDice(e.target.value)}} 
-                >
-                  {dices.map((dice, index) => {
-                    return <option key={index} value={dice}>{dice}</option>
-                  })}
-                </select>
+                <InputLine 
+                  className={styles.diceInput} 
+                  minValue={0}
+                  value={dice.quantity}
+                  onChange={e => setDiceItemValue('quantity', e.target.value)}
+                />
+                <span>d</span>
+                <InputLine 
+                  className={styles.diceInput} 
+                  minValue={1}
+                  value={dice.value}
+                  onChange={e => setDiceItemValue('value', e.target.value)}
+                />
               </div>
             </div>
 

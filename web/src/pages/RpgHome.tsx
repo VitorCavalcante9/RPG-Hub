@@ -72,8 +72,6 @@ interface Permission{
   }
 }
 
-let interval: NodeJS.Timeout;
-
 export function RpgHome(){
   const params = useParams<RpgParams>();
   const alert = useAlert();
@@ -89,15 +87,7 @@ export function RpgHome(){
 
   useEffect(() => {
     reloadPermissions();
-
-    interval = setInterval(() => {
-      reloadPermissions();
-    }, 10000);
   }, []);
-
-  useEffect(() => {
-    clearInterval(interval);
-  }, [window.location]);
 
   useEffect(() => {
     reloadRpgData(true);

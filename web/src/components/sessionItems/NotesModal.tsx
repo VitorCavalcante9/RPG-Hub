@@ -83,6 +83,7 @@ export function NotesModal(){
     <>
     {openModals[2] ? (
       <div className={styles.overlay}>
+        <div className={styles.background} onClick={() => handleOpenModals(2)}/>
         <div className={styles.container}>
           <Block name="Notas" id={styles.notes} center={true}>
             {notes.notes.map((note, index) => {

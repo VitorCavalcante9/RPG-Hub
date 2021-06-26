@@ -61,7 +61,6 @@ export function User(){
     if(!openImageModal && !previewImage){
       setImageURL(null);
       setImage(null);
-      console.log(image, imageURL)
     }
   }, [openImageModal])
 
@@ -74,7 +73,9 @@ export function User(){
 
   useEffect(() => {
     setValue('username', name);
-  }, [changePassword])
+  }, [changePassword]);
+
+  function updateUser(){}
 
   function handleSelectedImage(e: ChangeEvent<HTMLInputElement>){
     if(!e.target.files){
@@ -107,7 +108,7 @@ export function User(){
     await api.patch(`users`, userData)
     .then(res => {
       const { username, icon } = res.data;
-
+      
       const user = {
         username, icon
       }
@@ -116,6 +117,7 @@ export function User(){
       
       alert.success(res.data.message);
       setIsEdit(false);
+      updateUser();
 
     }).catch(error => {
       if(!error.response) alert.error("Impossível conectar ao servidor!");
@@ -190,7 +192,7 @@ export function User(){
       </div>
     </div>
 
-    <Layout linkBack='/home'>
+    <Layout linkBack='/home' updateUser={updateUser}>
       <div className={styles.accountContainer}>
         <div className={styles.header}>
           <h1 className='title'>{changePassword ? 'Alterar Senha' : 'Dados da Conta'}</h1>
