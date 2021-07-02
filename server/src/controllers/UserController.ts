@@ -88,7 +88,7 @@ class UserController{
 
     try{
 
-      const currentUserData = await usersRepository.findOne(id);
+      const currentUserData = await usersRepository.findOneOrFail(id);
 
       if(icon?.key) {
         await usersRepository.deleteImage(id);
@@ -96,6 +96,15 @@ class UserController{
       }
       else if(!icon?.key && !previousIcon){
         await usersRepository.deleteImage(id);
+      }
+      else if(previousIcon){
+        const image = await usersRepository.getImage(id);
+
+        icon = {
+          name: image.name,
+          key: image.key,
+          url: image.url
+        }
       }
 
       const newUserData = {

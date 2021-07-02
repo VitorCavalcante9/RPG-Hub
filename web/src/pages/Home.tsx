@@ -48,11 +48,11 @@ export function Home(){
     })
 
     cleanRPG();
-  }, [])
+  }, []);
 
   useEffect(()=> {
     if(errors.rpg_id) alert.error("Insira o código")
-  }, [errors, alert])
+  }, [errors, alert]);
 
   const enterInRPG = async(data:any) => {
     await api.post('invite', data)
@@ -107,7 +107,7 @@ export function Home(){
             return(
               <Link key={rpg.id} to={`/rpgs/${rpg.id}`} className={styles.rpgItem}>
                 <div className={styles.icon}>
-                  <img className={classnames('image', {[styles.collapsedStyle]: (rpg.icon).includes('/null')})} src={rpg.icon} alt={rpg.name}/>
+                  <img className={classnames('image', {'collapsedStyle': !rpg.icon})} src={rpg.icon} alt={rpg.name}/>
                 </div>
 
                 <p>{rpg.name}</p>
@@ -127,7 +127,7 @@ export function Home(){
             return(
               <Link key={rpg.id} to={`/rpgs/${rpg.id}`} className={styles.rpgItem}>
                 <div className={styles.icon}>
-                  <img className={classnames('image', {[styles.collapsedStyle]: (rpg.icon).includes('/null')})} src={rpg.icon} alt={rpg.name}/>
+                  <img className={classnames('image', {'collapsedStyle': !rpg.icon})} src={rpg.icon} alt={rpg.name}/>
                 </div>
 
                 <p>{rpg.name}</p>

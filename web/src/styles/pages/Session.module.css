@@ -45,8 +45,7 @@
 
   display: grid;
   grid-template-columns: 1fr;
-  grid-auto-rows: 7rem;
-  grid-gap: 1rem;
+  grid-auto-rows: 9rem;
 }
 
 #scenarioContainer{
@@ -68,7 +67,7 @@
 #scenarioContainer img{
   max-width: 100%;
   height: 100%;
-  max-height: 862px;
+  max-height: 450px;
   object-fit: contain;
 }
 
@@ -140,7 +139,7 @@
 .itemsArea{
   width: 100%;
   height: 100%;
-  padding: 2rem 1.5rem 0;
+  padding: 2rem 1.5rem;
   overflow-y: auto;
   overflow-x: hidden;
 
@@ -150,30 +149,37 @@
 }
 
 /* Object modal */
-.modal {
-  display: none;
+.modal{
   position: fixed;
-  z-index: 5;
-  padding-top: 100px;
-  left: 0;
   top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgb(0,0,0);
-  background-color: rgba(0,0,0,0.9);
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 11;
+}
+
+.overlay{
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, .6);
 }
 
 .modalContent {
   margin: auto;
-  display: block;
   max-width: 90%;
   max-height: 90%;
   width: auto;
   height: auto;
-}
+  position: relative;
 
-.modalContent {  
   -webkit-animation-name: zoom;
   -webkit-animation-duration: 0.6s;
   animation-name: zoom;
@@ -208,7 +214,7 @@
 }
 
 @media only screen and (max-width: 700px){
-  .modal-content {
+  .modalContent {
     width: 100%;
   }
 }
@@ -222,6 +228,11 @@
 }
 
 @media (min-width: 1360px){
+  .modalContent {
+    max-width: 80%;
+    max-height: 80%;
+  }
+  
   .sessionContainer{
     width: 75vw;
     display: flex;
@@ -253,6 +264,10 @@
     grid-template-columns: repeat(2, 1fr);
     grid-auto-rows: 11rem;
     grid-gap: 1rem;
+  }
+
+  .charItemPanel{
+    padding: 6rem 0;
   }
   
   #scenarioContainer{
@@ -302,12 +317,11 @@
 
 @media (min-width:1600px){
   .itemsArea{
-    padding: 2rem 3rem 0;
+    padding: 2rem 3rem;
   }
 }
 
 @media (min-width: 1530px){
-  
   #characterContainer{
     height: 26rem;
     grid-template-columns: repeat(3, 1fr);

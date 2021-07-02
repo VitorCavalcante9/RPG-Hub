@@ -43,6 +43,7 @@ export function DiceModal(){
   const [isAdm, setIsAdm] = useState(false);
 
   const msgRef = useRef<HTMLDivElement>(null);
+  const charList = useRef(null);
   
   const [skill, setSkill] = useState<Skill | null>();
   const [searchSkill, setSearchSkill] = useState('');
@@ -54,6 +55,25 @@ export function DiceModal(){
   const [lastMessage, setLastMessage] = useState<any>(null);
 
   const socket = manager.socket('/session');
+
+  const handleClick = (e: any) => {
+    const charListRef: any = charList.current;
+
+    if (charListRef && charListRef.contains(e.target)) {
+      // inside click
+      return;
+    }
+    // outside click
+    setIsChoosingChar(false);
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+    };
+  }, []);
   
   useEffect(() => {
     const rpgs = localStorage.getItem('rpgs');
@@ -83,13 +103,13 @@ export function DiceModal(){
       setMessages([...messages, lastMessage]);
       setLastMessage(null);
     }
-  }, [lastMessage])
+  }, [lastMessage]);
 
   useEffect(() => {
     if(msgRef.current) {
       msgRef.current.scrollIntoView({ behavior: 'smooth'});
     };
-  }, [messages])
+  }, [messages, openModals[0]]);
 
   function setDiceItemValue(field: string, value: string){
     setDice({...dice, [field]: value});
@@ -148,7 +168,7 @@ export function DiceModal(){
         <div className={styles.container}>
           <header>
             <CharacterItem isMini={true} character={selectedCharacter} />
-            <div className={styles.characterList} style={{display: isChoosingChar ? 'block' : ''}}>
+            <div ref={charList} className={styles.characterList} style={{display: isChoosingChar ? 'block' : ''}}>
               {characterList.map(character => {
                 return(
                   <div 
@@ -171,7 +191,7 @@ export function DiceModal(){
 
           <div className={styles.content}>
             <div className={styles.grid2}>
-              <Block id={styles.skills} name="Habilidades" className={styles.blocks} options={
+              <Block id={styles.skills} name="Selecione uma Habilidade" className={styles.blocks} options={
                 <div className={styles.searchSkill}>
                   <input 
                     type='search' 
@@ -188,7 +208,7 @@ export function DiceModal(){
                   <p>Nenhuma Habilidade</p>
                 </div>
                 {selectedCharacter.skills.map(this_skill => {
-                    if(this_skill.name.includes(searchSkill)){
+                    if(this_skill.name.toLowerCase().includes(searchSkill.toLowerCase())){
                       return(
                         <div 
                           onClick={() => { setSkill(this_skill); setSearchSkill('') }} 

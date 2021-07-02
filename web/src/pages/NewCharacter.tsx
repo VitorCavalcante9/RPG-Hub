@@ -101,11 +101,11 @@ export function NewCharacter(){
 
       if(updatedPoints || updatedPoints === 0) setCurrentPoints(updatedPoints);
     }
-  }, [skillsItems, limitPoints])
+  }, [skillsItems, limitPoints]);
 
   useEffect(()=> {
     if(errors.name) alert.error("Insira um nome")
-  }, [errors, alert])
+  }, [errors, alert]);
 
   useEffect(() => {
     if(imageURL){
@@ -117,9 +117,8 @@ export function NewCharacter(){
     if(!openImageModal && !previewImage){
       setImageURL(null);
       setImage(null);
-      console.log(image, imageURL)
     }
-  }, [openImageModal])
+  }, [openImageModal]);
 
   async function onSubmit(data:any){
     const { name } = data;

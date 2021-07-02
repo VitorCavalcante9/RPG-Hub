@@ -14,7 +14,7 @@ import { Button } from '../components/Button';
 import { ButtonSession } from '../components/ButtonSession';
 import { IconElement } from '../components/IconElement';
 import { Layout } from '../components/Layout';
-import { DiceModal } from '../components/modals/DiceModal';
+import { NotesModal } from '../components/modals/NotesModal';
 import { InviteModal } from '../components/modals/InviteModal';
 import { ObjectModal } from '../components/modals/ObjectModal';
 import { PermissionsModal } from '../components/modals/PermissionsModal';
@@ -56,6 +56,7 @@ interface RPG{
 interface User{
   id: string;
   username: string;
+  icon?: string;
   online?: boolean;
 }
 
@@ -159,7 +160,7 @@ export function RpgHome(){
     const socketSession = manager.socket('/session');
     socketSession.open();
 
-    socketSession.emit('join_room', params.id);
+    socketSession.emit('join_room', { room: params.id });
     history.push(`/rpgs/${params.id}/session`);
   }
 
@@ -167,7 +168,7 @@ export function RpgHome(){
     <>
       <InviteModal />
       <ObjectModal />
-      <DiceModal />
+      <NotesModal />
       <PermissionsModal newPermissions={existsNewPermissions} />
 
       {/* The Delete Modal */}
@@ -217,7 +218,7 @@ export function RpgHome(){
                   <div key={character.id} className={styles.characterItem}>
                     <div className={styles.iconContainer}>
                       <div className={styles.image}>
-                        <img className={classnames({'collapsedStyle': (character.icon).includes('/null')})} src={character.icon} alt={character.name} />
+                        <img className={classnames({'collapsedStyle': !character.icon})} src={character.icon} alt={character.name} />
                       </div>
                       <p>{character.name}</p>
                     </div>
@@ -239,7 +240,7 @@ export function RpgHome(){
                 return(
                   <div key={scenario.id} className={styles.scenarioItem}>
                     <div className={styles.image}>
-                      <img className={classnames({'collapsedStyle': (scenario.image).includes('/null')})} src={scenario.image} alt={scenario.name}/>
+                      <img className={classnames({'collapsedStyle': !scenario.image})} src={scenario.image} alt={scenario.name}/>
                     </div>
                     <div className={styles.name}>
                       <p>{scenario.name}</p>
@@ -262,7 +263,7 @@ export function RpgHome(){
                   <div key={object.id} className={styles.objectItem}>
                     <div className={styles.iconContainer}>
                       <div className={styles.image}>
-                        <img className={classnames({'collapsedStyle': (object.image).includes('/null')})} src={object.image} alt={object.name} />
+                        <img className={classnames({'collapsedStyle': !object.image })} src={object.image} alt={object.name} />
                       </div>
                       <p>{object.name}</p>
                     </div>
@@ -287,7 +288,7 @@ export function RpgHome(){
               {participantsStatus.map(participant => {
                 if(participant.online){
                   return(
-                    <AccountItem key={participant.id} name={participant.username} status={participant.online} />
+                    <AccountItem key={participant.id} name={participant.username} status={participant.online} icon={participant.icon} />
                   )
                 }
               })
@@ -295,14 +296,14 @@ export function RpgHome(){
               {participantsStatus.map(participant => {
                 if(!participant.online){
                   return(
-                    <AccountItem key={participant.id} name={participant.username} status={participant.online} />
+                    <AccountItem key={participant.id} name={participant.username} status={participant.online} icon={participant.icon} />
                   )
                 }
               })}
             </Block>
 
             <Link to={`/rpgs/${params.id}/sheet`}><Button className={`${styles.grid1} ${styles.buttons}`} text='Padrão de ficha' /></Link>
-            <Button className={`${styles.grid2} ${styles.buttons}`} onClick={() => handleOpenModals(2)} text='Configurar Dados' />
+            <Button className={`${styles.grid2} ${styles.buttons}`} onClick={() => handleOpenModals(2)} text='Ver notas' />
 
             <ButtonSession onClick={openSession} id={styles.session} className={`${styles.grid3} ${styles.buttons}`} />
           </div>

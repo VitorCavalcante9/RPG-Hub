@@ -140,6 +140,10 @@ body{
   border-radius: 5px;
 }
 
+*::-webkit-scrollbar-track{
+  margin: 7px 0;
+}
+
 *::-webkit-scrollbar-thumb:hover{
   background: rgb(131, 131, 131); 
 }

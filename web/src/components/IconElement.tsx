@@ -13,6 +13,7 @@ interface IconElementProps{
 }
 
 export function IconElement(props: IconElementProps){
+  
   return(
     <div className={styles.iconContainer} style={{
       flexDirection: props.row ? 'row' : 'column'
@@ -22,7 +23,7 @@ export function IconElement(props: IconElementProps){
         height: props.imgSize
       }}>
         <img 
-          className={classnames({[styles.collapsedStyle]:(props.image).includes('/null')})} 
+          className={classnames({'collapsedStyle': !props.image })} 
           src={props.image} 
           alt={props.alt} 
         />

@@ -31,7 +31,8 @@ export default{
     const participants = rpg.participants.map(participant => {
       return{
         id: participant.user.id,
-        username: participant.user.username
+        username: participant.user.username,
+        icon: participant.user.icon?.url
       }
     })
 
@@ -70,13 +71,15 @@ export default{
     let participants = rpg_content.participants.map(participant => {
       return{
         id: participant.user.id,
-        username: participant.user.username
+        username: participant.user.username,
+        icon: participant.user.icon?.url
       }
     }) 
 
     participants.push({
       id: rpg_content.user_id,
-      username: rpg_content.user.username
+      username: rpg_content.user.username,
+      icon: rpg_content.user.icon?.url
     })
 
     return{

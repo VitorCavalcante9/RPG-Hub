@@ -48,17 +48,19 @@ export function SessionAdmin(){
   let interval: NodeJS.Timeout;
 
   useEffect(() => {
-    if(characterList){
-      socket.on('req_update_session', () => {
+    if(characterList.length > 0){
+      socket.on('req_update_session', (userId: string) => {
         socket.emit('update_session', {
           room: params.id,
+          userId, 
           characters: characterList,
           fixedCharacters: fixedCharacterList,
           scenario: fixedScenario,
           object: fixedObject
-        })
+        });
       });
     }
+    
   }, [characterList, fixedCharacterList, fixedScenario, fixedObject]);
 
   useEffect(() => {
@@ -90,9 +92,9 @@ export function SessionAdmin(){
     socket.emit('update_scenario', ({
       room: params.id,
       scenario: fixedScenario
-    }))
+    }));
   }, [fixedScenario]);
-
+  
   useEffect(() => {
     socket.emit('update_object', ({
       room: params.id,
@@ -122,17 +124,20 @@ export function SessionAdmin(){
       <ChatModal />
 
       {/* The Object Modal */}
-      <div className={stylesSession.modal} style={{display: openObjectModal ? 'block' : 'none'}}>
-        <span className={stylesSession.close} onClick={() => setOpenObjectModal(false)}>&times;</span>
-        <img src={fixedObject?.image} alt={fixedObject?.name} className={stylesSession.modalContent} />
-      </div>
+      {openObjectModal ? (
+        <div className={stylesSession.modal}>
+          <div className={stylesSession.overlay} onClick={() => setOpenObjectModal(false)} />
+          <span className={stylesSession.close} onClick={() => setOpenObjectModal(false)}>&times;</span>
+          <img src={fixedObject?.image} alt={fixedObject?.name} className={stylesSession.modalContent} />
+        </div>
+      ) : null}
 
       <div className={stylesSession.sessionContainer}>
         <div className={stylesSession.column1}>
           <div id={stylesSession.characterContainer} className={stylesSession.blocks}>
             {fixedCharacterList.map((character, index) => {
               return(
-                <CharacterItem key={character.id} character={character} isMini={true} />
+                <CharacterItem key={character.id} character={character} isMini={true} className={stylesSession.charItemPanel} />
               );
             })}
           </div>

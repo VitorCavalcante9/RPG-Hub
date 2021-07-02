@@ -85,7 +85,10 @@ export function Session(){
     if(loading) return <Loading />
     else if(isAdm && characterList.length > 0) return <SessionAdmin />
     else if(!isAdm && characterList.length > 0) {
-      socket.emit('join_room', params.id);
+      api.get('users').then(res => {
+        const userId = res.data.id;
+        socket.emit('join_room', { room: params.id, userId});
+      })
       return <SessionParticipant />
     }
   }

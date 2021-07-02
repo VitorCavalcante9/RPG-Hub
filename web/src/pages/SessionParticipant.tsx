@@ -61,6 +61,7 @@ export function SessionParticipant(){
   } = useContext(SessionContext);
 
   const [characterId, setCharacterId] = useState('');
+  const [userId, setUserId] = useState('');
   const [selectedItem, setSelectedItem] = useState('status');
 
   const [openObjectModal, setOpenObjectModal] = useState(false);
@@ -68,6 +69,10 @@ export function SessionParticipant(){
   const socket = manager.socket('/session');
 
   useEffect(() => {
+    api.get('users').then(res => {
+      setUserId(res.data.id);
+    });
+
     api.get(`rpgs/${params.id}/participant`).then(res => {
       const { character } = res.data;
       setCharacterId(character.id);
@@ -79,19 +84,8 @@ export function SessionParticipant(){
     socket.on('session_closed', () => {
       leaveSession()
     });
-
-    socket.on('update_session', ({ 
-      characters, fixedCharacters, scenario, object 
-    }: any) => {
-      //updateSession(characters, fixedCharacters, scenario, object);
-      updateCharacters(characters);
-      toggleFixScenario(scenario);
-      toggleFixObject(object);
-      updateFixedCharacters(fixedCharacters);
-    });
-
+    
     socket.on('update_characters', (characters: Character[]) => {
-      console.log('char')
       updateCharacters(characters);
     });
 
@@ -106,12 +100,33 @@ export function SessionParticipant(){
     socket.on('fixed_characters', (characters: Character[]) => {
       updateFixedCharacters(characters);
     });
+
+    
+
   }, []);
 
   useEffect(() => {
-    if(characterId) socket.emit('req_update_session', params.id);
+    if(characterId) {
+      socket.emit('req_update_session', params.id); 
+    };
 
   }, [characterId]);
+
+  useEffect(() => {
+    if(userId) {
+      socket.on('update_session', ({ 
+        userId: user_id, characters, fixedCharacters, scenario, object 
+      }: any) => {
+        if(user_id === userId){
+          updateCharacters(characters);
+          toggleFixScenario(scenario);
+          toggleFixObject(object);
+          updateFixedCharacters(fixedCharacters);
+        }
+      });
+    };
+
+  }, [userId]);
 
   useEffect(() => {
     if(characterId){
@@ -134,10 +149,14 @@ export function SessionParticipant(){
       <ChatModal selectedCharacter={selectedCharacter} />
 
       {/* The Object Modal */}
-      <div className={stylesSession.modal} style={{display: openObjectModal ? 'block' : 'none'}}>
-        <span className={stylesSession.close} onClick={() => setOpenObjectModal(false)}>&times;</span>
-        <img src={fixedObject?.image} alt={fixedObject?.name} className={stylesSession.modalContent} />
-      </div>
+      {openObjectModal ? (
+        <div className={stylesSession.modal}>
+          <div className={stylesSession.overlay} onClick={() => setOpenObjectModal(false)} />
+          <span className={stylesSession.close} onClick={() => setOpenObjectModal(false)}>&times;</span>
+          <img src={fixedObject?.image} alt={fixedObject?.name} className={stylesSession.modalContent} />
+        </div>
+      ) : null}
+
 
       <div className={stylesSession.sessionContainer}>
         <div className={stylesSession.column1}>

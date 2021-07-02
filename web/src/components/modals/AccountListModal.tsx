@@ -19,6 +19,7 @@ interface RpgParams{
 interface User{
   id: string;
   username: string;
+  icon?: string;
   online?: boolean;
 }
 
@@ -66,7 +67,7 @@ export function AccountListModal(){
           {playersStatus.map(player => {
             if(player.online){
               return(
-                <AccountItem key={player.id} name={player.username} status={player.online} />
+                <AccountItem key={player.id} name={player.username} status={player.online} icon={player.icon} />
               )
             }
           })
@@ -74,7 +75,7 @@ export function AccountListModal(){
           {playersStatus.map(player => {
             if(!player.online){
               return(
-                <AccountItem key={player.id} name={player.username} status={player.online} />
+                <AccountItem key={player.id} name={player.username} status={player.online} icon={player.icon} />
               )
             }
           })}

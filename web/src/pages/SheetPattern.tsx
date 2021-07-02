@@ -3,6 +3,7 @@ import React, { createRef, KeyboardEvent, useContext, useEffect, useRef, useStat
 import { useParams } from 'react-router';
 import api from '../services/api';
 import { useAlert } from 'react-alert';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import { Block } from '../components/Block';
 import { Button } from '../components/Button';
@@ -21,8 +22,8 @@ export function SheetPattern(){
   const params = useParams<RpgParams>();
   const alert = useAlert();
 
-  const {statusItems, addNewStatus, defaultStatus, setStatusItemValue, removeStatusItems} = useContext(RpgContext);
-  const [isVisible, setVisibility] = useState<string[]>([]);
+  const {statusItems, addNewStatus, defaultStatus, setStatusItemValue, removeStatusItems, setStatusItems} = useContext(RpgContext);
+  const [isVisible, setVisibility] = useState<boolean[]>([]);
 
   const [skillsItems, setSkillsItems] = useState([
     {name: '', current: 0, limit: 100}
@@ -35,7 +36,7 @@ export function SheetPattern(){
     .then(res => {
       const { status, skills, limitOfPoints } = res.data;
 
-      const defaultVisibility = status.map(() => { return 'hidden' });
+      const defaultVisibility = status.map(() => { return false });
       setVisibility(defaultVisibility);
 
       defaultStatus(status);
@@ -51,9 +52,10 @@ export function SheetPattern(){
   }
 
   const toggleVisibility = (position: number) => {
+    
     const updatedVisibility = isVisible.map((visibleItem, index) => {
       if(index === position){
-        return visibleItem === 'hidden' ? 'visible' : 'hidden';
+        return visibleItem === false ? true : false;
       }
       
       return visibleItem;
@@ -66,7 +68,7 @@ export function SheetPattern(){
     addNewStatus();
     setVisibility([
       ...isVisible,
-      'hidden'
+      false
     ])
   }
 
@@ -103,8 +105,6 @@ export function SheetPattern(){
         skills: filteredSkills,
         limitOfPoints: limitPoints
       }
-
-      console.log(filteredSkills)
       
       await api.patch(`rpgs/${params.id}/sheet`, data)
       .then(res => {
@@ -142,58 +142,91 @@ export function SheetPattern(){
     }
   }
 
+  function handleOnDragEnd(result: any) {
+    if (!result.destination) return;
+    
+    const items = Array.from(statusItems);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setStatusItems(items);
+  }
+
   return(
     <Layout linkBack={`/rpgs/${params.id}`}>
       <div className={styles.sheetContainer}>
         <h1 className='title'>Padrão de ficha</h1>
 
         <div className={styles.content}>
-          <Block id={styles.status} name="Status" options={
-            <button 
-              className='buttonWithoutBG'
-              onClick={addNewStatusItem}
-            >+ Novo</button>
-          }>
-            {statusItems.map((statusItem, index) => {
-              return(
-                <div key={index} className={styles.statusElement}>
-                  <div className={styles.name}>
-                    <input 
-                      type="text" 
-                      placeholder="Status"
-                      value={statusItem.name}
-                      readOnly={statusItem.name === 'Vida' ? true : false}
-                      onBlur={() => removeRepeatedStatusOrSkills('status', index, statusItem.name)}
-                      onChange={e => setStatusItemValue(index, 'name', e.target.value)}
-                    />
+          <DragDropContext onDragEnd={handleOnDragEnd}>
+            <Droppable droppableId={styles.status}>
+              {(provided) => (
+                <Block 
+                  id={styles.status} 
+                  name="Status" 
+                  options={
                     <button 
-                      className={styles.buttonColor}
-                      ref={buttonRef.current[index]}
-                      style={{backgroundColor: statusItem.color}}
-                      onClick={() => {toggleVisibility(index)}}
-                    />
-                    <Popper 
-                      index={index} 
-                      targetRef={buttonRef.current[index]} 
-                      isVisible={isVisible[index]} 
-                    />
-                  </div>
-                  <div className={styles.pointsContainer}>
-                    <InputLine
-                      value={statusItem.current}
-                      maxValue={statusItem.limit}
-                      onChange={e => setStatusItemValue(index, 'current', e.target.value)}
-                    />
-                    <span> / </span>
-                    <InputLine
-                      value={statusItem.limit}
-                      onChange={e => setStatusItemValue(index, 'limit', e.target.value)}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </Block>
+                      className='buttonWithoutBG'
+                      onClick={addNewStatusItem}
+                    >+ Novo</button>
+                  }
+                  {...provided.droppableProps}
+                  blockRef={provided.innerRef}
+                >
+                  {statusItems.map((statusItem, index) => {
+                    return(
+                      <Draggable key={index.toString()} draggableId={index.toString()} index={index}>
+                        {(provided) => (
+                          <div 
+                            key={index} 
+                            className={styles.statusElement}
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <div className={styles.name}>
+                              <input 
+                                type="text" 
+                                placeholder="Status"
+                                value={statusItem.name}
+                                readOnly={statusItem.name === 'Vida' ? true : false}
+                                onBlur={() => removeRepeatedStatusOrSkills('status', index, statusItem.name)}
+                                onChange={e => setStatusItemValue(index, 'name', e.target.value)}
+                              />
+                              <button 
+                                className={styles.buttonColor}
+                                ref={buttonRef.current[index]}
+                                style={{backgroundColor: statusItem.color}}
+                                onClick={() => {toggleVisibility(index)}}
+                              />
+                              <Popper 
+                                index={index} 
+                                targetRef={buttonRef.current[index]} 
+                                isVisible={isVisible[index]} 
+                              />
+                            </div>
+                            <div className={styles.pointsContainer}>
+                              <InputLine
+                                value={statusItem.current}
+                                maxValue={statusItem.limit}
+                                onChange={e => setStatusItemValue(index, 'current', e.target.value)}
+                              />
+                              <span> / </span>
+                              <InputLine
+                                value={statusItem.limit}
+                                onChange={e => setStatusItemValue(index, 'limit', e.target.value)}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </Draggable>
+                    );
+                  })}
+                  {provided.placeholder}
+                </Block>
+              )}
+            </Droppable>
+          </DragDropContext>
 
           <div className={styles.skillsContent}>
             <Block id={styles.skills} name="Habilidades" options={

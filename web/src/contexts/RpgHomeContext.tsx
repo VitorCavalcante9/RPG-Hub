@@ -13,6 +13,7 @@ interface RpgContextData{
   openModals: Array<boolean>;
   openAccountModal: boolean;
   loading: boolean;
+  setStatusItems: Function;
   defaultStatus: (allStatus: StatusItem[]) => void;
   addNewStatus: (oneStatus?: StatusItem) => void;
   setStatusItemValue: (position: number, field: string, value: string) => void;
@@ -112,6 +113,7 @@ export function RpgProvider({children}: RpgProviderProps){
         openModals,
         openAccountModal,
         loading,
+        setStatusItems,
         defaultStatus,
         addNewStatus,
         setStatusItemValue,

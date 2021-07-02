@@ -43,7 +43,7 @@ export function NewRpg(){
 
   useEffect(()=> {
     if(errors.name) alert.error("Insira um nome")
-  }, [errors, alert])
+  }, [errors, alert]);
 
   useEffect(() => {
     if(imageURL){
@@ -55,9 +55,8 @@ export function NewRpg(){
     if(!openImageModal && !previewImage){
       setImageURL(null);
       setImage(null);
-      console.log(image, imageURL)
     }
-  }, [openImageModal])
+  }, [openImageModal]);
 
   const onSubmit = async(data:any) => {
     const { name } = data;

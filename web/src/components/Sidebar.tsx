@@ -30,8 +30,7 @@ export function Sidebar({ updateUser }: SidebarProps){
 
   function getUser(){
     const user = localStorage.getItem('user');
-    console.log('me chamaram')
-
+    
     if(user){
       setUserData(JSON.parse(user));
     }
@@ -50,7 +49,7 @@ export function Sidebar({ updateUser }: SidebarProps){
         </div>
         <div className={styles.iconAccount}>
           <div className={styles.iconContainer}>
-            <img className={classnames({[styles.collapsedStyle]: (userData.icon).includes('/null')})} src={userData.icon} alt={userData.username} />
+            <img className={classnames({'collapsedStyle': !userData.icon})} src={userData.icon} alt={userData.username} />
           </div>
         </div>   
       </div>
@@ -62,7 +61,7 @@ export function Sidebar({ updateUser }: SidebarProps){
           </div>
           <div className={styles.iconAccount}>
             <div className={styles.iconContainer}>
-              <img className={classnames({[styles.collapsedStyle]: (userData.icon).includes('/null')})} src={userData.icon} alt={userData.username} />
+              <img className={classnames({'collapsedStyle': !userData.icon})} src={userData.icon} alt={userData.username} />
             </div>
 
             <div className={classnames(styles.account, {[styles.collapsedStyle]: isCollapsed})}>
@@ -73,9 +72,9 @@ export function Sidebar({ updateUser }: SidebarProps){
         </div>
 
         <div className={styles.iconsMenu}>
-          <div className={styles.icon}>
+          <div className={classnames(styles.icon, styles.home)}>
             <Link to="/home">
-              <img className={styles.home} src={home} alt="Home" />
+              <img src={home} alt="Home" />
               <p className={classnames({[styles.collapsedStyle]: isCollapsed})}>Home</p>
             </Link>
           </div>

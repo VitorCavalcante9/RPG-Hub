@@ -4,6 +4,7 @@ import React, { FormEvent, useContext, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { useAlert } from 'react-alert';
 import { RpgContext } from '../contexts/RpgHomeContext';
+import classnames from 'classnames';
 import api from '../services/api';
 import manager from '../services/websocket';
 
@@ -177,7 +178,7 @@ export function RpgHomeParticipant(){
           <div className={styles.column1}>
             <div className={styles.name}>
               <div className={styles.image}>
-                <img src={character.icon} alt={character.name}/>
+                <img className={classnames({'collapsedStyle': !character.icon})} src={character.icon} alt={character.name}/>
               </div>
 
               <p>Seu Personagem:<br/>{character.name}</p>

@@ -43,4 +43,14 @@
   .withoutBackButton{
     margin-left: 18.4rem;
   }
+
+  .buttonBack{
+    margin-left: -5rem;
+  }
+}
+
+@media (min-width:1530px){
+  .buttonBack{
+    margin-left: 0rem;
+  }
 }

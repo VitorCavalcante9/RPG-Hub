@@ -37,6 +37,13 @@ class UsersRepository extends Repository<User> {
 
   }
 
+  async getImage(user_id: string){
+    const imageRepository = getRepository(Image);
+    const icon = await imageRepository.findOne({ user_id });
+
+    return icon;
+  }
+
   async deleteImage(user_id: string){
     const imageRepository = getRepository(Image);
     const image = await imageRepository.findOne({ user_id });

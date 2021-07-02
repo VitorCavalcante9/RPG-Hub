@@ -53,8 +53,6 @@ export function ChatModal({ selectedCharacter }: ChatModalProps){
 
   useEffect(() => {
     if(lastMessage){
-      
-      console.log(lastMessage)
       setMessages([...messages, lastMessage]);
       setLastMessage(null);
     }
@@ -64,7 +62,7 @@ export function ChatModal({ selectedCharacter }: ChatModalProps){
     if(msgRef.current) {
       msgRef.current.scrollIntoView({ behavior: 'smooth'});
     };
-  }, [messages]);
+  }, [messages, openModals[3]]);
 
   function sendMessage(){
     const new_message = {

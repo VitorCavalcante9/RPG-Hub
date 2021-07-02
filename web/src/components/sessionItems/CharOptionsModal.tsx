@@ -17,9 +17,12 @@ export function CharOptionsModal(){
   const {selectedCharacter, openModals, handleOpenModals, setStatusItemValue, setInventoryItemsValue} = useContext(SessionContext);
   const [inventoryItems, setInventoryItems] = useState<string[]>(selectedCharacter.inventory);
   const [statusItems, setStatusItems] = useState(selectedCharacter.status);
+  const [skills, setSkills] = useState(selectedCharacter.skills);
 
   useEffect(() => {
     setInventoryItems(selectedCharacter.inventory);
+    setStatusItems(selectedCharacter.status);
+    setSkills(selectedCharacter.skills);
   }, [openModals[1]])
 
   function setInventoryItemValue(position: number,  value: string){
@@ -76,7 +79,7 @@ export function CharOptionsModal(){
           <div className={styles.content}>
             <div className={styles.column1}>
               <Block name="Status" id={styles.status}>
-                {selectedCharacter.status.map((status, index) => {
+                {statusItems.map((status, index) => {
                   const statusPercentCurrent = Math.round(statusItems[index].current * 100) / statusItems[index].limit;
 
                   return(
@@ -143,7 +146,7 @@ export function CharOptionsModal(){
 
             <div className={styles.column2}>
               <Block name="Habilidades" id={styles.skills}>
-                {selectedCharacter.skills.map(this_skill => {
+                {skills.map(this_skill => {
                     return(
                       <SkillsItems
                         key={this_skill.name}

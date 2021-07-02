@@ -58,7 +58,7 @@
 }
 
 #status > div:last-child, #inventory > div:last-child{
-  height: 11rem;
+  height: 13rem;
 }
 
 .column2{
@@ -89,6 +89,11 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
+}
+
+.inventoryItem div div input{
+  max-width: 18rem;
+  width: 100% !important;
 }
 
 @media (min-width:1100px){
@@ -147,7 +152,12 @@
   }
 
   #skills > div:last-child{
-    height: 23rem;
+    height: 26.75rem;
+  }
+
+  .inventoryItem div div input{
+    max-width: none;
+    width: 27rem !important;
   }
 
   .points{
@@ -169,6 +179,10 @@
 
   #skills > div:last-child{
     height: 30rem;
+  }
+
+  .inventoryItem div div input{
+    width: 36rem !important;
   }
 
 }

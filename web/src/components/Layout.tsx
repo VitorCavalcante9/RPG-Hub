@@ -19,7 +19,7 @@ export function Layout({children, withoutBackButton, linkBack, updateUser}:Layou
 
       <div className={styles.pageContainer}>
 
-        <ButtonBack linkBack={linkBack} withoutBackButton={withoutBackButton} />
+        <ButtonBack className={styles.buttonBack} linkBack={linkBack} withoutBackButton={withoutBackButton} />
         
         <div className={classnames(styles.mainBlockContainer, {[styles.withoutBackButton]: withoutBackButton})}>
           {children}

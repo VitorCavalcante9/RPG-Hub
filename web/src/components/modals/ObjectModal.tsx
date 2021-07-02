@@ -62,7 +62,6 @@ export function ObjectModal(){
     if(!openImageModal && !previewImage){
       setImageURL(null);
       setImage(null);
-      console.log(image, imageURL)
     }
   }, [openImageModal])
 

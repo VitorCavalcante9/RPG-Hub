@@ -58,7 +58,7 @@
 }
 
 #status > div:last-child, #inventory > div:last-child{
-  height: 11rem;
+  height: 13rem;
 }
 
 .column2{
@@ -88,7 +88,7 @@
 }
 
 #skills > div:last-child{
-  height: 20rem;
+  height: 24rem;
 }
 
 .column2 .buttonCreate{
@@ -100,6 +100,11 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
+}
+
+.inventoryItem div div input{
+  max-width: 18rem;
+  width: 100% !important;
 }
 
 .inventoryItem button,
@@ -164,7 +169,12 @@
   }
 
   #skills > div:last-child{
-    height: 35.5rem;
+    height: 37.75rem;
+  }
+
+  .inventoryItem div div input{
+    max-width: none;
+    width: 27rem !important;
   }
 
   .pointsOptions{
@@ -181,7 +191,7 @@
   }
 
   .edit > div:last-child{
-    height: 30rem !important;
+    height: 30.75rem !important;
   }
 }
 
@@ -200,7 +210,7 @@
   }
 
   #status > div:last-child, #inventory > div:last-child{
-    height: 13rem;
+    height: 13.5rem;
   }
 
   #skills h3{
@@ -209,6 +219,14 @@
 
   #skills > div:last-child{
     height: 37.5rem;
+  }
+
+  .edit > div:last-child{
+    height: 30rem !important;
+  }
+
+  .inventoryItem div div input{
+    width: 36rem !important;
   }
 
 }

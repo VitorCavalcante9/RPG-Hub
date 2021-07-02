@@ -54,7 +54,7 @@
 }
 
 .menu{
-  width: 35rem;
+  width: 50rem;
   height: 100vh;
   padding-left: 2rem;
 
@@ -75,7 +75,7 @@
 
 .collapsedMenu{
   width: 7.5rem;
-  transform: translateX(-35rem);
+  transform: translateX(-50rem);
   transition: width 0.3s;
 }
 
@@ -171,7 +171,8 @@
 
   text-decoration: none;
 }
- .icon p{
+
+.icon p{
   margin-top: 0.6rem;
 }
 

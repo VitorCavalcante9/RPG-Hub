@@ -57,13 +57,12 @@ export function NewScenario(){
     if(!openImageModal && !previewImage){
       setImageURL(null);
       setImage(null);
-      console.log(image, imageURL)
     }
-  }, [openImageModal])
+  }, [openImageModal]);
   
   useEffect(()=> {
     if(errors.name) alert.error("Insira um nome")
-  }, [errors, alert])
+  }, [errors, alert]);
 
   function handleSelectedImage(e: ChangeEvent<HTMLInputElement>){
     if(!e.target.files){

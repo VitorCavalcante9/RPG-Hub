@@ -98,10 +98,10 @@ class DicesController{
       else if (sumResults <= skillBonus) resultSkill = 'Normal'
       else resultSkill = 'Falha'
 
-      return res.json({ results, sumResults, resultSkill, skillName: skill.name, bonus })
+      return res.json({ diceValue: dice, results, sumResults, resultSkill, skillName: skill.name, bonus })
     }
 
-    return res.json({results, sumResults});
+    return res.json({diceValue: dice, results, sumResults});
   }
 }
 

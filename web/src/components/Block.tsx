@@ -8,18 +8,19 @@ interface BlockProps extends HTMLAttributes<HTMLDivElement>{
   options?: ButtonHTMLAttributes<HTMLButtonElement>;
   center?: boolean;
   breakHeader?: boolean;
+  blockRef?: any;
 }
 
-export function Block({className, id, name, options, center, breakHeader, children}: BlockProps){
+export function Block({className, id, name, options, center, breakHeader, children, blockRef, ...rest}: BlockProps){
   return(
-    <div id={id} className={`${styles.blockContainer} ${className}`}>
+    <div id={id} className={`${styles.blockContainer} ${className}`} {...rest}>
       <div className={classnames(styles.header, {[styles.breakHeader]: breakHeader})} style={{justifyContent: center ? 'center' : ''}}>
         <h3>{name}</h3>
         {options}
         
       </div>
 
-      <div className={styles.body}>
+      <div className={styles.body} ref={blockRef}>
         {children}
       </div>
     </div>

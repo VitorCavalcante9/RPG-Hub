@@ -6,7 +6,7 @@ import styles from '../styles/components/Popper.module.css';
 
 interface PopperProps extends HTMLAttributes<HTMLDivElement> {
   targetRef: MutableRefObject<null>;
-  isVisible: string;
+  isVisible: boolean;
   index: number;
 };
 
@@ -37,10 +37,10 @@ export function Popper({ targetRef, isVisible, index }: PopperProps) {
         }
       ]
     }
-  )
+  );
 
   return (
-    <div className={styles.popper} style={Object.assign({visibility: isVisible}, stylesPopper.popper)}
+    <div className={styles.popper} style={Object.assign({visibility: isVisible ? 'visible' : 'hidden'}, stylesPopper.popper)}
       ref={popperRef}
       {...attributes.popper}
     >

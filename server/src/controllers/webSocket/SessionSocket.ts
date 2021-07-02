@@ -1,7 +1,7 @@
 
-
 class SessionSocket{
   respond(endpoint, socket){
+    let user;
     
     //Open, join and leave of the room
     socket.on('open_rooms', () => {
@@ -15,7 +15,8 @@ class SessionSocket{
       socket.emit('rooms', rooms);
     });
 
-    socket.on('join_room', (room) => {
+    socket.on('join_room', ({ room, userId }) => {
+      if(userId) user = userId;
       socket.join(room);
     });
 
@@ -35,14 +36,14 @@ class SessionSocket{
 
     //Update session participant
     socket.on('req_update_session', room => {
-      socket.to(room).emit('req_update_session');
+      socket.to(room).emit('req_update_session', user);
     });
 
     socket.on('update_session', ({ 
-      room, characters, fixedCharacters, scenario, object
+      room, userId, characters, fixedCharacters, scenario, object
     }) => {
       socket.to(room).emit('update_session', { 
-        characters, fixedCharacters, scenario, object 
+        userId, characters, fixedCharacters, scenario, object 
       });
     });
 

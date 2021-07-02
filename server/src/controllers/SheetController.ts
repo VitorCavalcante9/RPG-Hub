@@ -64,7 +64,7 @@ class SheetController{
       const characters = await charactersRepository.find({where: [{rpg_id: id}]});
 
       if(characters.length > 0){
-        characters.forEach(async character => {
+        characters.forEach(async (character, position) => {
           const skillsUnchanged = character.skills.filter((skill: Skills) => {
             const index = (skills.map(this_skill => this_skill.name)).indexOf(skill.name)
             return index !== -1
@@ -75,29 +75,32 @@ class SheetController{
             return index === -1
           });
 
-          const statusUnchanged = character.status.filter((one_status: Status) => {
+          let clumpedStatus = [];
+
+          character.status.forEach((one_status: Status) => {
             const index = (status.map(this_status => this_status.name)).indexOf(one_status.name)
-            return index !== -1
+            if(index !== -1) clumpedStatus.push(one_status);
           });
 
-          const newStatus = status.filter((status: Status) => {
-            const index = (character.status.map(this_status => this_status.name)).indexOf(status.name)
-            return index === -1
+          status.forEach((one_status: Status, index) => {
+            const ind = (clumpedStatus.map(this_status => this_status.name)).indexOf(one_status.name)
+            
+            if(ind === -1) clumpedStatus.splice(index, 0, one_status);
+            else {
+              const [reorderedItem] = clumpedStatus.splice(ind, 1);
+              clumpedStatus.splice(index, 0, reorderedItem);
+            }
           });
-          
+        
           const newCharacterData = {
             ...character,
-            status: [
-              ...statusUnchanged,
-              ...newStatus
-            ],
+            status: clumpedStatus, 
             skills: [
               ...skillsUnchanged,
               ...newSkills
             ]
           }
 
-          console.log(newCharacterData);
           await charactersRepository.update(character.id, newCharacterData);
         })
       }

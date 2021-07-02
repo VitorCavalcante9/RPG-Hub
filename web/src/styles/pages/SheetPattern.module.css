@@ -18,6 +18,14 @@
   align-items: center;
   text-align: center;
   color: var(--color-text-secondary);
+
+  transition: all 0.2s;
+}
+
+.sheetContainer #status .statusElement:hover{
+  border-radius: 10px;
+  padding: 0.5rem;
+  background: var(--color-background);
 }
 
 .statusElement + .statusElement,
@@ -183,10 +191,6 @@
     font-size: 1.8rem;
   }
 
-  .sheetContainer .pointsContainer hr{
-    width: 5.5rem;
-  }
-  
   .sheetContainer #status, .sheetContainer .skillsContent{
     margin-left: 1rem;
     margin-right: 1rem;
