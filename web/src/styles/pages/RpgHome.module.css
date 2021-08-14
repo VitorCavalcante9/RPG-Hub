@@ -81,6 +81,11 @@
 .iconContainer p{
   margin-left: 1rem;
   font: 500 1.8rem Rajdhani;
+  max-width: 12rem;
+  max-height: 5rem;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
 }
 
 .image img{
@@ -275,6 +280,10 @@
   .rpgHomeContainer .body .grid2:nth-last-of-type(2) button{
     margin-top: 1.5rem;
   }
+
+  .iconContainer p{
+    max-width: 9rem;
+  }
   
   @media (min-height:850px){
     #char > div:last-child, #account > div:last-child{
@@ -322,5 +331,9 @@
   #scenario > div:last-child{
     max-height: none;
     height: 15.6rem;
+  }
+
+  .iconContainer p{
+    max-width: 15rem;
   }
 }

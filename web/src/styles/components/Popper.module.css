@@ -6,6 +6,10 @@
   position: absolute;
 }
 
+.popper:hover{
+  margin-left: 0.25rem;
+}
+
 .popper .colors{
   display: flex;
   flex-direction: column;
@@ -31,6 +35,10 @@
   z-index: -1;
   top: 6rem;
   left: -2px;
+}
+
+.popper:hover .arrow{
+  top: 6.25rem;
 }
 
 .arrow::before {
