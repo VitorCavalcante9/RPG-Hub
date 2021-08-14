@@ -102,11 +102,6 @@
   align-items: center;
 }
 
-.inventoryItem div div input{
-  max-width: 18rem;
-  width: 100% !important;
-}
-
 .inventoryItem button,
 .inventoryItem button img{
   width: 1.4rem;
@@ -172,11 +167,6 @@
     height: 37.75rem;
   }
 
-  .inventoryItem div div input{
-    max-width: none;
-    width: 27rem !important;
-  }
-
   .pointsOptions{
     margin: 0;
     justify-content: center;
@@ -223,10 +213,6 @@
 
   .edit > div:last-child{
     height: 30rem !important;
-  }
-
-  .inventoryItem div div input{
-    width: 36rem !important;
   }
 
 }

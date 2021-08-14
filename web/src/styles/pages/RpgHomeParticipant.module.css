@@ -40,6 +40,14 @@
 .body .name p{
   font: 600 1.8rem Rajdhani;
   margin-left: 1rem;
+  max-width: 15rem;
+  max-height: 8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.name p b{
+  font: 600 1.9rem Rajdhani;
 }
 
 .name .image{
@@ -72,7 +80,7 @@
 }
 
 #skills > div:last-child{
-  height: 20rem;
+  height: 24rem;
 }
 
 .buttons{
@@ -91,12 +99,7 @@
   align-items: center;
 }
 
-.inventoryItem div div input{
-  max-width: 18rem;
-  width: 100% !important;
-}
-
-@media (min-width:1100px){
+@media (min-width:1360px){
   .header{
     flex-direction: row;
     justify-content: space-between;
@@ -149,15 +152,12 @@
   .body .name p{
     margin-left: 2rem;
     font-size: 1.8rem;
+    text-align: left;
+    max-width: 20rem;
   }
 
   #skills > div:last-child{
     height: 26.75rem;
-  }
-
-  .inventoryItem div div input{
-    max-width: none;
-    width: 27rem !important;
   }
 
   .points{
@@ -174,17 +174,13 @@
   }
 
   #status > div:last-child, #inventory > div:last-child{
-    height: 13rem;
+    height: 13.5rem;
   }
 
   #skills > div:last-child{
     height: 30rem;
   }
-
-  .inventoryItem div div input{
-    width: 36rem !important;
-  }
-
+  
 }
 
 @media (min-width:1750px){

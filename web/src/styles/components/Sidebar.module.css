@@ -91,6 +91,13 @@
   color: var(--color-text-secondary);
 }
 
+.account p{
+  max-width: 9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
 .moreIcon{
   width: 5.5rem;
   cursor: pointer;
@@ -229,5 +236,17 @@
 
   .moreIcon img{
     width: 3.9rem;
+  }
+}
+
+@media (min-width: 1360px){
+  .account p{
+    max-width: 10rem;
+  }
+}
+
+@media (min-width: 1600px){
+  .account p{
+    max-width: 11rem;
   }
 }

@@ -45,7 +45,7 @@ export function SessionAdmin(){
 
   const socket = manager.socket('/session');
 
-  let interval: NodeJS.Timeout;
+  //let interval: NodeJS.Timeout;
 
   useEffect(() => {
     if(characterList.length > 0){
@@ -76,7 +76,7 @@ export function SessionAdmin(){
       characters: characterList
     }));
 
-    if(characterList.length > 0){
+    /* if(characterList.length > 0){
       interval = setInterval(() => {
         api.put(`rpgs/${params.id}/session`, { characters: characterList })
           .then()
@@ -85,7 +85,7 @@ export function SessionAdmin(){
             else alert.error(err.response.data.message);
           })
       }, 60000)
-    }
+    } */
   }, [characterList]);
 
   useEffect(() => {
@@ -110,7 +110,7 @@ export function SessionAdmin(){
         else alert.error(err.response.data.message);
       })
     socket.emit('leave_room', { room: params.id, admin: true });
-    clearInterval(interval);
+    //clearInterval(interval);
     cleanSession();
     history.push(`/rpgs/${params.id}`);
     socket.close();

@@ -181,7 +181,7 @@ export function RpgHomeParticipant(){
                 <img className={classnames({'collapsedStyle': !character.icon})} src={character.icon} alt={character.name}/>
               </div>
 
-              <p>Seu Personagem:<br/>{character.name}</p>
+              <p><b>Seu Personagem:</b><br/>{character.name}</p>
             </div>
 
             <Block name="Status" id={styles.status}>

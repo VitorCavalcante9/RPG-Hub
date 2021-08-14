@@ -15,7 +15,8 @@
 }
 
 .inventoryItem .inputLine input{
-  width: 11rem;
+  max-width: 18rem;
+  width: 100% !important;
   background: none;
   border: 0;
   text-align: left;
@@ -28,8 +29,19 @@
   outline: 0;
 }
 
+@media (min-width: 1360px){
+  .inventoryItem .inputLine input{
+    max-width: none;
+    width: 27rem !important;
+  }
+}
+
 @media (min-width: 1600px){
   .inventoryItem{
     font-size: 2rem;
+  }
+
+  .inventoryItem .inputLine input{
+    width: 36rem !important;
   }
 }
