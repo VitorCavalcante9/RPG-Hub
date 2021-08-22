@@ -12,7 +12,7 @@ export interface StatusInterface {
 export interface SkillsInterface {
   name: string;
   type: string;
-  limitOfPoints?: number;
+  limitOfPoints: number;
   value: Array<{
     name: string;
     value: number;
@@ -90,6 +90,9 @@ export interface NumListLimitInterface {
 export interface TableInterface {
   name: string;
   type: string;
-  columns: string;
+  columns: Array<{
+    name: string;
+    type: string;
+  }>;
   value: Array<any>;
 }
