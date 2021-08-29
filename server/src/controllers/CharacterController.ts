@@ -6,344 +6,339 @@ import { CharactersRepository } from '../repositories/CharactersRepository';
 import { PermissionChangeRepository } from '../repositories/PermissionChangesRepository';
 import { RpgParticipantsRepository } from '../repositories/RpgParticipantsRepository';
 import CharacterView from '../views/characters_views';
+import { sheetValidation } from './sheet/SheetValidation';
 
 interface Icon {
-  name: string,
-  key: string,
-  url: string
+  name: string;
+  key: string;
+  url: string;
 }
 
-class CharacterController{
-  async store(req: Request, res: Response){
-    const { name, inventory, status, skills, limitOfPoints } = req.body;
+class CharacterController {
+  async store(req: Request, res: Response) {
+    const { name, sheet } = req.body;
     const { rpg_id } = req.params;
     let icon: any = null;
     const charactersRepository = getCustomRepository(CharactersRepository);
 
-    if(req.file){
+    if (req.file) {
       const requestIcon = req.file as Express.Multer.File;
       icon = {
         name: requestIcon.originalname,
         key: requestIcon.key,
-        url: requestIcon.location ? requestIcon.location : `${process.env.APP_URL}/${requestIcon.key}`,
+        url: requestIcon.location
+          ? requestIcon.location
+          : `${process.env.APP_URL}/${requestIcon.key}`,
       };
     }
 
     const schema = yup.object().shape({
       name: yup.string().min(3).max(75).required('Insira um nome válido'),
-      inventory: yup.array(yup.string()),
-      status: yup.array(yup.object({
-        name: yup.string().required('Insira um nome válido'),
-        color: yup.string().min(3).max(7).required('Insira uma cor válida'),
-        current: yup.number().min(0).integer().required('Insira um valor válido'),
-        limit: yup.number().min(0).integer().required('Insira um valor válido')
-      })),
-      skills: yup.array(yup.object({
-        name: yup.string().required('Insira um nome válido'),
-        current: yup.number().min(0).integer().required('Insira um valor válido'),
-        limit: yup.number().min(0).integer().required('Insira um valor válido')
-      })),
-      limitOfPoints: yup.number().min(0).integer().required('Insira um valor válido')
-    })
+    });
 
-    try{
-      await schema.validate(req.body, {abortEarly: false});
-    }
-    catch(err){
-      const errors = err.inner.map(inner => {
-        return `${inner.errors[0]} em ${inner.path}` 
-      })
+    try {
+      await schema.validate(req.body, { abortEarly: false });
+    } catch (err) {
+      const errors = err.inner.map((inner) => {
+        return `${inner.errors[0]} em ${inner.path}`;
+      });
       throw new AppError(errors);
     }
 
+    try {
+      await sheetValidation(sheet);
+    } catch (err) {
+      throw new AppError(err.errors[0]);
+    }
+
     const character = charactersRepository.create({
-      name, 
-      rpg_id, 
-      inventory: JSON.parse(inventory), 
-      status: JSON.parse(status), 
-      skills: JSON.parse(skills),
-      limitOfPoints
+      name,
+      rpg_id,
+      sheet,
     });
 
-    try{
+    try {
       await charactersRepository.save(character);
 
-      if(icon?.key){
+      if (icon?.key) {
         await charactersRepository.insertImage(character.id, icon);
       }
 
-      const permissionRepository = getCustomRepository(PermissionChangeRepository);
+      const permissionRepository = getCustomRepository(
+        PermissionChangeRepository
+      );
 
       const permission = permissionRepository.create({
-        rpg_id, 
+        rpg_id,
         character_id: character.id,
-        permission: true
+        permission: true,
       });
       await permissionRepository.save(permission);
 
-      return res.status(201).json({ id: character.id, message: 'Character created successfully!'});
-
-    } catch(err){
+      return res
+        .status(201)
+        .json({ id: character.id, message: 'Character created successfully!' });
+    } catch (err) {
+      console.log(err);
       throw new AppError(err.message);
     }
-
   }
 
-  async show(req: Request, res: Response){
+  async show(req: Request, res: Response) {
     const { id } = req.params;
     const charactersRepository = getCustomRepository(CharactersRepository);
 
-    try{
+    try {
       const character = await charactersRepository.findOneOrFail(id, {
-        relations: ['participant', 'participant.user', 'icon']
+        relations: ['participant', 'participant.user', 'icon'],
       });
       return res.json(CharacterView.render(character));
-
     } catch {
       throw new AppError('Character does not exists');
     }
   }
 
-  async index(req: Request, res: Response){
+  async index(req: Request, res: Response) {
     const { rpg_id } = req.params;
     const charactersRepository = getCustomRepository(CharactersRepository);
 
-    try{
-      const character = await charactersRepository.find({where: [{rpg_id}], 
-        relations: ['participant', 'participant.user', 'icon']
+    try {
+      const character = await charactersRepository.find({
+        where: [{ rpg_id }],
+        relations: ['participant', 'participant.user', 'icon'],
       });
       return res.json(CharacterView.renderMany(character));
-
     } catch {
       throw new AppError('Error');
     }
   }
 
-  async update(req: Request, res: Response){
-    const { name, previousIcon, inventory, status, skills, limitOfPoints } = req.body;
+  async update(req: Request, res: Response) {
+    const { name, previousIcon, sheet } = req.body;
     const { id } = req.params;
     let icon: Icon;
     const charactersRepository = getCustomRepository(CharactersRepository);
 
-    if(req.file){
+    if (req.file) {
       const requestIcon = req.file as Express.Multer.File;
       icon = {
         name: requestIcon.originalname,
         key: requestIcon.key,
-        url: requestIcon.location ? requestIcon.location : `${process.env.APP_URL}/${requestIcon.key}`,
+        url: requestIcon.location
+          ? requestIcon.location
+          : `${process.env.APP_URL}/${requestIcon.key}`,
       };
     }
 
     const schema = yup.object().shape({
       name: yup.string().min(3).max(75).required('Insira um nome válido'),
       previousIcon: yup.string(),
-      inventory: yup.array(yup.string()),
-      status: yup.array(yup.object({
-        name: yup.string().required('Insira um nome válido'),
-        color: yup.string().min(3).max(7).required('Insira uma cor válida'),
-        current: yup.number().min(0).integer().required('Insira um valor válido'),
-        limit: yup.number().min(0).integer().required('Insira um valor válido')
-      })),
-      skills: yup.array(yup.object({
-        name: yup.string().required('Insira um nome válido'),
-        current: yup.number().min(0).integer().required('Insira um valor válido'),
-        limit: yup.number().min(0).integer().required('Insira um valor válido')
-      })),
-      limitOfPoints: yup.number().min(0).integer().required('Insira um valor válido')
-    })
+    });
 
-    try{
-      await schema.validate(req.body, {abortEarly: false});
+    try {
+      await schema.validate(req.body, { abortEarly: false });
+    } catch (err) {
+      const errors = err.inner.map((inner) => {
+        return `${inner.errors[0]} em ${inner.path}`;
+      });
+      throw new AppError(errors);
     }
-    catch(err){
-      console.log(err)
-      throw new AppError(err.errors);
+
+    try {
+      await sheetValidation(JSON.parse(sheet));
+    } catch (err) {
+      throw new AppError(err.errors[0]);
     }
 
     const currentCharacterData = await charactersRepository.findOne(id);
 
-    if(icon?.key) {
+    if (icon?.key) {
       await charactersRepository.deleteImage(id);
       await charactersRepository.insertImage(id, icon);
-    }
-    else if(!icon?.key && !previousIcon){
+    } else if (!icon?.key && !previousIcon) {
       await charactersRepository.deleteImage(id);
     }
 
     const newCharacterData = {
       ...currentCharacterData,
-      name, 
-      inventory: JSON.parse(inventory), 
-      status: JSON.parse(status), 
-      skills: JSON.parse(skills),
-      limitOfPoints
-    }
+      name,
+      sheet: JSON.parse(sheet),
+    };
 
-    try{
+    try {
       await charactersRepository.update(id, newCharacterData);
-
     } catch {
       throw new AppError('Character does not exists');
     }
 
-    return res.json({ message: 'Successfully updated!'});
-
+    return res.json({ message: 'Successfully updated!' });
   }
 
-  async updateUser(req: Request, res: Response){
-    const { skills: new_skills } = req.body;
+  async updateUser(req: Request, res: Response) {
+    const { sheet } = req.body;
     const { id } = req.params;
     const charactersRepository = getCustomRepository(CharactersRepository);
-    
-    const schema = yup.object().shape({
-      skills: yup.array(yup.object({
-        name: yup.string().required('Insira um nome válido'),
-        current: yup.number().min(0).integer().required('Insira um valor válido'),
-        limit: yup.number().min(0).integer().required('Insira um valor válido')
-      }))
-    })
 
-    try{
-      await schema.validate(req.body, {abortEarly: false});
-    }
-    catch(err){
-      console.error(err)
-      throw new AppError(err.errors);
+    try {
+      await sheetValidation(sheet);
+    } catch (err) {
+      throw new AppError(err.errors[0]);
     }
 
     const currentCharacterData = await charactersRepository.findOne(id, {
-      relations: ['permission']
+      relations: ['permission'],
     });
     const permission = currentCharacterData.permission;
     delete currentCharacterData.permission;
 
-    const skills = new_skills ? new_skills : currentCharacterData.skills;
-
     const newCharacterData = {
       ...currentCharacterData,
-      skills
-    }
+      sheet,
+    };
 
-    try{
+    try {
       await charactersRepository.update(id, newCharacterData);
 
-      const permissionRepository = getCustomRepository(PermissionChangeRepository);
+      const permissionRepository = getCustomRepository(
+        PermissionChangeRepository
+      );
 
       await permissionRepository.delete(permission.id);
-
-    } catch(err) {
-      console.error(err)
+    } catch (err) {
+      console.error(err);
       throw new AppError('Character does not exists');
     }
 
-    return res.json({ message: 'Successfully updated!'});
+    return res.json({ message: 'Successfully updated!' });
   }
 
-  async delete(req: Request, res: Response){
+  async delete(req: Request, res: Response) {
     const { rpg_id, id } = req.params;
     const charactersRepository = getCustomRepository(CharactersRepository);
 
-    try{
-
-      const rpgsParticipantRepository = getCustomRepository(RpgParticipantsRepository);
-      const currentRpgPartData = await rpgsParticipantRepository.findOne(
-        { where:[{ character_id: id, rpg_id }] }
+    try {
+      const rpgsParticipantRepository = getCustomRepository(
+        RpgParticipantsRepository
       );
+      const currentRpgPartData = await rpgsParticipantRepository.findOne({
+        where: [{ character_id: id, rpg_id }],
+      });
 
-      if(currentRpgPartData){
+      if (currentRpgPartData) {
         const newRpgPartData = {
           ...currentRpgPartData,
-          character_id: null
-        }
-        await rpgsParticipantRepository.update(currentRpgPartData.id, newRpgPartData);
+          character_id: null,
+        };
+        await rpgsParticipantRepository.update(
+          currentRpgPartData.id,
+          newRpgPartData
+        );
       }
 
       await charactersRepository.deleteImage(id);
 
       await charactersRepository.delete(id);
       return res.sendStatus(200);
-
-    } catch(err) {
+    } catch (err) {
       throw new AppError(err.message);
     }
   }
 
-  async linkAccount(req: Request, res: Response){
+  async linkAccount(req: Request, res: Response) {
     const { user_id } = req.body;
     const { rpg_id, id: character_id } = req.params;
 
     const schema = yup.object().shape({
-      user_id: yup.string().length(36, 'Insira um id válido').required('Insira um id válido')
-    })
+      user_id: yup
+        .string()
+        .length(36, 'Insira um id válido')
+        .required('Insira um id válido'),
+    });
 
-    try{
-      await schema.validate(req.body, {abortEarly: false});
-    }
-    catch(err){
+    try {
+      await schema.validate(req.body, { abortEarly: false });
+    } catch (err) {
       throw new AppError(err.message);
     }
 
-    const rpgsParticipantRepository = getCustomRepository(RpgParticipantsRepository);
+    const rpgsParticipantRepository = getCustomRepository(
+      RpgParticipantsRepository
+    );
 
-    const verifyIfCharacterIsLinked = await rpgsParticipantRepository.findOne({character_id});
-    if(verifyIfCharacterIsLinked){
+    const verifyIfCharacterIsLinked = await rpgsParticipantRepository.findOne({
+      character_id,
+    });
+    if (verifyIfCharacterIsLinked) {
       throw new AppError('This character is already linked!');
     }
 
-    const currentRpgPartData = await rpgsParticipantRepository.findOne({where:[{user_id, rpg_id}]});
+    const currentRpgPartData = await rpgsParticipantRepository.findOne({
+      where: [{ user_id, rpg_id }],
+    });
 
-    if(currentRpgPartData.character_id){
+    if (currentRpgPartData.character_id) {
       throw new AppError('This user is already linked!');
     }
 
     const newRpgPartData = {
       ...currentRpgPartData,
-      character_id
-    }
+      character_id,
+    };
 
-    try{
-      await rpgsParticipantRepository.update(currentRpgPartData.id, newRpgPartData);
-    } catch(err) {
-      console.log(err)
+    try {
+      await rpgsParticipantRepository.update(
+        currentRpgPartData.id,
+        newRpgPartData
+      );
+    } catch (err) {
+      console.log(err);
       throw new AppError('Error while inserting');
     }
 
-    return res.status(200).json({ message: 'Successfully updated!'});
+    return res.status(200).json({ message: 'Successfully updated!' });
   }
 
-  async unlinkAccount(req: Request, res: Response){
+  async unlinkAccount(req: Request, res: Response) {
     const { user_id } = req.body;
     const { rpg_id, id: character_id } = req.params;
 
     const schema = yup.object().shape({
-      user_id: yup.string().length(36, 'Insira um id válido').required('Insira um id válido')
-    })
+      user_id: yup
+        .string()
+        .length(36, 'Insira um id válido')
+        .required('Insira um id válido'),
+    });
 
-    try{
-      await schema.validate(req.body, {abortEarly: false});
-    }
-    catch(err){
+    try {
+      await schema.validate(req.body, { abortEarly: false });
+    } catch (err) {
       throw new AppError(err.message);
     }
 
-    const rpgsParticipantRepository = getCustomRepository(RpgParticipantsRepository);
+    const rpgsParticipantRepository = getCustomRepository(
+      RpgParticipantsRepository
+    );
 
-    const currentRpgPartData = await rpgsParticipantRepository.findOne({where:[{user_id, rpg_id, character_id}]});
+    const currentRpgPartData = await rpgsParticipantRepository.findOne({
+      where: [{ user_id, rpg_id, character_id }],
+    });
 
     const newRpgPartData = {
       ...currentRpgPartData,
-      character_id: null
-    }
+      character_id: null,
+    };
 
-    try{
-      await rpgsParticipantRepository.update(currentRpgPartData.id, newRpgPartData);
+    try {
+      await rpgsParticipantRepository.update(
+        currentRpgPartData.id,
+        newRpgPartData
+      );
     } catch {
       throw new AppError('Error while inserting');
     }
 
-    return res.status(200).json({ message: 'Successfully updated!'});
+    return res.status(200).json({ message: 'Successfully updated!' });
   }
-  
 }
 
 export default new CharacterController();

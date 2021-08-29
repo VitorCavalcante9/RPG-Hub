@@ -1,8 +1,9 @@
 import * as yup from 'yup';
-import { AppError } from '../../models/AppError';
+import { SubListItem } from './SheetInterfaces';
 
 const objects = {
   status: yup.object({
+    id: yup.string().required(),
     name: yup
       .string()
       .min(3, 'Insira um nome com mais de 3 caracteres para o bloco')
@@ -28,6 +29,7 @@ const objects = {
       .required(),
   }),
   skills: yup.object({
+    id: yup.string().required(),
     name: yup
       .string()
       .min(3, 'Insira um nome com mais de 3 caracteres para o bloco')
@@ -52,6 +54,7 @@ const objects = {
       .required('Insira um limite de pontos válido'),
   }),
   list: yup.object({
+    id: yup.string().required(),
     name: yup
       .string()
       .min(3, 'Insira um nome com mais de 3 caracteres para o bloco')
@@ -64,6 +67,7 @@ const objects = {
       .required(),
   }),
   textarea: yup.object({
+    id: yup.string().required(),
     name: yup
       .string()
       .min(3, 'Insira um nome com mais de 3 caracteres para o bloco')
@@ -72,6 +76,7 @@ const objects = {
     value: yup.string(),
   }),
   multiSelectList: yup.object({
+    id: yup.string().required(),
     name: yup
       .string()
       .min(3, 'Insira um nome com mais de 3 caracteres para o bloco')
@@ -90,6 +95,7 @@ const objects = {
       .required(),
   }),
   nameList: yup.object({
+    id: yup.string().required(),
     name: yup
       .string()
       .min(3, 'Insira um nome com mais de 3 caracteres para o bloco')
@@ -103,6 +109,7 @@ const objects = {
     ),
   }),
   numList: yup.object({
+    id: yup.string().required(),
     name: yup
       .string()
       .min(3, 'Insira um nome com mais de 3 caracteres para o bloco')
@@ -118,6 +125,7 @@ const objects = {
       .required(),
   }),
   inventory: yup.object({
+    id: yup.string().required(),
     name: yup
       .string()
       .min(3, 'Insira um nome com mais de 3 caracteres para o bloco')
@@ -131,25 +139,8 @@ const objects = {
       })
     ),
   }),
-  numListLimit: yup.object({
-    name: yup
-      .string()
-      .min(3, 'Insira um nome com mais de 3 caracteres para o bloco')
-      .required('Insira um nome válido para o bloco'),
-    type: yup
-      .string()
-      .length(12)
-      .required('Insira um tipo válido para o bloco'),
-    value: yup
-      .array(
-        yup.object({
-          current: yup.number().integer().required('Insira um valor válido'),
-          limit: yup.number().integer().required('Insira um valor válido'),
-        })
-      )
-      .required(),
-  }),
   table: yup.object({
+    id: yup.string().required(),
     name: yup
       .string()
       .min(3, 'Insira um nome com mais de 3 caracteres para o bloco')
@@ -167,6 +158,7 @@ const objects = {
     value: yup.array(yup.object({})).required(),
   }),
   subList: yup.object({
+    id: yup.string().required(),
     name: yup
       .string()
       .min(3, 'Insira um nome com mais de 3 caracteres para o bloco')
@@ -175,6 +167,7 @@ const objects = {
     value: yup
       .array(
         yup.object({
+          id: yup.string().required(),
           title: yup
             .string()
             .required('Insira um nome válido para a sub-lista'),
@@ -186,6 +179,9 @@ const objects = {
 
 const subListObjects = {
   list: yup.object({
+    name: yup
+      .string()
+      .required('Insira um nome válido para o item da sub-lista'),
     type: yup.string().length(4).required('Insira um tipo válido para o bloco'),
     value: yup
       .array(
@@ -194,10 +190,16 @@ const subListObjects = {
       .required(),
   }),
   textarea: yup.object({
+    name: yup
+      .string()
+      .required('Insira um nome válido para o item da sub-lista'),
     type: yup.string().length(8).required('Insira um tipo válido para o bloco'),
     value: yup.string(),
   }),
   multiSelectList: yup.object({
+    name: yup
+      .string()
+      .required('Insira um nome válido para o item da sub-lista'),
     type: yup
       .string()
       .length(15)
@@ -211,29 +213,23 @@ const subListObjects = {
       )
       .required(),
   }),
-  nameList: yup.object({
+  nameItem: yup.object({
+    name: yup
+      .string()
+      .required('Insira um nome válido para o item da sub-lista'),
     type: yup.string().length(8).required('Insira um tipo válido para o bloco'),
-    value: yup.array(
-      yup.object({
-        name: yup.string().required('Insira um nome válido'),
-        value: yup.string(),
-      })
-    ),
+    value: yup.string(),
   }),
-  numList: yup.object({
+  numItem: yup.object({
+    name: yup
+      .string()
+      .required('Insira um nome válido para o item da sub-lista'),
     type: yup.string().length(7).required('Insira um tipo válido para o bloco'),
-    value: yup
-      .array(
-        yup.object({
-          name: yup.string().required('Insira um nome válido'),
-          value: yup.number().integer().required('Insira um valor válido'),
-        })
-      )
-      .required(),
+    value: yup.number().integer().required('Insira um valor válido'),
   }),
 };
 
-export async function validation(
+export async function sheetValidation(
   blocks: Array<{ name: string; type: string; value: any }>
 ) {
   let unvalidatedBlocks = [...blocks];
@@ -241,22 +237,17 @@ export async function validation(
   return new Promise((resolve, reject) => {
     blocks.forEach(async (block) => {
       if (block.type === 'subList') {
-        block.value.forEach(
-          (subList: {
-            title: string;
-            value: Array<{ type: string; value: any }>;
-          }) => {
-            subList.value.forEach(async (item: any) => {
-              try {
-                await subListObjects[item.type].validate(item, {
-                  aboutEarly: false,
-                });
-              } catch (err) {
-                reject(err);
-              }
-            });
-          }
-        );
+        block.value.forEach((subList: SubListItem) => {
+          subList.value.forEach(async (item) => {
+            try {
+              await subListObjects[item.type].validate(item, {
+                aboutEarly: false,
+              });
+            } catch (err) {
+              reject(err);
+            }
+          });
+        });
       }
 
       await objects[block.type]

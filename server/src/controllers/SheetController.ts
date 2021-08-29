@@ -1,34 +1,23 @@
-import { ConfigurationServicePlaceholders } from 'aws-sdk/lib/config_service_placeholders';
 import { Request, Response } from 'express';
 import { getCustomRepository } from 'typeorm';
-import * as yup from 'yup';
+import crypto from 'crypto';
+
 import { AppError } from '../models/AppError';
 import { CharactersRepository } from '../repositories/CharactersRepository';
 import { RpgsRepository } from '../repositories/RpgsRepository';
-import { validation } from './sheet/SheetValidation';
 
-interface Status {
-  name: string;
-  color: string;
-  current: number;
-  limit: number;
-}
-
-interface Skills {
-  name: string;
-  current: number;
-  limit: number;
-}
+import { reorderBlock } from './sheet/reorderBlock';
+import { GenericBlock, SubListInterface } from './sheet/SheetInterfaces';
+import { sheetValidation } from './sheet/SheetValidation';
 
 class SheetController {
   async update(req: Request, res: Response) {
-    const { status, skills, limitOfPoints } = req.body;
     const { blocks } = req.body;
     const { rpg_id: id } = req.params;
     const rpgsRepository = getCustomRepository(RpgsRepository);
 
     try {
-      await validation(blocks);
+      await sheetValidation(blocks);
     } catch (err) {
       console.log(err);
       throw new AppError(err.errors[0]);
@@ -36,15 +25,58 @@ class SheetController {
 
     const currentRpgData = await rpgsRepository.findOne(id);
 
+    let sheet = blocks.map((block: GenericBlock) => {
+      let newId = block.id;
+
+      while (newId.length !== 4) {
+        let randomBytes = crypto.randomBytes(2).toString('hex');
+
+        const verifyIfIdExists = blocks.find(
+          (block2: GenericBlock) => block2.id === randomBytes
+        );
+        if (!verifyIfIdExists) newId = randomBytes;
+      }
+
+      if (block.type === 'subList') {
+        let subListBlock = block as SubListInterface;
+        let subListValueWithId = subListBlock.value.map((item) => {
+          let newSubListItemId = item.id;
+
+          while (newSubListItemId.length !== 4) {
+            let randomBytes = crypto.randomBytes(2).toString('hex');
+
+            const verifyIfIdExists = subListBlock.value.find(
+              (subListBlock2) => subListBlock2.id === randomBytes
+            );
+            if (!verifyIfIdExists) newSubListItemId = randomBytes;
+          }
+
+          return {
+            ...item,
+            id: newSubListItemId,
+          };
+        });
+
+        return {
+          ...subListBlock,
+          value: subListValueWithId,
+          id: newId,
+        };
+      }
+
+      return {
+        ...block,
+        id: newId,
+      };
+    });
+
     const newRpgData = {
       ...currentRpgData,
-      sheet: blocks,
+      sheet,
     };
 
     try {
       await rpgsRepository.update(id, newRpgData);
-
-      return res.json({ message: 'Successfully updated!' });
 
       const charactersRepository = getCustomRepository(CharactersRepository);
       const characters = await charactersRepository.find({
@@ -52,50 +84,43 @@ class SheetController {
       });
 
       if (characters.length > 0) {
-        characters.forEach(async (character, position) => {
-          const skillsUnchanged = character.skills.filter((skill: Skills) => {
-            const index = skills
-              .map((this_skill) => this_skill.name)
-              .indexOf(skill.name);
-            return index !== -1;
-          });
+        characters.forEach(async (character) => {
+          let updatedSheet = character.sheet.filter(
+            (blockChar: { id: string }) => {
+              const verifyIfBlockExists = sheet.find(
+                (block: { id: string }) => block.id === blockChar.id
+              );
+              return verifyIfBlockExists;
+            }
+          );
 
-          const newSkills = skills.filter((skill: Skills) => {
-            const index = character.skills
-              .map((this_skill) => this_skill.name)
-              .indexOf(skill.name);
-            return index === -1;
-          });
+          sheet.forEach((block: GenericBlock, index: number) => {
+            const verifyIfBlockExists = updatedSheet.find(
+              (blockChar: { id: string }) => blockChar.id === block.id
+            );
 
-          let clumpedStatus = [];
+            if (!verifyIfBlockExists) {
+              updatedSheet.splice(index, 0, block);
+            } else {
+              const prevIndex = updatedSheet.findIndex(
+                (blockChar) => blockChar.id === block.id
+              );
 
-          character.status.forEach((one_status: Status) => {
-            const index = status
-              .map((this_status) => this_status.name)
-              .indexOf(one_status.name);
-            if (index !== -1) clumpedStatus.push(one_status);
-          });
+              const [reorderedItem] = updatedSheet.splice(prevIndex, 1);
+              const reorderedBlock = reorderBlock(reorderedItem, block);
 
-          status.forEach((one_status: Status, index) => {
-            const ind = clumpedStatus
-              .map((this_status) => this_status.name)
-              .indexOf(one_status.name);
-
-            if (ind === -1) clumpedStatus.splice(index, 0, one_status);
-            else {
-              const [reorderedItem] = clumpedStatus.splice(ind, 1);
-              clumpedStatus.splice(index, 0, reorderedItem);
+              updatedSheet.splice(index, 0, reorderedBlock);
             }
           });
 
           const newCharacterData = {
             ...character,
-            status: clumpedStatus,
-            skills: [...skillsUnchanged, ...newSkills],
+            sheet: updatedSheet,
           };
 
           await charactersRepository.update(character.id, newCharacterData);
         });
+        return res.json({ message: 'Successfully updated!' });
       }
     } catch {
       throw new AppError('RPG does not exists');
